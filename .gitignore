@@ -1,0 +1,51 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Keep workspace file tracked intentionally
+!nametree.code-workspace
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Node / frontend
+node_modules/
+dist/
+build/
+.vite/
+coverage/
+
+# Tauri / Rust
+/target/
+src-tauri/target/
+src-tauri/.cargo/
+
+# Rust build artifacts
+**/*.rs.bk
+
+# Local app data / databases
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+
+# Generated bundles
+src-tauri/gen/
+src-tauri/binaries/

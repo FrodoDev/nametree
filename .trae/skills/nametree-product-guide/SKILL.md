@@ -27,6 +27,29 @@ For learning a subject:
 - Roots can represent books, papers, courses, examples, exercises, doubts, and external inputs.
 - Growth means transforming input from roots into output on the tree.
 
+## Data structure decision
+
+Use **Option B: tree-first, references allowed**.
+
+This means:
+
+- The primary structure is still a tree, so each node has one main parent within a tree.
+- Nodes may also have reference links to other nodes.
+- Parent-child relationships express structure and growth.
+- Reference links express cross-topic relationships without turning the whole product into a freeform graph.
+
+Recommended minimal model:
+
+- **Tree**: a named knowledge tree or workspace.
+- **Node**: a knowledge unit, input source, question, concept, output, or note.
+- **Node kind**: root/input, trunk, branch/output.
+- **Tree edge**: the primary parent-child relationship.
+- **Reference link**: a non-tree relationship between nodes.
+- **Node style**: each node can have its own color and visual treatment.
+- **Node note**: each node can store an independent remark, description, or longer note.
+- **Link direction**: reference links can be one-way or two-way.
+- **Metadata**: title, note/body, tags, timestamps, position, status.
+
 ## Product principles
 
 1. Local-first before cloud-first.
