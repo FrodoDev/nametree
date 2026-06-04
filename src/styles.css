@@ -12,9 +12,31 @@ body {
   margin: 0;
 }
 
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: #fffaf0;
+  background: #43513e;
+  font-weight: 750;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
 .app-shell {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr) 320px;
+  grid-template-columns: 280px minmax(0, 1fr) 340px;
   min-height: 100vh;
   background:
     radial-gradient(circle at 50% 15%, rgba(104, 143, 92, 0.16), transparent 32%),
@@ -73,11 +95,20 @@ h3 {
   font-weight: 650;
 }
 
+.toolbar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 32px;
+}
+
 .legend {
   display: grid;
   gap: 12px;
-  margin-top: 48px;
+  margin-top: 36px;
   color: #43513e;
+  font-size: 14px;
+  line-height: 1.45;
 }
 
 .legend span,
@@ -89,6 +120,7 @@ h3 {
 
 .dot,
 .color-row i {
+  flex: 0 0 auto;
   width: 14px;
   height: 14px;
   border-radius: 999px;
@@ -115,16 +147,27 @@ h3 {
 
 .tree-canvas {
   width: 100%;
-  height: min(760px, calc(100vh - 48px));
+  height: min(820px, calc(100vh - 48px));
   border: 1px solid rgba(58, 74, 51, 0.12);
   border-radius: 28px;
-  background: rgba(255, 252, 246, 0.72);
+  background:
+    linear-gradient(to bottom, rgba(217, 164, 65, 0.12), transparent 34%),
+    linear-gradient(to top, rgba(139, 111, 71, 0.13), transparent 30%),
+    rgba(255, 252, 246, 0.72);
   box-shadow: 0 24px 80px rgba(63, 52, 39, 0.12);
 }
 
+.zone-label {
+  fill: rgba(67, 81, 62, 0.42);
+  font-size: 16px;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+}
+
 .tree-edge {
-  stroke: #9b7b4f;
-  stroke-width: 6;
+  fill: none;
+  stroke: #8a6a42;
+  stroke-width: 8;
   stroke-linecap: round;
 }
 
@@ -171,6 +214,18 @@ h3 {
   font-weight: 700;
 }
 
+.panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.panel-heading .eyebrow {
+  margin: 0;
+}
+
 .kind-pill {
   display: inline-flex;
   padding: 6px 10px;
@@ -192,4 +247,47 @@ h3 {
 .note {
   color: #43513e;
   line-height: 1.7;
+}
+
+.editor {
+  display: grid;
+  gap: 18px;
+}
+
+.editor label {
+  display: grid;
+  gap: 8px;
+  color: #43513e;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.editor input,
+.editor select,
+.editor textarea {
+  width: 100%;
+  border: 1px solid rgba(58, 74, 51, 0.18);
+  border-radius: 14px;
+  padding: 11px 12px;
+  color: #172033;
+  background: rgba(255, 252, 246, 0.92);
+  outline: none;
+}
+
+.editor input:focus,
+.editor select:focus,
+.editor textarea:focus {
+  border-color: #66745d;
+  box-shadow: 0 0 0 3px rgba(102, 116, 93, 0.15);
+}
+
+.editor input[type='color'] {
+  height: 46px;
+  padding: 4px;
+}
+
+.editor textarea {
+  min-height: 180px;
+  resize: vertical;
+  line-height: 1.6;
 }
