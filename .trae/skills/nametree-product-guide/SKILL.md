@@ -1,0 +1,129 @@
+---
+name: "nametree-product-guide"
+description: "Guides Nametree product, architecture, and implementation decisions. Invoke when discussing Nametree concepts, macOS app design, data model, or roadmap."
+---
+
+# Nametree Product Guide
+
+## Product identity
+
+Nametree is a macOS-first, local-first thinking and knowledge-structuring app.
+
+Slogan: **Name it to own it.**
+
+The core idea is to help users express, store, and evolve thoughts as a living tree rather than a left-to-right mind map.
+
+## Concept model
+
+Nametree represents knowledge as a tree with two meaningful directions:
+
+- **Roots**: input, sources, prerequisites, references, observations, questions, raw material.
+- **Trunk / branches**: organized understanding, concepts, arguments, outputs, explanations, projects, writing, or decisions.
+
+For learning a subject:
+
+- The trunk can represent the main knowledge system.
+- Branches can represent secondary topics and derived understanding.
+- Roots can represent books, papers, courses, examples, exercises, doubts, and external inputs.
+- Growth means transforming input from roots into output on the tree.
+
+## Product principles
+
+1. Local-first before cloud-first.
+2. The user owns their knowledge data.
+3. Structure should support thinking, not force rigid taxonomy.
+4. Naming is an act of understanding: users clarify thoughts by naming nodes.
+5. Input and output should both be visible, because learning is incomplete without production.
+6. Prefer simple, durable file/data formats over opaque storage.
+
+## Recommended technical direction
+
+For the first macOS desktop version, prefer:
+
+- **Tauri** for the app shell.
+- **Rust** for native backend commands, file access, persistence, and future sync-safe logic.
+- **TypeScript + React** for UI.
+- **SVG / Canvas** for tree visualization.
+- **SQLite** or structured local files for persistence.
+
+Why:
+
+- Tauri is lighter than Electron and fits a focused macOS desktop tool.
+- Rust gives safe native capabilities and good long-term maintainability.
+- React + TypeScript makes interactive UI iteration faster.
+- A local-first storage boundary makes future sync possible without redesigning the whole app.
+
+## Architecture guidance
+
+Keep the app divided into clear layers:
+
+1. **Domain model**
+   - Tree
+   - Node
+   - Edge / relationship
+   - Root-side input nodes
+   - Branch/output nodes
+   - Metadata: title, note, tags, timestamps, position, status
+
+2. **Persistence layer**
+   - Local database or file storage.
+   - Expose repository-style APIs such as create node, update node, move node, link root input, export tree.
+   - Do not let UI directly depend on storage details.
+
+3. **Application commands**
+   - Tauri commands bridge frontend and backend.
+   - Keep commands aligned with user actions.
+
+4. **Frontend state**
+   - Maintain current tree, selection, editing state, layout state.
+   - Avoid putting permanent business rules only in React components.
+
+5. **Visualization**
+   - Tree layout should support roots below/around the trunk and branches above/outward.
+   - Start with a simple deterministic layout before advanced freeform editing.
+
+## Local-first now, network later
+
+Starting with a single-machine desktop app is a good choice and does not require a major rewrite later if boundaries are kept clean.
+
+Design now for future sync by:
+
+- Giving every entity a stable UUID.
+- Keeping created_at and updated_at timestamps.
+- Avoiding auto-increment IDs as public identifiers.
+- Recording changes through clear repository methods.
+- Keeping persistence independent from UI.
+- Planning import/export early.
+
+Avoid building sync, accounts, servers, collaboration, or conflict resolution in the first version unless explicitly requested.
+
+## MVP scope
+
+A good first version should focus on:
+
+1. Create/open a local Nametree document or workspace.
+2. Add, rename, edit, delete nodes.
+3. Mark nodes as root/input or branch/output.
+4. Connect input roots to knowledge/output nodes.
+5. Render a simple tree view.
+6. Store data locally.
+7. Export to Markdown or JSON.
+
+Defer:
+
+- Multi-user collaboration.
+- Cloud sync.
+- Plugin system.
+- Complex graph database.
+- AI features.
+- Mobile apps.
+
+## When assisting this project
+
+When working on Nametree:
+
+- Preserve `nametree.code-workspace`; never delete or overwrite it unless the user explicitly asks.
+- Prefer small, incremental implementation steps.
+- Discuss product and architecture tradeoffs before large code changes.
+- Keep the first version desktop-only and local-first unless the user changes direction.
+- Avoid over-engineering or adding speculative infrastructure.
