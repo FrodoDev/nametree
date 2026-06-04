@@ -146,6 +146,8 @@ Defer:
 When working on Nametree:
 
 - Preserve `nametree.code-workspace`; never delete or overwrite it unless the user explicitly asks.
+- Use the GitHub account/organization identity `FrodoDev` for authors, ownership, package metadata, bundle identifiers, and similar project identity fields.
+- Never write local machine usernames, absolute home paths, or local-only account identities into project files, documentation, metadata, examples, or skills intended for version control.
 - Prefer small, incremental implementation steps.
 - Discuss product and architecture tradeoffs before large code changes.
 - Keep the first version desktop-only and local-first unless the user changes direction.

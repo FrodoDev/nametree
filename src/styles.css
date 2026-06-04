@@ -1,0 +1,195 @@
+:root {
+  color: #172033;
+  background: #f4f0e8;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr) 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 50% 15%, rgba(104, 143, 92, 0.16), transparent 32%),
+    #f4f0e8;
+}
+
+.sidebar,
+.detail-panel {
+  padding: 32px;
+  background: rgba(255, 252, 246, 0.82);
+  border-color: rgba(58, 74, 51, 0.12);
+}
+
+.sidebar {
+  border-right: 1px solid rgba(58, 74, 51, 0.12);
+}
+
+.detail-panel {
+  border-left: 1px solid rgba(58, 74, 51, 0.12);
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  color: #66745d;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 12px;
+  font-size: 44px;
+  line-height: 1;
+}
+
+h2 {
+  margin-bottom: 12px;
+  font-size: 28px;
+}
+
+h3 {
+  margin: 28px 0 10px;
+}
+
+.slogan {
+  color: #7b4f31;
+  font-size: 18px;
+  font-weight: 650;
+}
+
+.legend {
+  display: grid;
+  gap: 12px;
+  margin-top: 48px;
+  color: #43513e;
+}
+
+.legend span,
+.color-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dot,
+.color-row i {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.root {
+  background: #8b6f47;
+}
+
+.trunk {
+  background: #5f7f45;
+}
+
+.branch {
+  background: #d9a441;
+}
+
+.canvas-panel {
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.tree-canvas {
+  width: 100%;
+  height: min(760px, calc(100vh - 48px));
+  border: 1px solid rgba(58, 74, 51, 0.12);
+  border-radius: 28px;
+  background: rgba(255, 252, 246, 0.72);
+  box-shadow: 0 24px 80px rgba(63, 52, 39, 0.12);
+}
+
+.tree-edge {
+  stroke: #9b7b4f;
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.reference-link {
+  stroke: #6b7280;
+  stroke-width: 2;
+  stroke-dasharray: 8 7;
+  stroke-linecap: round;
+}
+
+.link-label {
+  fill: #57606f;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.tree-node {
+  cursor: pointer;
+}
+
+.tree-node circle {
+  stroke: rgba(37, 48, 34, 0.28);
+  stroke-width: 2;
+  filter: drop-shadow(0 12px 16px rgba(63, 52, 39, 0.18));
+  transition: stroke-width 160ms ease, transform 160ms ease;
+}
+
+.tree-node:hover circle,
+.tree-node.selected circle {
+  stroke: #172033;
+  stroke-width: 4;
+}
+
+.tree-node text {
+  fill: #172033;
+  font-size: 14px;
+  font-weight: 800;
+  pointer-events: none;
+}
+
+.tree-node .node-kind {
+  fill: rgba(23, 32, 51, 0.68);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.kind-pill {
+  display: inline-flex;
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: #43513e;
+  background: #e8eadf;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.color-row {
+  justify-content: space-between;
+  margin-top: 28px;
+  padding: 14px 0;
+  border-top: 1px solid rgba(58, 74, 51, 0.12);
+  border-bottom: 1px solid rgba(58, 74, 51, 0.12);
+}
+
+.note {
+  color: #43513e;
+  line-height: 1.7;
+}
