@@ -565,24 +565,26 @@ function getConnectionPoint(node: TreeNode, child: Pick<TreeNode, 'x' | 'y' | 'k
 }
 
 function createTrunkPath(shape: TreeShape): string {
-  const half = Math.max(22, shape.trunkWidth / 2);
-  const topHalf = Math.max(10, half * 0.34);
+  const baseHalf = Math.max(14, shape.trunkWidth * 0.22);
+  const topHalf = Math.max(5, shape.trunkWidth * 0.08);
+  const ground = shape.groundY + 8;
+  const top = shape.trunkTopY + 24;
+  const middle = (ground + top) / 2;
 
-  return `M ${shape.centerX - half} ${shape.groundY + 10}
-    L ${shape.centerX - topHalf} ${shape.trunkTopY + 32}
-    C ${shape.centerX - topHalf} ${shape.trunkTopY + 12}, ${shape.centerX + topHalf} ${shape.trunkTopY + 12}, ${shape.centerX + topHalf} ${shape.trunkTopY + 32}
-    L ${shape.centerX + half} ${shape.groundY + 10}
-    Z`;
+  return `M ${shape.centerX - baseHalf} ${ground}
+    C ${shape.centerX - baseHalf * 0.6} ${middle + 58}, ${shape.centerX - topHalf * 1.8} ${middle - 46}, ${shape.centerX - topHalf} ${top}
+    M ${shape.centerX + baseHalf} ${ground}
+    C ${shape.centerX + baseHalf * 0.58} ${middle + 58}, ${shape.centerX + topHalf * 1.7} ${middle - 46}, ${shape.centerX + topHalf} ${top}`;
 }
 
 function createTrunkAxisPath(shape: TreeShape): string {
-  return `M ${shape.centerX} ${shape.groundY + 8}
-    C ${shape.centerX - 4} ${shape.groundY - 76}, ${shape.centerX + 5} ${shape.trunkTopY + 92}, ${shape.centerX} ${shape.trunkTopY + 24}`;
+  return `M ${shape.centerX} ${shape.groundY + 10}
+    C ${shape.centerX - 6} ${shape.groundY - 56}, ${shape.centerX + 6} ${shape.trunkTopY + 108}, ${shape.centerX} ${shape.trunkTopY + 32}`;
 }
 
 function createMainRootPath(shape: TreeShape): string {
-  return `M ${shape.centerX} ${shape.groundY + 8}
-    C ${shape.centerX - 4} ${shape.groundY + 92}, ${shape.centerX + 5} ${shape.rootEndY - 88}, ${shape.centerX} ${shape.rootEndY}`;
+  return `M ${shape.centerX} ${shape.groundY + 10}
+    C ${shape.centerX - 8} ${shape.groundY + 82}, ${shape.centerX + 9} ${shape.rootEndY - 104}, ${shape.centerX} ${shape.rootEndY}`;
 }
 
 function createCurve(parent: Pick<TreeNode, 'x' | 'y'>, child: Pick<TreeNode, 'x' | 'y'>): string {
