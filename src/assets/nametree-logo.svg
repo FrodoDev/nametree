@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Nametree logo">
+  <rect width="256" height="256" rx="48" fill="#fffdf8"/>
+  <path d="M128 148 C122 118 124 96 128 66" fill="none" stroke="#111" stroke-width="12" stroke-linecap="round"/>
+  <path d="M128 144 C104 118 86 105 58 104" fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+  <path d="M128 138 C151 112 169 96 204 92" fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+  <path d="M128 116 C112 98 103 80 88 60" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/>
+  <path d="M132 116 C148 92 158 76 176 58" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/>
+  <path d="M128 148 C112 166 96 181 64 188" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round"/>
+  <path d="M128 148 C126 172 120 196 114 226" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round"/>
+  <path d="M128 148 C146 170 168 184 212 194" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round"/>
+  <g fill="#16831f">
+    <ellipse cx="55" cy="93" rx="10" ry="5" transform="rotate(18 55 93)"/>
+    <ellipse cx="76" cy="72" rx="9" ry="5" transform="rotate(54 76 72)"/>
+    <ellipse cx="100" cy="52" rx="8" ry="5" transform="rotate(76 100 52)"/>
+    <ellipse cx="122" cy="48" rx="8" ry="5" transform="rotate(92 122 48)"/>
+    <ellipse cx="151" cy="55" rx="9" ry="5" transform="rotate(118 151 55)"/>
+    <ellipse cx="178" cy="72" rx="9" ry="5" transform="rotate(140 178 72)"/>
+    <ellipse cx="205" cy="84" rx="10" ry="5" transform="rotate(164 205 84)"/>
+    <ellipse cx="94" cy="101" rx="8" ry="5" transform="rotate(24 94 101)"/>
+    <ellipse cx="160" cy="101" rx="8" ry="5" transform="rotate(150 160 101)"/>
+  </g>
+</svg>

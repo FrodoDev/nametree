@@ -31,6 +31,7 @@ Visualization rules:
 
 - The initial start point is only a guide for beginning tree growth; it is not a functional knowledge node.
 - The main trunk and main root are visible tree shapes, not ordinary circular nodes.
+- There must be exactly one main trunk and exactly one main root in a tree; never draw extra decorative roots, rootlets, tendrils, or fake root branches unless they are real user-created nodes.
 - The trunk should grow taller/thicker as output branches and leaves increase.
 - The main root should grow deeper/larger as input root branches increase.
 - Branches created from the trunk must visually grow out of the trunk shape.
@@ -38,6 +39,9 @@ Visualization rules:
 - Knowledge nodes should stay visually lightweight, closer to compact XMind-style labels than heavy circular cards.
 - Prefer white or near-white node fills, thin borders, simple typography, and minimal shadows.
 - Tree lines should be thin and calm, closer to XMind connector lines than thick decorative branches.
+- The main tree silhouette should reference the core structure of `images/tree1.jpg`: a central trunk, an upward output crown, and a downward input root system.
+- Do not use `images/tree1.jpg` as a canvas background; it is a logo/reference asset, not the interactive drawing layer.
+- Temporary product logo can use the tree-with-roots reference style until a final brand asset is provided.
 - The canvas should support zooming so larger trees can remain navigable.
 
 ## Data structure decision

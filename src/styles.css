@@ -58,6 +58,14 @@ button:disabled {
   border-left: 1px solid rgba(58, 74, 51, 0.12);
 }
 
+.app-logo {
+  width: 96px;
+  height: 96px;
+  display: block;
+  margin-bottom: 18px;
+  border-radius: 24px;
+}
+
 .eyebrow {
   margin: 0 0 12px;
   color: #66745d;
@@ -196,15 +204,22 @@ h3 {
 
 .tree-edge {
   fill: none;
+  stroke: #4a4a4a;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.trunk-edge {
+  fill: none;
   stroke: #3f3f3f;
-  stroke-width: 2;
+  stroke-width: 1.8;
   stroke-linecap: round;
 }
 
 .root-edge {
   fill: none;
-  stroke: #555;
-  stroke-width: 1.8;
+  stroke: #666;
+  stroke-width: 1.4;
   stroke-linecap: round;
 }
 
@@ -242,53 +257,49 @@ h3 {
 }
 
 .trunk-shape {
-  fill: rgba(111, 139, 79, 0.1);
-  stroke: rgba(89, 112, 70, 0.62);
-  stroke-width: 1.4;
+  fill: rgba(111, 139, 79, 0.06);
+  stroke: rgba(95, 127, 69, 0.58);
+  stroke-width: 1.8;
 }
 
 .trunk-axis {
   fill: none;
-  stroke: rgba(80, 102, 62, 0.72);
+  stroke: rgba(95, 127, 69, 0.72);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+
+.main-root-shape {
+  fill: none;
+  stroke: rgba(139, 111, 71, 0.72);
   stroke-width: 2.2;
   stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.trunk-bud {
-  fill: #ffffff;
-  stroke: rgba(80, 102, 62, 0.78);
-  stroke-width: 1.6;
-}
-
-.main-root-shape,
-.root-tendril {
-  fill: none;
-  stroke: rgba(116, 92, 58, 0.72);
-  stroke-width: 2;
-  stroke-linecap: round;
+.structure-hitbox {
+  fill: transparent;
+  stroke: transparent;
 }
 
 .tree-structure:hover .trunk-shape,
 .tree-structure.selected .trunk-shape,
 .tree-structure:hover .main-root-shape,
 .tree-structure.selected .main-root-shape,
-.tree-structure:hover .root-tendril,
-.tree-structure.selected .root-tendril,
 .tree-structure:hover .trunk-axis,
 .tree-structure.selected .trunk-axis {
-  stroke: #333;
-  stroke-width: 2.4;
+  stroke-opacity: 1;
 }
 
 .structure-label {
-  fill: rgba(23, 32, 51, 0.76);
-  font-size: 15px;
-  font-weight: 900;
+  fill: rgba(17, 17, 17, 0.62);
+  font-size: 12px;
+  font-weight: 650;
   pointer-events: none;
 }
 
 .root-label {
-  fill: rgba(255, 252, 246, 0.88);
+  fill: rgba(17, 17, 17, 0.62);
 }
 
 .suggestion-group {
@@ -320,10 +331,10 @@ h3 {
 
 .suggestion-edge {
   fill: none;
-  stroke: rgba(138, 106, 66, 0.45);
-  stroke-width: 5;
+  stroke: #777;
+  stroke-width: 1.5;
   stroke-linecap: round;
-  stroke-dasharray: 10 8;
+  stroke-dasharray: 5 5;
 }
 
 .reference-link {

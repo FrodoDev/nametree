@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 
+const treeReferenceImage = new URL('../images/tree1.jpg', import.meta.url).href;
+const nametreeLogo = treeReferenceImage;
+
 type NodeKind = 'seed_root' | 'main_trunk' | 'main_root' | 'branch' | 'leaf' | 'root_branch';
 type LinkDirection = 'one_way' | 'two_way';
 
@@ -155,6 +158,7 @@ function App() {
   return (
     <main className="app-shell">
       <section className="sidebar">
+        <img className="app-logo" src={nametreeLogo} alt="Nametree logo" />
         <p className="eyebrow">Nametree</p>
         <h1>{document.title}</h1>
         <p className="slogan">{document.slogan}</p>
@@ -210,8 +214,7 @@ function App() {
             >
               <path className="trunk-shape" d={createTrunkPath(shape)} />
               <path className="trunk-axis" d={createTrunkAxisPath(shape)} />
-              <circle className="trunk-bud" cx={shape.centerX} cy={shape.trunkTopY + 4} r="5" />
-              <text className="structure-label" x={shape.centerX} y={shape.trunkTopY + 28} textAnchor="middle">主干</text>
+              <rect className="structure-hitbox" x="380" y="130" width="80" height="300" rx="12" />
             </g>
           )}
 
@@ -224,7 +227,7 @@ function App() {
               }}
             >
               <path className="main-root-shape" d={createMainRootPath(shape)} />
-              <text className="structure-label root-label" x={shape.centerX} y={shape.rootEndY - 12} textAnchor="middle">主根</text>
+              <rect className="structure-hitbox" x="340" y="390" width="180" height="230" rx="12" />
             </g>
           )}
 
@@ -236,7 +239,7 @@ function App() {
             return (
               <path
                 key={`${edge.parent_id}-${edge.child_id}`}
-                className={child.kind === 'root_branch' ? 'root-edge' : 'tree-edge'}
+                className={parent.kind === 'main_trunk' ? 'trunk-edge' : child.kind === 'root_branch' ? 'root-edge' : 'tree-edge'}
                 d={createCurve(getConnectionPoint(parent, child, shape), child)}
               />
             );
@@ -505,8 +508,8 @@ function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
   mainRootChildren.forEach((node, index) => {
     const side = index % 2 === 0 ? -1 : 1;
     const level = Math.floor(index / 2);
-    node.x = shape.centerX + side * (210 + level * 90);
-    node.y = shape.rootEndY - 26 + level * 52;
+    node.x = shape.centerX + side * (230 + level * 100);
+    node.y = shape.rootEndY - 22 + level * 54;
   });
 
   const nestedRootNodes = rootBranches.filter((node) => {
@@ -531,62 +534,45 @@ function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
   return { ...document, nodes: laidOutNodes };
 }
 
-function placeAround(allNodes: TreeNode[], nodes: TreeNode[], centerX: number, y: number, gap: number) {
-  const startX = centerX - ((nodes.length - 1) * gap) / 2;
-  nodes.forEach((node, index) => {
-    const target = allNodes.find((item) => item.id === node.id);
-    if (target) {
-      target.x = startX + index * gap;
-      target.y = y;
-    }
-  });
-}
-
 function getConnectionPoint(node: TreeNode, child: Pick<TreeNode, 'x' | 'y' | 'kind'>, shape: TreeShape): Pick<TreeNode, 'x' | 'y'> {
   if (node.kind === 'main_trunk') {
     const side = child.x < shape.centerX ? -1 : 1;
-    const y = Math.min(shape.groundY - 55, Math.max(shape.trunkTopY + 48, child.y + 34));
-    const trunkRadius = Math.max(18, shape.trunkWidth / 2 - 8);
-
-    return { x: shape.centerX + side * trunkRadius, y };
+    return {
+      x: shape.centerX + side * 70,
+      y: Math.min(shape.groundY - 40, Math.max(shape.trunkTopY + 90, child.y + 32)),
+    };
   }
 
   if (node.kind === 'main_root') {
     const side = child.x < shape.centerX ? -1 : 1;
-    const startY = shape.groundY + 92;
-    return { x: shape.centerX + side * Math.max(24, shape.rootWidth / 3), y: startY };
+    return {
+      x: shape.centerX + side * 58,
+      y: shape.groundY + 156,
+    };
   }
 
   return node;
 }
 
 function createTrunkPath(shape: TreeShape): string {
-  const half = Math.max(18, shape.trunkWidth / 3);
-  return `M ${shape.centerX - half} ${shape.groundY}
-    C ${shape.centerX - half * 0.8} ${shape.groundY - 82}, ${shape.centerX - half * 0.55} ${shape.trunkTopY + 72}, ${shape.centerX - 8} ${shape.trunkTopY + 10}
-    C ${shape.centerX - 3} ${shape.trunkTopY}, ${shape.centerX + 3} ${shape.trunkTopY}, ${shape.centerX + 8} ${shape.trunkTopY + 10}
-    C ${shape.centerX + half * 0.55} ${shape.trunkTopY + 72}, ${shape.centerX + half * 0.8} ${shape.groundY - 82}, ${shape.centerX + half} ${shape.groundY}
+  const half = Math.max(22, shape.trunkWidth / 2);
+  const topHalf = Math.max(10, half * 0.34);
+
+  return `M ${shape.centerX - half} ${shape.groundY + 10}
+    L ${shape.centerX - topHalf} ${shape.trunkTopY + 32}
+    C ${shape.centerX - topHalf} ${shape.trunkTopY + 12}, ${shape.centerX + topHalf} ${shape.trunkTopY + 12}, ${shape.centerX + topHalf} ${shape.trunkTopY + 32}
+    L ${shape.centerX + half} ${shape.groundY + 10}
     Z`;
 }
 
 function createTrunkAxisPath(shape: TreeShape): string {
-  return `M ${shape.centerX} ${shape.groundY}
-    C ${shape.centerX - 8} ${shape.groundY - 78}, ${shape.centerX + 8} ${shape.trunkTopY + 82}, ${shape.centerX} ${shape.trunkTopY + 8}`;
+  return `M ${shape.centerX} ${shape.groundY + 8}
+    C ${shape.centerX - 4} ${shape.groundY - 76}, ${shape.centerX + 5} ${shape.trunkTopY + 92}, ${shape.centerX} ${shape.trunkTopY + 24}`;
 }
 
 function createMainRootPath(shape: TreeShape): string {
-  return `M ${shape.centerX} ${shape.groundY}
-    C ${shape.centerX - 6} ${shape.groundY + 56}, ${shape.centerX + 5} ${shape.rootEndY - 58}, ${shape.centerX} ${shape.rootEndY}`;
-}
-
-function createRootTendrilPaths(shape: TreeShape): string[] {
-  const startY = shape.groundY + 54;
-  const midY = (shape.groundY + shape.rootEndY) / 2;
-  return [
-    `M ${shape.centerX} ${startY} C ${shape.centerX - 32} ${midY}, ${shape.centerX - 70} ${shape.rootEndY - 40}, ${shape.centerX - 92} ${shape.rootEndY - 8}`,
-    `M ${shape.centerX} ${startY + 18} C ${shape.centerX + 34} ${midY + 8}, ${shape.centerX + 70} ${shape.rootEndY - 28}, ${shape.centerX + 96} ${shape.rootEndY + 4}`,
-    `M ${shape.centerX} ${startY + 42} C ${shape.centerX - 14} ${midY + 36}, ${shape.centerX - 34} ${shape.rootEndY - 6}, ${shape.centerX - 42} ${shape.rootEndY + 28}`,
-  ];
+  return `M ${shape.centerX} ${shape.groundY + 8}
+    C ${shape.centerX - 4} ${shape.groundY + 92}, ${shape.centerX + 5} ${shape.rootEndY - 88}, ${shape.centerX} ${shape.rootEndY}`;
 }
 
 function createCurve(parent: Pick<TreeNode, 'x' | 'y'>, child: Pick<TreeNode, 'x' | 'y'>): string {
