@@ -7,6 +7,8 @@ const nametreeLogo = treeReferenceImage;
 type NodeKind = 'seed_root' | 'main_trunk' | 'main_root' | 'branch' | 'leaf' | 'root_branch';
 type LinkDirection = 'one_way' | 'two_way';
 
+type GrowthSide = 'left' | 'right';
+
 type TreeNode = {
   id: string;
   title: string;
@@ -15,6 +17,7 @@ type TreeNode = {
   color: string;
   x: number;
   y: number;
+  side?: GrowthSide;
 };
 
 type TreeEdge = {
@@ -48,6 +51,7 @@ type Suggestion = {
   x: number;
   y: number;
   parentId: string;
+  side?: GrowthSide;
 };
 
 type TreeShape = {
@@ -80,7 +84,7 @@ const defaultColorByKind: Record<NodeKind, string> = {
 function App() {
   const [document, setDocument] = useState<NametreeDocument | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
 
   useEffect(() => {
@@ -114,10 +118,16 @@ function App() {
   function updateSelectedNode(patch: Partial<TreeNode>) {
     if (!document || !selectedNodeId || !selectedNode || !isKnowledgeNode(selectedNode)) return;
 
+    updateNode(selectedNodeId, patch);
+  }
+
+  function updateNode(nodeId: string, patch: Partial<TreeNode>) {
+    if (!document) return;
+
     setDocument(normalizeTreeLayout({
       ...document,
       nodes: document.nodes.map((node) => (
-        node.id === selectedNodeId ? { ...node, ...patch } : node
+        node.id === nodeId ? { ...node, ...patch } : node
       )),
     }));
   }
@@ -133,6 +143,7 @@ function App() {
       color: suggestion.color,
       x: suggestion.x,
       y: suggestion.y,
+      side: suggestion.side,
     };
 
     const nextDocument = normalizeTreeLayout({
@@ -143,7 +154,6 @@ function App() {
 
     setDocument(nextDocument);
     setSelectedNodeId(newNode.id);
-    setIsEditing(isKnowledgeNode(newNode));
   }
 
   if (!document) {
@@ -157,26 +167,15 @@ function App() {
 
   return (
     <main className="app-shell">
-      <section className="sidebar">
-        <img className="app-logo" src={nametreeLogo} alt="Nametree logo" />
-        <p className="eyebrow">Nametree</p>
-        <h1>{document.title}</h1>
-        <p className="slogan">{document.slogan}</p>
-
-        <div className="growth-hint">
-          <strong>生长规则</strong>
-          <p>起点只是引导，不是知识节点。主干和主根是可见形状，会随着树枝、叶子和根系变多而继续生长。</p>
-        </div>
-
-        <div className="legend">
-          <span><i className="dot seed" />开始：只负责启动生长</span>
-          <span><i className="dot trunk" />主干：输出方向的树体</span>
-          <span><i className="dot root" />主根：输入方向的根体</span>
-          <span><i className="dot branch" />树枝 / 叶子 / 根系：知识节点</span>
-        </div>
-      </section>
-
       <section className="canvas-panel">
+        <div className="brand-card">
+          <img className="app-logo" src={nametreeLogo} alt="Nametree logo" />
+          <div>
+            <p className="eyebrow">NameTree</p>
+            <p className="slogan">{document.slogan}</p>
+          </div>
+        </div>
+
         <div className="zoom-controls">
           <button onClick={() => setZoom((value) => Math.max(0.6, Number((value - 0.1).toFixed(1))))}>缩小</button>
           <span>{Math.round(zoom * 100)}%</span>
@@ -195,7 +194,6 @@ function App() {
               transform={`translate(${seed.x}, ${seed.y})`}
               onClick={() => {
                 setSelectedNodeId(seed.id);
-                setIsEditing(false);
               }}
             >
               <circle r="42" />
@@ -209,7 +207,6 @@ function App() {
               className={`tree-structure ${selectedNodeId === mainTrunk.id ? 'selected' : ''}`}
               onClick={() => {
                 setSelectedNodeId(mainTrunk.id);
-                setIsEditing(false);
               }}
             >
               <path className="trunk-shape" d={createTrunkPath(shape)} />
@@ -223,7 +220,6 @@ function App() {
               className={`tree-structure ${selectedNodeId === mainRoot.id ? 'selected' : ''}`}
               onClick={() => {
                 setSelectedNodeId(mainRoot.id);
-                setIsEditing(false);
               }}
             >
               <path className="main-root-shape" d={createMainRootPath(shape)} />
@@ -281,11 +277,31 @@ function App() {
               transform={`translate(${node.x}, ${node.y})`}
               onClick={() => {
                 setSelectedNodeId(node.id);
-                setIsEditing(false);
+              }}
+              onDoubleClick={() => {
+                setSelectedNodeId(node.id);
+                setEditingNodeId(node.id);
               }}
             >
               <rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke={node.color} />
-              <text textAnchor="middle" y="5">{node.title}</text>
+              {editingNodeId === node.id ? (
+                <foreignObject x="-50" y="-14" width="100" height="28">
+                  <input
+                    className="node-title-input"
+                    autoFocus
+                    value={node.title}
+                    onChange={(event) => updateNode(node.id, { title: event.target.value })}
+                    onBlur={() => setEditingNodeId(null)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === 'Escape') {
+                        event.currentTarget.blur();
+                      }
+                    }}
+                  />
+                </foreignObject>
+              ) : (
+                <text textAnchor="middle" y="5">{node.title}</text>
+              )}
             </g>
           ))}
           </g>
@@ -297,62 +313,32 @@ function App() {
           <>
             <div className="panel-heading">
               <p className="eyebrow">当前选择</p>
-              {isKnowledgeNode(selectedNode) && (
-                <button onClick={() => setIsEditing((editing) => !editing)}>{isEditing ? '完成' : '编辑'}</button>
-              )}
             </div>
 
-            {isEditing && isKnowledgeNode(selectedNode) ? (
-              <form className="editor" onSubmit={(event) => event.preventDefault()}>
-                <label>
-                  名称
-                  <input value={selectedNode.title} onChange={(event) => updateSelectedNode({ title: event.target.value })} />
-                </label>
-
-                <label>
-                  类型
-                  <select
-                    value={selectedNode.kind}
-                    onChange={(event) => {
-                      const kind = event.target.value as NodeKind;
-                      updateSelectedNode({ kind, color: defaultColorByKind[kind] });
-                    }}
-                  >
-                    <option value="branch">树枝</option>
-                    <option value="leaf">叶子</option>
-                    <option value="root_branch">根系</option>
-                  </select>
-                </label>
-
-                <label>
-                  颜色
-                  <input type="color" value={selectedNode.color} onChange={(event) => updateSelectedNode({ color: event.target.value })} />
-                </label>
-
-                <label>
-                  备注
-                  <textarea value={selectedNode.note} onChange={(event) => updateSelectedNode({ note: event.target.value })} />
-                </label>
-              </form>
+            {isKnowledgeNode(selectedNode) ? (
+              <>
+                <h2>{selectedNode.title}</h2>
+                <span className="kind-pill">{kindLabel[selectedNode.kind]}</span>
+                <div className="color-row">
+                  <span>节点颜色</span>
+                  <i style={{ background: selectedNode.color }} />
+                </div>
+                <h3>可生长</h3>
+                <p className="note">{suggestions.length > 0 ? suggestions.map((suggestion) => suggestion.title).join('、') : '当前选择暂无可选生长方向。'}</p>
+                <h3>内容</h3>
+                <textarea
+                  className="node-note-editor"
+                  value={selectedNode.note}
+                  onChange={(event) => updateSelectedNode({ note: event.target.value })}
+                />
+              </>
             ) : (
               <>
                 <h2>{selectedNode.title}</h2>
                 <span className="kind-pill">{kindLabel[selectedNode.kind]}</span>
-                {!isKnowledgeNode(selectedNode) && <p className="note structure-note">这是树的结构或起点，不作为普通知识节点编辑。</p>}
-                {isKnowledgeNode(selectedNode) && (
-                  <div className="color-row">
-                    <span>节点颜色</span>
-                    <i style={{ background: selectedNode.color }} />
-                  </div>
-                )}
+                <p className="note structure-note">这是树的结构或起点，不作为普通知识节点编辑。</p>
                 <h3>可生长</h3>
                 <p className="note">{suggestions.length > 0 ? suggestions.map((suggestion) => suggestion.title).join('、') : '当前选择暂无可选生长方向。'}</p>
-                {isKnowledgeNode(selectedNode) && (
-                  <>
-                    <h3>备注</h3>
-                    <p className="note">{selectedNode.note}</p>
-                  </>
-                )}
               </>
             )}
           </>
@@ -398,45 +384,55 @@ function getSuggestions(document: NametreeDocument, selectedNode: TreeNode, shap
   }
 
   if (selectedNode.kind === 'main_trunk') {
+    const leftCount = countSideChildren(childNodes, 'left');
+    const rightCount = countSideChildren(childNodes, 'right');
+
     return [
       !hasMainRoot && createSuggestion({ ...selectedNode, x: shape.centerX, y: shape.groundY }, 'main_root', '主根', 0, 120),
-      createSuggestion({ ...selectedNode, x: shape.centerX, y: shape.trunkTopY + 92 }, 'branch', '树枝', -190, 6),
-      createSuggestion({ ...selectedNode, x: shape.centerX, y: shape.trunkTopY + 36 }, 'leaf', '叶子', 190, -6),
+      createSuggestion({ ...selectedNode, x: shape.centerX, y: shape.trunkTopY + 112 + leftCount * 64 }, 'branch', '左树枝', -260 - leftCount * 54, 10, 'left'),
+      createSuggestion({ ...selectedNode, x: shape.centerX, y: shape.trunkTopY + 112 + rightCount * 64 }, 'branch', '右树枝', 260 + rightCount * 54, 10, 'right'),
     ].filter((suggestion): suggestion is Suggestion => Boolean(suggestion));
   }
 
   if (selectedNode.kind === 'branch') {
-    const hasBranch = childNodes.some((node) => node.kind === 'branch');
-    const hasLeaf = childNodes.some((node) => node.kind === 'leaf');
+    const leftCount = countSideChildren(childNodes, 'left');
+    const rightCount = countSideChildren(childNodes, 'right');
 
     return [
-      !hasBranch && createSuggestion(selectedNode, 'branch', '分叉', -145, -120),
-      !hasLeaf && createSuggestion(selectedNode, 'leaf', '叶子', 145, -120),
-    ].filter((suggestion): suggestion is Suggestion => Boolean(suggestion));
+      createSuggestion(selectedNode, 'branch', '左分叉', -180 - leftCount * 44, -104 - leftCount * 56, 'left'),
+      createSuggestion(selectedNode, 'branch', '右分叉', 180 + rightCount * 44, -104 - rightCount * 56, 'right'),
+      createSuggestion(selectedNode, 'leaf', '左叶子', -180 - leftCount * 44, -50 - leftCount * 56, 'left'),
+      createSuggestion(selectedNode, 'leaf', '右叶子', 180 + rightCount * 44, -50 - rightCount * 56, 'right'),
+    ];
   }
 
   if (selectedNode.kind === 'main_root') {
+    const leftCount = countSideChildren(childNodes, 'left');
+    const rightCount = countSideChildren(childNodes, 'right');
+
     return [
       !hasMainTrunk && createSuggestion({ ...selectedNode, x: shape.centerX, y: shape.groundY }, 'main_trunk', '主干', 0, -120),
-      createSuggestion({ ...selectedNode, x: shape.centerX, y: shape.rootEndY - 20 }, 'root_branch', '根系', -160, 45),
-      createSuggestion({ ...selectedNode, x: shape.centerX, y: shape.rootEndY - 20 }, 'root_branch', '细根', 160, 45),
+      createSuggestion({ ...selectedNode, x: shape.centerX, y: shape.rootEndY - 40 + leftCount * 64 }, 'root_branch', '根系', -260 - leftCount * 54, 70, 'left'),
+      createSuggestion({ ...selectedNode, x: shape.centerX, y: shape.rootEndY - 40 + rightCount * 64 }, 'root_branch', '根系', 260 + rightCount * 54, 70, 'right'),
     ].filter((suggestion): suggestion is Suggestion => Boolean(suggestion));
   }
 
   if (selectedNode.kind === 'root_branch') {
-    const rootChildren = childNodes.filter((node) => node.kind === 'root_branch');
+    const leftCount = countSideChildren(childNodes, 'left');
+    const rightCount = countSideChildren(childNodes, 'right');
 
-    return rootChildren.length < 2
-      ? [createSuggestion(selectedNode, 'root_branch', rootChildren.length === 0 ? '根系' : '细根', rootChildren.length === 0 ? -140 : 140, 120)]
-      : [];
+    return [
+      createSuggestion(selectedNode, 'root_branch', '左根系', -180 - leftCount * 44, 104 + leftCount * 56, 'left'),
+      createSuggestion(selectedNode, 'root_branch', '右根系', 180 + rightCount * 44, 104 + rightCount * 56, 'right'),
+    ];
   }
 
   return [];
 }
 
-function createSuggestion(parent: TreeNode, kind: NodeKind, title: string, offsetX: number, offsetY: number): Suggestion {
+function createSuggestion(parent: TreeNode, kind: NodeKind, title: string, offsetX: number, offsetY: number, side?: GrowthSide): Suggestion {
   return {
-    id: `${parent.id}-${kind}-${title}-${offsetX}-${offsetY}`,
+    id: `${parent.id}-${kind}-${title}-${offsetX}-${offsetY}-${side ?? 'center'}`,
     title,
     note: `这是一个${title}节点，可以继续编辑名称、颜色和备注。`,
     kind,
@@ -444,7 +440,12 @@ function createSuggestion(parent: TreeNode, kind: NodeKind, title: string, offse
     x: parent.x + offsetX,
     y: parent.y + offsetY,
     parentId: parent.id,
+    side,
   };
+}
+
+function countSideChildren(nodes: TreeNode[], side: GrowthSide): number {
+  return nodes.filter((node) => node.side === side).length;
 }
 
 function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
@@ -452,13 +453,13 @@ function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
   const seed = document.nodes.find((node) => node.kind === 'seed_root');
   const mainTrunk = document.nodes.find((node) => node.kind === 'main_trunk');
   const mainRoot = document.nodes.find((node) => node.kind === 'main_root');
-  const rootBranches = document.nodes.filter((node) => node.kind === 'root_branch');
   const parentById = new Map(document.tree_edges.map((edge) => [edge.child_id, edge.parent_id]));
   const nodeById = new Map(document.nodes.map((node) => [node.id, node]));
 
   const laidOutNodes = document.nodes.map((node) => ({ ...node }));
+  const laidOutById = new Map(laidOutNodes.map((node) => [node.id, node]));
   const update = (id: string | undefined, x: number, y: number) => {
-    const node = laidOutNodes.find((item) => item.id === id);
+    const node = id ? laidOutById.get(id) : undefined;
     if (node) {
       node.x = x;
       node.y = y;
@@ -474,12 +475,8 @@ function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
     return parent?.kind === 'main_trunk' && (node.kind === 'branch' || node.kind === 'leaf');
   });
 
-  trunkChildren.forEach((node, index) => {
-    const side = index % 2 === 0 ? -1 : 1;
-    const level = Math.floor(index / 2);
-    node.x = shape.centerX + side * (185 + level * 18);
-    node.y = Math.min(shape.groundY - 96, shape.trunkTopY + 88 + level * 58);
-  });
+  layoutSideChildren(trunkChildren, 'left', shape.centerX, shape.trunkTopY + 122, -1, -64, 245, 72);
+  layoutSideChildren(trunkChildren, 'right', shape.centerX, shape.trunkTopY + 122, 1, -64, 245, 72);
 
   const nestedOutputNodes = laidOutNodes.filter((node) => {
     const parent = nodeById.get(parentById.get(node.id) ?? '');
@@ -487,30 +484,26 @@ function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
   });
 
   nestedOutputNodes.forEach((node) => {
-    const parentId = parentById.get(node.id);
-    const parent = laidOutNodes.find((item) => item.id === parentId);
+    const parent = laidOutById.get(parentById.get(node.id) ?? '');
     if (!parent) return;
 
-    const siblings = nestedOutputNodes.filter((item) => parentById.get(item.id) === parentId);
+    const side = node.side ?? 'right';
+    const sideFactor = side === 'left' ? -1 : 1;
+    const siblings = nestedOutputNodes.filter((item) => parentById.get(item.id) === parent.id && (item.side ?? 'right') === side);
     const index = siblings.findIndex((item) => item.id === node.id);
-    const side = index % 2 === 0 ? -1 : 1;
-    const level = Math.floor(index / 2);
 
-    node.x = parent.x + side * (135 + level * 34);
-    node.y = parent.y - 118 - level * 24;
+    node.x = parent.x + sideFactor * (170 + index * 52);
+    node.y = parent.y - 104 - index * 58;
   });
 
+  const rootBranches = laidOutNodes.filter((node) => node.kind === 'root_branch');
   const mainRootChildren = rootBranches.filter((node) => {
     const parent = nodeById.get(parentById.get(node.id) ?? '');
     return parent?.kind === 'main_root';
   });
 
-  mainRootChildren.forEach((node, index) => {
-    const side = index % 2 === 0 ? -1 : 1;
-    const level = Math.floor(index / 2);
-    node.x = shape.centerX + side * (230 + level * 100);
-    node.y = shape.rootEndY - 22 + level * 54;
-  });
+  layoutSideChildren(mainRootChildren, 'left', shape.centerX, shape.rootEndY + 28, -1, 64, 245, 72);
+  layoutSideChildren(mainRootChildren, 'right', shape.centerX, shape.rootEndY + 28, 1, 64, 245, 72);
 
   const nestedRootNodes = rootBranches.filter((node) => {
     const parent = nodeById.get(parentById.get(node.id) ?? '');
@@ -518,20 +511,37 @@ function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
   });
 
   nestedRootNodes.forEach((node) => {
-    const parentId = parentById.get(node.id);
-    const parent = laidOutNodes.find((item) => item.id === parentId);
+    const parent = laidOutById.get(parentById.get(node.id) ?? '');
     if (!parent) return;
 
-    const siblings = nestedRootNodes.filter((item) => parentById.get(item.id) === parentId);
+    const side = node.side ?? 'right';
+    const sideFactor = side === 'left' ? -1 : 1;
+    const siblings = nestedRootNodes.filter((item) => parentById.get(item.id) === parent.id && (item.side ?? 'right') === side);
     const index = siblings.findIndex((item) => item.id === node.id);
-    const side = index % 2 === 0 ? -1 : 1;
-    const level = Math.floor(index / 2);
 
-    node.x = parent.x + side * (150 + level * 70);
-    node.y = parent.y + 98 + level * 42;
+    node.x = parent.x + sideFactor * (170 + index * 52);
+    node.y = parent.y + 104 + index * 58;
   });
 
   return { ...document, nodes: laidOutNodes };
+}
+
+function layoutSideChildren(
+  nodes: TreeNode[],
+  side: GrowthSide,
+  originX: number,
+  startY: number,
+  sideFactor: -1 | 1,
+  yStep: number,
+  xDistance: number,
+  xStep: number,
+) {
+  nodes
+    .filter((node) => (node.side ?? 'right') === side)
+    .forEach((node, index) => {
+      node.x = originX + sideFactor * (xDistance + index * xStep);
+      node.y = startY + index * yStep;
+    });
 }
 
 function getConnectionPoint(node: TreeNode, child: Pick<TreeNode, 'x' | 'y' | 'kind'>, shape: TreeShape): Pick<TreeNode, 'x' | 'y'> {

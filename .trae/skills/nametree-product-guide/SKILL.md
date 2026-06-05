@@ -35,6 +35,9 @@ Visualization rules:
 - The trunk should grow taller/thicker as output branches and leaves increase.
 - The main root should grow deeper/larger as input root branches increase.
 - Branches created from the trunk must visually grow out of the trunk shape.
+- Branch/root growth suggestions must appear on both left and right sides when applicable; the side chosen by the user must be persisted and respected by layout.
+- Root-side growth follows the same side-selection logic as trunk/branch growth.
+- Avoid overlapping existing nodes and pending suggestion nodes; never place a suggestion where it blocks another suggestion.
 - Branches created from another branch must visually appear as forks of that branch, not as trunk-origin branches.
 - Knowledge nodes should stay visually lightweight, closer to compact XMind-style labels than heavy circular cards.
 - Prefer white or near-white node fills, thin borders, simple typography, and minimal shadows.

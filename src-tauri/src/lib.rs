@@ -61,7 +61,7 @@ fn load_sample_tree() -> NametreeDocument {
     NametreeDocument {
         id: "default-tree".into(),
         title: "Nametree".into(),
-        slogan: "Name it to own it.".into(),
+        slogan: "Name it to own it".into(),
         nodes: vec![TreeNode {
             id: "seed-root".into(),
             title: "根节点".into(),
