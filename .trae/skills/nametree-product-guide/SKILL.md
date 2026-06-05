@@ -27,6 +27,19 @@ For learning a subject:
 - Roots can represent books, papers, courses, examples, exercises, doubts, and external inputs.
 - Growth means transforming input from roots into output on the tree.
 
+Visualization rules:
+
+- The initial start point is only a guide for beginning tree growth; it is not a functional knowledge node.
+- The main trunk and main root are visible tree shapes, not ordinary circular nodes.
+- The trunk should grow taller/thicker as output branches and leaves increase.
+- The main root should grow deeper/larger as input root branches increase.
+- Branches created from the trunk must visually grow out of the trunk shape.
+- Branches created from another branch must visually appear as forks of that branch, not as trunk-origin branches.
+- Knowledge nodes should stay visually lightweight, closer to compact XMind-style labels than heavy circular cards.
+- Prefer white or near-white node fills, thin borders, simple typography, and minimal shadows.
+- Tree lines should be thin and calm, closer to XMind connector lines than thick decorative branches.
+- The canvas should support zooming so larger trees can remain navigable.
+
 ## Data structure decision
 
 Use **Option B: tree-first, references allowed**.

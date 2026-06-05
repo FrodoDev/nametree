@@ -140,9 +140,39 @@ h3 {
 }
 
 .canvas-panel {
+  position: relative;
   display: grid;
   place-items: center;
   padding: 24px;
+}
+
+.zoom-controls {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid rgba(58, 74, 51, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 252, 246, 0.88);
+  box-shadow: 0 12px 28px rgba(63, 52, 39, 0.1);
+}
+
+.zoom-controls button {
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.zoom-controls span {
+  min-width: 42px;
+  color: #43513e;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
 }
 
 .tree-canvas {
@@ -166,9 +196,134 @@ h3 {
 
 .tree-edge {
   fill: none;
-  stroke: #8a6a42;
-  stroke-width: 8;
+  stroke: #3f3f3f;
+  stroke-width: 2;
   stroke-linecap: round;
+}
+
+.root-edge {
+  fill: none;
+  stroke: #555;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.start-guide {
+  cursor: pointer;
+}
+
+.start-guide circle {
+  fill: rgba(123, 107, 85, 0.14);
+  stroke: rgba(123, 107, 85, 0.62);
+  stroke-width: 2;
+  stroke-dasharray: 7 6;
+}
+
+.start-guide.selected circle,
+.start-guide:hover circle {
+  stroke: #172033;
+  stroke-width: 3;
+}
+
+.start-guide text {
+  fill: #43513e;
+  font-size: 14px;
+  font-weight: 850;
+  pointer-events: none;
+}
+
+.start-guide .node-kind {
+  fill: rgba(67, 81, 62, 0.66);
+  font-size: 10px;
+}
+
+.tree-structure {
+  cursor: pointer;
+}
+
+.trunk-shape {
+  fill: rgba(111, 139, 79, 0.1);
+  stroke: rgba(89, 112, 70, 0.62);
+  stroke-width: 1.4;
+}
+
+.trunk-axis {
+  fill: none;
+  stroke: rgba(80, 102, 62, 0.72);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
+.trunk-bud {
+  fill: #ffffff;
+  stroke: rgba(80, 102, 62, 0.78);
+  stroke-width: 1.6;
+}
+
+.main-root-shape,
+.root-tendril {
+  fill: none;
+  stroke: rgba(116, 92, 58, 0.72);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.tree-structure:hover .trunk-shape,
+.tree-structure.selected .trunk-shape,
+.tree-structure:hover .main-root-shape,
+.tree-structure.selected .main-root-shape,
+.tree-structure:hover .root-tendril,
+.tree-structure.selected .root-tendril,
+.tree-structure:hover .trunk-axis,
+.tree-structure.selected .trunk-axis {
+  stroke: #333;
+  stroke-width: 2.4;
+}
+
+.structure-label {
+  fill: rgba(23, 32, 51, 0.76);
+  font-size: 15px;
+  font-weight: 900;
+  pointer-events: none;
+}
+
+.root-label {
+  fill: rgba(255, 252, 246, 0.88);
+}
+
+.suggestion-group {
+  cursor: pointer;
+  opacity: 0.42;
+  transition: opacity 160ms ease;
+}
+
+.suggestion-group:hover {
+  opacity: 0.9;
+}
+
+.suggestion-group rect {
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+}
+
+.suggestion-group text {
+  fill: #333;
+  font-size: 13px;
+  font-weight: 650;
+  pointer-events: none;
+}
+
+.suggestion-group .node-kind {
+  fill: rgba(23, 32, 51, 0.66);
+  font-size: 10px;
+}
+
+.suggestion-edge {
+  fill: none;
+  stroke: rgba(138, 106, 66, 0.45);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 10 8;
 }
 
 .reference-link {
@@ -188,23 +343,21 @@ h3 {
   cursor: pointer;
 }
 
-.tree-node circle {
-  stroke: rgba(37, 48, 34, 0.28);
-  stroke-width: 2;
-  filter: drop-shadow(0 12px 16px rgba(63, 52, 39, 0.18));
-  transition: stroke-width 160ms ease, transform 160ms ease;
+.tree-node rect {
+  stroke-width: 1.5;
+  transition: stroke-width 120ms ease;
 }
 
-.tree-node:hover circle,
-.tree-node.selected circle {
-  stroke: #172033;
-  stroke-width: 4;
+.tree-node:hover rect,
+.tree-node.selected rect {
+  stroke: #111;
+  stroke-width: 2.2;
 }
 
 .tree-node text {
-  fill: #172033;
-  font-size: 14px;
-  font-weight: 800;
+  fill: #333;
+  font-size: 13px;
+  font-weight: 650;
   pointer-events: none;
 }
 

@@ -23,10 +23,14 @@ struct TreeNode {
 
 #[derive(Serialize)]
 #[serde(rename_all = "snake_case")]
+#[allow(dead_code)]
 enum NodeKind {
-    RootInput,
-    Trunk,
-    BranchOutput,
+    SeedRoot,
+    MainTrunk,
+    MainRoot,
+    Branch,
+    Leaf,
+    RootBranch,
 }
 
 #[derive(Serialize)]
@@ -46,6 +50,7 @@ struct ReferenceLink {
 
 #[derive(Serialize)]
 #[serde(rename_all = "snake_case")]
+#[allow(dead_code)]
 enum LinkDirection {
     OneWay,
     TwoWay,
@@ -54,90 +59,20 @@ enum LinkDirection {
 #[tauri::command]
 fn load_sample_tree() -> NametreeDocument {
     NametreeDocument {
-        id: "sample-tree".into(),
-        title: "学习 Rust".into(),
+        id: "default-tree".into(),
+        title: "Nametree".into(),
         slogan: "Name it to own it.".into(),
-        nodes: vec![
-            TreeNode {
-                id: "input-book".into(),
-                title: "书籍".into(),
-                note: "作为根部输入：Rust 程序设计语言、官方文档、示例代码。".into(),
-                kind: NodeKind::RootInput,
-                color: "#9a7b4f".into(),
-                x: 260,
-                y: 470,
-            },
-            TreeNode {
-                id: "input-practice".into(),
-                title: "练习".into(),
-                note: "通过小项目和错误记录，把输入转化成真正理解。".into(),
-                kind: NodeKind::RootInput,
-                color: "#8b6f47".into(),
-                x: 430,
-                y: 520,
-            },
-            TreeNode {
-                id: "ownership".into(),
-                title: "所有权".into(),
-                note: "Rust 的核心主干：所有权、借用、生命周期共同决定内存安全。".into(),
-                kind: NodeKind::Trunk,
-                color: "#668b4f".into(),
-                x: 360,
-                y: 310,
-            },
-            TreeNode {
-                id: "borrow".into(),
-                title: "借用".into(),
-                note: "通过引用访问数据，同时避免数据竞争和悬垂引用。".into(),
-                kind: NodeKind::BranchOutput,
-                color: "#d9a441".into(),
-                x: 190,
-                y: 150,
-            },
-            TreeNode {
-                id: "lifetime".into(),
-                title: "生命周期".into(),
-                note: "描述引用有效范围，是理解复杂借用关系的输出节点。".into(),
-                kind: NodeKind::BranchOutput,
-                color: "#d87f45".into(),
-                x: 530,
-                y: 150,
-            },
-        ],
-        tree_edges: vec![
-            TreeEdge {
-                parent_id: "input-book".into(),
-                child_id: "ownership".into(),
-            },
-            TreeEdge {
-                parent_id: "input-practice".into(),
-                child_id: "ownership".into(),
-            },
-            TreeEdge {
-                parent_id: "ownership".into(),
-                child_id: "borrow".into(),
-            },
-            TreeEdge {
-                parent_id: "ownership".into(),
-                child_id: "lifetime".into(),
-            },
-        ],
-        reference_links: vec![
-            ReferenceLink {
-                id: "borrow-lifetime".into(),
-                source_id: "borrow".into(),
-                target_id: "lifetime".into(),
-                direction: LinkDirection::TwoWay,
-                label: "相互约束".into(),
-            },
-            ReferenceLink {
-                id: "book-borrow".into(),
-                source_id: "input-book".into(),
-                target_id: "borrow".into(),
-                direction: LinkDirection::OneWay,
-                label: "提供材料".into(),
-            },
-        ],
+        nodes: vec![TreeNode {
+            id: "seed-root".into(),
+            title: "根节点".into(),
+            note: "从这里开始。选择这个节点后，可以生长出主干或主根。".into(),
+            kind: NodeKind::SeedRoot,
+            color: "#7b6b55".into(),
+            x: 450,
+            y: 350,
+        }],
+        tree_edges: vec![],
+        reference_links: vec![],
     }
 }
 

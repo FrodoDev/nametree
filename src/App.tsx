@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 
-type NodeKind = 'root_input' | 'trunk' | 'branch_output';
+type NodeKind = 'seed_root' | 'main_trunk' | 'main_root' | 'branch' | 'leaf' | 'root_branch';
 type LinkDirection = 'one_way' | 'two_way';
 
 type TreeNode = {
@@ -36,27 +36,55 @@ type NametreeDocument = {
   reference_links: ReferenceLink[];
 };
 
+type Suggestion = {
+  id: string;
+  title: string;
+  note: string;
+  kind: NodeKind;
+  color: string;
+  x: number;
+  y: number;
+  parentId: string;
+};
+
+type TreeShape = {
+  centerX: number;
+  groundY: number;
+  trunkTopY: number;
+  trunkWidth: number;
+  rootEndY: number;
+  rootWidth: number;
+};
+
 const kindLabel: Record<NodeKind, string> = {
-  root_input: '根 / 输入',
-  trunk: '主干',
-  branch_output: '枝叶 / 输出',
+  seed_root: '开始',
+  main_trunk: '主干',
+  main_root: '主根',
+  branch: '树枝',
+  leaf: '叶子',
+  root_branch: '根系',
 };
 
 const defaultColorByKind: Record<NodeKind, string> = {
-  root_input: '#8b6f47',
-  trunk: '#5f7f45',
-  branch_output: '#d9a441',
+  seed_root: '#7b6b55',
+  main_trunk: '#5f7f45',
+  main_root: '#8b6f47',
+  branch: '#d9a441',
+  leaf: '#7fb069',
+  root_branch: '#9a7b4f',
 };
 
 function App() {
   const [document, setDocument] = useState<NametreeDocument | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [zoom, setZoom] = useState(1);
 
   useEffect(() => {
     invoke<NametreeDocument>('load_sample_tree').then((tree) => {
-      setDocument(normalizeTreeLayout(tree));
-      setSelectedNodeId(tree.nodes.find((node) => node.kind === 'trunk')?.id ?? tree.nodes[0]?.id ?? null);
+      const normalizedTree = normalizeTreeLayout(tree);
+      setDocument(normalizedTree);
+      setSelectedNodeId(normalizedTree.nodes[0]?.id ?? null);
     });
   }, []);
 
@@ -65,70 +93,63 @@ function App() {
     [document, selectedNodeId],
   );
 
-  function updateSelectedNode(patch: Partial<TreeNode>) {
-    if (!document || !selectedNodeId) return;
+  const shape = useMemo(
+    () => (document ? getTreeShape(document) : getTreeShape({ nodes: [], tree_edges: [], reference_links: [], id: '', title: '', slogan: '' })),
+    [document],
+  );
 
-    setDocument({
+  const visibleKnowledgeNodes = useMemo(
+    () => (document ? document.nodes.filter((node) => isKnowledgeNode(node)) : []),
+    [document],
+  );
+
+  const suggestions = useMemo(
+    () => (document && selectedNode ? getSuggestions(document, selectedNode, shape) : []),
+    [document, selectedNode, shape],
+  );
+
+  function updateSelectedNode(patch: Partial<TreeNode>) {
+    if (!document || !selectedNodeId || !selectedNode || !isKnowledgeNode(selectedNode)) return;
+
+    setDocument(normalizeTreeLayout({
       ...document,
       nodes: document.nodes.map((node) => (
         node.id === selectedNodeId ? { ...node, ...patch } : node
       )),
-    });
+    }));
   }
 
-  function addBranchNode() {
-    if (!document || !selectedNode) return;
-
-    const newNode: TreeNode = {
-      id: crypto.randomUUID(),
-      title: '新枝叶',
-      note: '在这里写下这个节点的备注。',
-      kind: 'branch_output',
-      color: defaultColorByKind.branch_output,
-      x: selectedNode.x + 160,
-      y: selectedNode.y - 160,
-    };
-
-    const nextDocument = normalizeTreeLayout({
-      ...document,
-      nodes: [...document.nodes, newNode],
-      tree_edges: [...document.tree_edges, { parent_id: selectedNode.id, child_id: newNode.id }],
-    });
-
-    setDocument(nextDocument);
-    setSelectedNodeId(newNode.id);
-    setIsEditing(true);
-  }
-
-  function addRootNode() {
+  function createSuggestedNode(suggestion: Suggestion) {
     if (!document) return;
 
-    const trunk = document.nodes.find((node) => node.kind === 'trunk') ?? document.nodes[0];
     const newNode: TreeNode = {
       id: crypto.randomUUID(),
-      title: '新输入',
-      note: '在这里记录资料、问题、观察或练习。',
-      kind: 'root_input',
-      color: defaultColorByKind.root_input,
-      x: trunk.x,
-      y: trunk.y + 180,
+      title: suggestion.title,
+      note: suggestion.note,
+      kind: suggestion.kind,
+      color: suggestion.color,
+      x: suggestion.x,
+      y: suggestion.y,
     };
 
     const nextDocument = normalizeTreeLayout({
       ...document,
       nodes: [...document.nodes, newNode],
-      tree_edges: trunk ? [...document.tree_edges, { parent_id: newNode.id, child_id: trunk.id }] : document.tree_edges,
+      tree_edges: [...document.tree_edges, { parent_id: suggestion.parentId, child_id: newNode.id }],
     });
 
     setDocument(nextDocument);
     setSelectedNodeId(newNode.id);
-    setIsEditing(true);
+    setIsEditing(isKnowledgeNode(newNode));
   }
 
   if (!document) {
     return <main className="app-shell">Loading Nametree...</main>;
   }
 
+  const seed = document.nodes.find((node) => node.kind === 'seed_root');
+  const mainTrunk = document.nodes.find((node) => node.kind === 'main_trunk');
+  const mainRoot = document.nodes.find((node) => node.kind === 'main_root');
   const nodeById = new Map(document.nodes.map((node) => [node.id, node]));
 
   return (
@@ -138,39 +159,85 @@ function App() {
         <h1>{document.title}</h1>
         <p className="slogan">{document.slogan}</p>
 
-        <div className="toolbar">
-          <button onClick={addRootNode}>新增根</button>
-          <button onClick={addBranchNode} disabled={!selectedNode}>新增枝</button>
+        <div className="growth-hint">
+          <strong>生长规则</strong>
+          <p>起点只是引导，不是知识节点。主干和主根是可见形状，会随着树枝、叶子和根系变多而继续生长。</p>
         </div>
 
         <div className="legend">
-          <span><i className="dot root" />根 / 输入：资料、问题、练习</span>
-          <span><i className="dot trunk" />主干：核心知识</span>
-          <span><i className="dot branch" />枝叶 / 输出：理解、总结、作品</span>
+          <span><i className="dot seed" />开始：只负责启动生长</span>
+          <span><i className="dot trunk" />主干：输出方向的树体</span>
+          <span><i className="dot root" />主根：输入方向的根体</span>
+          <span><i className="dot branch" />树枝 / 叶子 / 根系：知识节点</span>
         </div>
       </section>
 
       <section className="canvas-panel">
-        <svg className="tree-canvas" viewBox="0 0 900 700" role="img" aria-label="Nametree knowledge tree">
-          <defs>
-            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-              <path d="M0,0 L0,6 L9,3 z" fill="#6b7280" />
-            </marker>
-          </defs>
+        <div className="zoom-controls">
+          <button onClick={() => setZoom((value) => Math.max(0.6, Number((value - 0.1).toFixed(1))))}>缩小</button>
+          <span>{Math.round(zoom * 100)}%</span>
+          <button onClick={() => setZoom((value) => Math.min(1.6, Number((value + 0.1).toFixed(1))))}>放大</button>
+          <button onClick={() => setZoom(1)}>重置</button>
+        </div>
 
-          <text className="zone-label" x="450" y="52" textAnchor="middle">枝叶 / 输出</text>
-          <text className="zone-label" x="450" y="645" textAnchor="middle">树根 / 输入</text>
+        <svg className="tree-canvas" viewBox="0 0 900 700" role="img" aria-label="Nametree knowledge tree">
+          <g transform={`translate(450 350) scale(${zoom}) translate(-450 -350)`}>
+          <text className="zone-label" x="450" y="52" textAnchor="middle">树冠 / 输出</text>
+          <text className="zone-label" x="450" y="650" textAnchor="middle">树根 / 输入</text>
+
+          {!mainTrunk && !mainRoot && seed && (
+            <g
+              className={`start-guide ${selectedNodeId === seed.id ? 'selected' : ''}`}
+              transform={`translate(${seed.x}, ${seed.y})`}
+              onClick={() => {
+                setSelectedNodeId(seed.id);
+                setIsEditing(false);
+              }}
+            >
+              <circle r="42" />
+              <text textAnchor="middle" y="-4">开始</text>
+              <text className="node-kind" textAnchor="middle" y="18">点击生长</text>
+            </g>
+          )}
+
+          {mainTrunk && (
+            <g
+              className={`tree-structure ${selectedNodeId === mainTrunk.id ? 'selected' : ''}`}
+              onClick={() => {
+                setSelectedNodeId(mainTrunk.id);
+                setIsEditing(false);
+              }}
+            >
+              <path className="trunk-shape" d={createTrunkPath(shape)} />
+              <path className="trunk-axis" d={createTrunkAxisPath(shape)} />
+              <circle className="trunk-bud" cx={shape.centerX} cy={shape.trunkTopY + 4} r="5" />
+              <text className="structure-label" x={shape.centerX} y={shape.trunkTopY + 28} textAnchor="middle">主干</text>
+            </g>
+          )}
+
+          {mainRoot && (
+            <g
+              className={`tree-structure ${selectedNodeId === mainRoot.id ? 'selected' : ''}`}
+              onClick={() => {
+                setSelectedNodeId(mainRoot.id);
+                setIsEditing(false);
+              }}
+            >
+              <path className="main-root-shape" d={createMainRootPath(shape)} />
+              <text className="structure-label root-label" x={shape.centerX} y={shape.rootEndY - 12} textAnchor="middle">主根</text>
+            </g>
+          )}
 
           {document.tree_edges.map((edge) => {
             const parent = nodeById.get(edge.parent_id);
             const child = nodeById.get(edge.child_id);
-            if (!parent || !child) return null;
+            if (!parent || !child || !isKnowledgeNode(child)) return null;
 
             return (
               <path
                 key={`${edge.parent_id}-${edge.child_id}`}
-                className="tree-edge"
-                d={`M ${parent.x} ${parent.y} C ${parent.x} ${(parent.y + child.y) / 2}, ${child.x} ${(parent.y + child.y) / 2}, ${child.x} ${child.y}`}
+                className={child.kind === 'root_branch' ? 'root-edge' : 'tree-edge'}
+                d={createCurve(getConnectionPoint(parent, child, shape), child)}
               />
             );
           })}
@@ -181,35 +248,44 @@ function App() {
             if (!source || !target) return null;
 
             return (
-              <g key={link.id}>
-                <line
-                  className="reference-link"
-                  x1={source.x}
-                  y1={source.y}
-                  x2={target.x}
-                  y2={target.y}
-                  markerEnd="url(#arrow)"
-                  markerStart={link.direction === 'two_way' ? 'url(#arrow)' : undefined}
-                />
-                <text className="link-label" x={(source.x + target.x) / 2} y={(source.y + target.y) / 2 - 8}>
-                  {link.label}
-                </text>
+              <path
+                key={link.id}
+                className={`reference-link ${link.direction}`}
+                d={createCurve(source, target)}
+              />
+            );
+          })}
+
+          {suggestions.map((suggestion) => {
+            const parent = nodeById.get(suggestion.parentId);
+            if (!parent) return null;
+
+            return (
+              <g key={suggestion.id} className="suggestion-group" onClick={() => createSuggestedNode(suggestion)}>
+                <path className="suggestion-edge" d={createCurve(getConnectionPoint(parent, suggestion, shape), suggestion)} />
+                <g transform={`translate(${suggestion.x}, ${suggestion.y})`}>
+                  <rect x="-58" y="-18" width="116" height="36" rx="6" fill="#ffffff" stroke={suggestion.color} />
+                  <text textAnchor="middle" y="5">{suggestion.title}</text>
+                </g>
               </g>
             );
           })}
 
-          {document.nodes.map((node) => (
+          {visibleKnowledgeNodes.map((node) => (
             <g
               key={node.id}
               className={`tree-node ${selectedNodeId === node.id ? 'selected' : ''}`}
               transform={`translate(${node.x}, ${node.y})`}
-              onClick={() => setSelectedNodeId(node.id)}
+              onClick={() => {
+                setSelectedNodeId(node.id);
+                setIsEditing(false);
+              }}
             >
-              <circle r="48" fill={node.color} />
-              <text textAnchor="middle" y="-4">{node.title}</text>
-              <text className="node-kind" textAnchor="middle" y="18">{kindLabel[node.kind]}</text>
+              <rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke={node.color} />
+              <text textAnchor="middle" y="5">{node.title}</text>
             </g>
           ))}
+          </g>
         </svg>
       </section>
 
@@ -217,11 +293,13 @@ function App() {
         {selectedNode ? (
           <>
             <div className="panel-heading">
-              <p className="eyebrow">当前节点</p>
-              <button onClick={() => setIsEditing((editing) => !editing)}>{isEditing ? '完成' : '编辑'}</button>
+              <p className="eyebrow">当前选择</p>
+              {isKnowledgeNode(selectedNode) && (
+                <button onClick={() => setIsEditing((editing) => !editing)}>{isEditing ? '完成' : '编辑'}</button>
+              )}
             </div>
 
-            {isEditing ? (
+            {isEditing && isKnowledgeNode(selectedNode) ? (
               <form className="editor" onSubmit={(event) => event.preventDefault()}>
                 <label>
                   名称
@@ -232,14 +310,14 @@ function App() {
                   类型
                   <select
                     value={selectedNode.kind}
-                    onChange={(event) => updateSelectedNode({
-                      kind: event.target.value as NodeKind,
-                      color: defaultColorByKind[event.target.value as NodeKind],
-                    })}
+                    onChange={(event) => {
+                      const kind = event.target.value as NodeKind;
+                      updateSelectedNode({ kind, color: defaultColorByKind[kind] });
+                    }}
                   >
-                    <option value="root_input">根 / 输入</option>
-                    <option value="trunk">主干</option>
-                    <option value="branch_output">枝叶 / 输出</option>
+                    <option value="branch">树枝</option>
+                    <option value="leaf">叶子</option>
+                    <option value="root_branch">根系</option>
                   </select>
                 </label>
 
@@ -257,12 +335,21 @@ function App() {
               <>
                 <h2>{selectedNode.title}</h2>
                 <span className="kind-pill">{kindLabel[selectedNode.kind]}</span>
-                <div className="color-row">
-                  <span>节点颜色</span>
-                  <i style={{ background: selectedNode.color }} />
-                </div>
-                <h3>备注</h3>
-                <p className="note">{selectedNode.note}</p>
+                {!isKnowledgeNode(selectedNode) && <p className="note structure-note">这是树的结构或起点，不作为普通知识节点编辑。</p>}
+                {isKnowledgeNode(selectedNode) && (
+                  <div className="color-row">
+                    <span>节点颜色</span>
+                    <i style={{ background: selectedNode.color }} />
+                  </div>
+                )}
+                <h3>可生长</h3>
+                <p className="note">{suggestions.length > 0 ? suggestions.map((suggestion) => suggestion.title).join('、') : '当前选择暂无可选生长方向。'}</p>
+                {isKnowledgeNode(selectedNode) && (
+                  <>
+                    <h3>备注</h3>
+                    <p className="note">{selectedNode.note}</p>
+                  </>
+                )}
               </>
             )}
           </>
@@ -274,23 +361,236 @@ function App() {
   );
 }
 
-function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
-  const roots = document.nodes.filter((node) => node.kind === 'root_input');
-  const trunks = document.nodes.filter((node) => node.kind === 'trunk');
-  const branches = document.nodes.filter((node) => node.kind === 'branch_output');
+function isKnowledgeNode(node: TreeNode): boolean {
+  return node.kind === 'branch' || node.kind === 'leaf' || node.kind === 'root_branch';
+}
 
-  const placeRow = (nodes: TreeNode[], y: number, centerX = 450, gap = 190) => {
-    const startX = centerX - ((nodes.length - 1) * gap) / 2;
-    return nodes.map((node, index) => ({ ...node, x: startX + index * gap, y }));
+function getTreeShape(document: NametreeDocument): TreeShape {
+  const outputCount = document.nodes.filter((node) => node.kind === 'branch' || node.kind === 'leaf').length;
+  const rootCount = document.nodes.filter((node) => node.kind === 'root_branch').length;
+
+  return {
+    centerX: 450,
+    groundY: 390,
+    trunkTopY: Math.max(120, 340 - outputCount * 34),
+    trunkWidth: Math.min(96, 46 + outputCount * 9),
+    rootEndY: Math.min(660, 535 + rootCount * 30),
+    rootWidth: Math.min(120, 64 + rootCount * 10),
+  };
+}
+
+function getSuggestions(document: NametreeDocument, selectedNode: TreeNode, shape: TreeShape): Suggestion[] {
+  const hasMainTrunk = document.nodes.some((node) => node.kind === 'main_trunk');
+  const hasMainRoot = document.nodes.some((node) => node.kind === 'main_root');
+  const childNodes = document.tree_edges
+    .filter((edge) => edge.parent_id === selectedNode.id)
+    .map((edge) => document.nodes.find((node) => node.id === edge.child_id))
+    .filter((node): node is TreeNode => Boolean(node));
+
+  if (selectedNode.kind === 'seed_root') {
+    return [
+      !hasMainTrunk && createSuggestion(selectedNode, 'main_trunk', '主干', 0, -130),
+      !hasMainRoot && createSuggestion(selectedNode, 'main_root', '主根', 0, 130),
+    ].filter((suggestion): suggestion is Suggestion => Boolean(suggestion));
+  }
+
+  if (selectedNode.kind === 'main_trunk') {
+    return [
+      !hasMainRoot && createSuggestion({ ...selectedNode, x: shape.centerX, y: shape.groundY }, 'main_root', '主根', 0, 120),
+      createSuggestion({ ...selectedNode, x: shape.centerX, y: shape.trunkTopY + 92 }, 'branch', '树枝', -190, 6),
+      createSuggestion({ ...selectedNode, x: shape.centerX, y: shape.trunkTopY + 36 }, 'leaf', '叶子', 190, -6),
+    ].filter((suggestion): suggestion is Suggestion => Boolean(suggestion));
+  }
+
+  if (selectedNode.kind === 'branch') {
+    const hasBranch = childNodes.some((node) => node.kind === 'branch');
+    const hasLeaf = childNodes.some((node) => node.kind === 'leaf');
+
+    return [
+      !hasBranch && createSuggestion(selectedNode, 'branch', '分叉', -145, -120),
+      !hasLeaf && createSuggestion(selectedNode, 'leaf', '叶子', 145, -120),
+    ].filter((suggestion): suggestion is Suggestion => Boolean(suggestion));
+  }
+
+  if (selectedNode.kind === 'main_root') {
+    return [
+      !hasMainTrunk && createSuggestion({ ...selectedNode, x: shape.centerX, y: shape.groundY }, 'main_trunk', '主干', 0, -120),
+      createSuggestion({ ...selectedNode, x: shape.centerX, y: shape.rootEndY - 20 }, 'root_branch', '根系', -160, 45),
+      createSuggestion({ ...selectedNode, x: shape.centerX, y: shape.rootEndY - 20 }, 'root_branch', '细根', 160, 45),
+    ].filter((suggestion): suggestion is Suggestion => Boolean(suggestion));
+  }
+
+  if (selectedNode.kind === 'root_branch') {
+    const rootChildren = childNodes.filter((node) => node.kind === 'root_branch');
+
+    return rootChildren.length < 2
+      ? [createSuggestion(selectedNode, 'root_branch', rootChildren.length === 0 ? '根系' : '细根', rootChildren.length === 0 ? -140 : 140, 120)]
+      : [];
+  }
+
+  return [];
+}
+
+function createSuggestion(parent: TreeNode, kind: NodeKind, title: string, offsetX: number, offsetY: number): Suggestion {
+  return {
+    id: `${parent.id}-${kind}-${title}-${offsetX}-${offsetY}`,
+    title,
+    note: `这是一个${title}节点，可以继续编辑名称、颜色和备注。`,
+    kind,
+    color: defaultColorByKind[kind],
+    x: parent.x + offsetX,
+    y: parent.y + offsetY,
+    parentId: parent.id,
+  };
+}
+
+function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
+  const shape = getTreeShape(document);
+  const seed = document.nodes.find((node) => node.kind === 'seed_root');
+  const mainTrunk = document.nodes.find((node) => node.kind === 'main_trunk');
+  const mainRoot = document.nodes.find((node) => node.kind === 'main_root');
+  const rootBranches = document.nodes.filter((node) => node.kind === 'root_branch');
+  const parentById = new Map(document.tree_edges.map((edge) => [edge.child_id, edge.parent_id]));
+  const nodeById = new Map(document.nodes.map((node) => [node.id, node]));
+
+  const laidOutNodes = document.nodes.map((node) => ({ ...node }));
+  const update = (id: string | undefined, x: number, y: number) => {
+    const node = laidOutNodes.find((item) => item.id === id);
+    if (node) {
+      node.x = x;
+      node.y = y;
+    }
   };
 
-  const laidOutNodes = [
-    ...placeRow(branches, 150),
-    ...placeRow(trunks, 350, 450, 150),
-    ...placeRow(roots, 560),
-  ];
+  update(seed?.id, shape.centerX, shape.groundY);
+  update(mainTrunk?.id, shape.centerX, shape.groundY - 55);
+  update(mainRoot?.id, shape.centerX, shape.groundY + 55);
+
+  const trunkChildren = laidOutNodes.filter((node) => {
+    const parent = nodeById.get(parentById.get(node.id) ?? '');
+    return parent?.kind === 'main_trunk' && (node.kind === 'branch' || node.kind === 'leaf');
+  });
+
+  trunkChildren.forEach((node, index) => {
+    const side = index % 2 === 0 ? -1 : 1;
+    const level = Math.floor(index / 2);
+    node.x = shape.centerX + side * (185 + level * 18);
+    node.y = Math.min(shape.groundY - 96, shape.trunkTopY + 88 + level * 58);
+  });
+
+  const nestedOutputNodes = laidOutNodes.filter((node) => {
+    const parent = nodeById.get(parentById.get(node.id) ?? '');
+    return parent?.kind === 'branch' && (node.kind === 'branch' || node.kind === 'leaf');
+  });
+
+  nestedOutputNodes.forEach((node) => {
+    const parentId = parentById.get(node.id);
+    const parent = laidOutNodes.find((item) => item.id === parentId);
+    if (!parent) return;
+
+    const siblings = nestedOutputNodes.filter((item) => parentById.get(item.id) === parentId);
+    const index = siblings.findIndex((item) => item.id === node.id);
+    const side = index % 2 === 0 ? -1 : 1;
+    const level = Math.floor(index / 2);
+
+    node.x = parent.x + side * (135 + level * 34);
+    node.y = parent.y - 118 - level * 24;
+  });
+
+  const mainRootChildren = rootBranches.filter((node) => {
+    const parent = nodeById.get(parentById.get(node.id) ?? '');
+    return parent?.kind === 'main_root';
+  });
+
+  mainRootChildren.forEach((node, index) => {
+    const side = index % 2 === 0 ? -1 : 1;
+    const level = Math.floor(index / 2);
+    node.x = shape.centerX + side * (210 + level * 90);
+    node.y = shape.rootEndY - 26 + level * 52;
+  });
+
+  const nestedRootNodes = rootBranches.filter((node) => {
+    const parent = nodeById.get(parentById.get(node.id) ?? '');
+    return parent?.kind === 'root_branch';
+  });
+
+  nestedRootNodes.forEach((node) => {
+    const parentId = parentById.get(node.id);
+    const parent = laidOutNodes.find((item) => item.id === parentId);
+    if (!parent) return;
+
+    const siblings = nestedRootNodes.filter((item) => parentById.get(item.id) === parentId);
+    const index = siblings.findIndex((item) => item.id === node.id);
+    const side = index % 2 === 0 ? -1 : 1;
+    const level = Math.floor(index / 2);
+
+    node.x = parent.x + side * (150 + level * 70);
+    node.y = parent.y + 98 + level * 42;
+  });
 
   return { ...document, nodes: laidOutNodes };
+}
+
+function placeAround(allNodes: TreeNode[], nodes: TreeNode[], centerX: number, y: number, gap: number) {
+  const startX = centerX - ((nodes.length - 1) * gap) / 2;
+  nodes.forEach((node, index) => {
+    const target = allNodes.find((item) => item.id === node.id);
+    if (target) {
+      target.x = startX + index * gap;
+      target.y = y;
+    }
+  });
+}
+
+function getConnectionPoint(node: TreeNode, child: Pick<TreeNode, 'x' | 'y' | 'kind'>, shape: TreeShape): Pick<TreeNode, 'x' | 'y'> {
+  if (node.kind === 'main_trunk') {
+    const side = child.x < shape.centerX ? -1 : 1;
+    const y = Math.min(shape.groundY - 55, Math.max(shape.trunkTopY + 48, child.y + 34));
+    const trunkRadius = Math.max(18, shape.trunkWidth / 2 - 8);
+
+    return { x: shape.centerX + side * trunkRadius, y };
+  }
+
+  if (node.kind === 'main_root') {
+    const side = child.x < shape.centerX ? -1 : 1;
+    const startY = shape.groundY + 92;
+    return { x: shape.centerX + side * Math.max(24, shape.rootWidth / 3), y: startY };
+  }
+
+  return node;
+}
+
+function createTrunkPath(shape: TreeShape): string {
+  const half = Math.max(18, shape.trunkWidth / 3);
+  return `M ${shape.centerX - half} ${shape.groundY}
+    C ${shape.centerX - half * 0.8} ${shape.groundY - 82}, ${shape.centerX - half * 0.55} ${shape.trunkTopY + 72}, ${shape.centerX - 8} ${shape.trunkTopY + 10}
+    C ${shape.centerX - 3} ${shape.trunkTopY}, ${shape.centerX + 3} ${shape.trunkTopY}, ${shape.centerX + 8} ${shape.trunkTopY + 10}
+    C ${shape.centerX + half * 0.55} ${shape.trunkTopY + 72}, ${shape.centerX + half * 0.8} ${shape.groundY - 82}, ${shape.centerX + half} ${shape.groundY}
+    Z`;
+}
+
+function createTrunkAxisPath(shape: TreeShape): string {
+  return `M ${shape.centerX} ${shape.groundY}
+    C ${shape.centerX - 8} ${shape.groundY - 78}, ${shape.centerX + 8} ${shape.trunkTopY + 82}, ${shape.centerX} ${shape.trunkTopY + 8}`;
+}
+
+function createMainRootPath(shape: TreeShape): string {
+  return `M ${shape.centerX} ${shape.groundY}
+    C ${shape.centerX - 6} ${shape.groundY + 56}, ${shape.centerX + 5} ${shape.rootEndY - 58}, ${shape.centerX} ${shape.rootEndY}`;
+}
+
+function createRootTendrilPaths(shape: TreeShape): string[] {
+  const startY = shape.groundY + 54;
+  const midY = (shape.groundY + shape.rootEndY) / 2;
+  return [
+    `M ${shape.centerX} ${startY} C ${shape.centerX - 32} ${midY}, ${shape.centerX - 70} ${shape.rootEndY - 40}, ${shape.centerX - 92} ${shape.rootEndY - 8}`,
+    `M ${shape.centerX} ${startY + 18} C ${shape.centerX + 34} ${midY + 8}, ${shape.centerX + 70} ${shape.rootEndY - 28}, ${shape.centerX + 96} ${shape.rootEndY + 4}`,
+    `M ${shape.centerX} ${startY + 42} C ${shape.centerX - 14} ${midY + 36}, ${shape.centerX - 34} ${shape.rootEndY - 6}, ${shape.centerX - 42} ${shape.rootEndY + 28}`,
+  ];
+}
+
+function createCurve(parent: Pick<TreeNode, 'x' | 'y'>, child: Pick<TreeNode, 'x' | 'y'>): string {
+  return `M ${parent.x} ${parent.y} C ${parent.x} ${(parent.y + child.y) / 2}, ${child.x} ${(parent.y + child.y) / 2}, ${child.x} ${child.y}`;
 }
 
 export default App;
