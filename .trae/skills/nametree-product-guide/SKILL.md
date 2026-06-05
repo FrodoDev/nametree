@@ -13,6 +13,15 @@ Slogan: **Name it to own it.**
 
 The core idea is to help users express, store, and evolve thoughts as a living tree rather than a left-to-right mind map.
 
+Brand direction:
+
+- Use `images/tree1.jpg` as the temporary product logo/reference asset until a final brand asset is provided.
+- The logo may be shown in a small, lightweight brand block with only logo, **NameTree**, and the slogan.
+- Avoid a heavy left sidebar for branding or explanatory text; keep canvas space primary.
+- Brand typography should keep **NameTree** visually dominant over the slogan.
+- Use colors sampled from the logo direction: trunk/dark brown for the app name, leaf green for the slogan.
+- The slogan should be visually smaller than the app name.
+
 ## Concept model
 
 Nametree represents knowledge as a tree with two meaningful directions:
@@ -46,6 +55,15 @@ Visualization rules:
 - Do not use `images/tree1.jpg` as a canvas background; it is a logo/reference asset, not the interactive drawing layer.
 - Temporary product logo can use the tree-with-roots reference style until a final brand asset is provided.
 - The canvas should support zooming so larger trees can remain navigable.
+- Keep the primary UI focused on the canvas. Avoid explanatory sidebars unless they provide direct editing or actionable information.
+- A lightweight brand block is acceptable, but it should not compete with the canvas.
+
+Interaction rules:
+
+- Knowledge node titles should be editable directly on the node, preferably by double-clicking, similar to XMind.
+- Single-click selects a node; double-click edits the node title in place.
+- The selected node detail panel may edit longer content/notes, but title editing should not require a separate side-panel mode.
+- Root-side nodes and branch-side nodes should share the same interaction model whenever possible.
 
 ## Data structure decision
 
@@ -88,6 +106,14 @@ For the first macOS desktop version, prefer:
 - **TypeScript + React** for UI.
 - **SVG / Canvas** for tree visualization.
 - **SQLite** or structured local files for persistence.
+
+Tauri/app icon notes:
+
+- Use `src-tauri/icons` as the source of application icons configured by `src-tauri/tauri.conf.json`.
+- If using `images/tree1.jpg` to generate app icons, first verify the actual file format. It may be WebP content even if the extension is `.jpg`.
+- Tauri icon generation requires a square source image; crop/convert to a square PNG before running the icon generator.
+- `tauri dev` / `make dev` may show a different or cached Dock icon than the built `.app`; trust the icon in the bundled app produced by `make build`.
+- macOS Dock may cache old icons; removing the Dock item or restarting Dock may be needed when validating app icons.
 
 Why:
 
@@ -151,6 +177,12 @@ A good first version should focus on:
 5. Render a simple tree view.
 6. Store data locally.
 7. Export to Markdown or JSON.
+
+Current milestone status:
+
+- `v0.1.0` marks the framework milestone: the initial app shell, visual tree concept, logo/icon direction, basic tree interactions, zoom, and node editing framework are in place.
+- Next phases should build on this framework rather than re-litigating the initial brand/sidebar/tree-direction decisions unless the user explicitly asks.
+- Treat current visual rules as baseline constraints: lightweight XMind-like nodes/lines, one main trunk, one main root, side-selected growth, no decorative fake roots.
 
 Defer:
 
