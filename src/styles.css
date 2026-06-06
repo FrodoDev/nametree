@@ -256,10 +256,7 @@ h3 {
   min-height: 0;
   border: 1px solid rgba(58, 74, 51, 0.12);
   border-radius: 28px;
-  background:
-    linear-gradient(to bottom, rgba(217, 164, 65, 0.12), transparent 34%),
-    linear-gradient(to top, rgba(139, 111, 71, 0.13), transparent 30%),
-    rgba(255, 252, 246, 0.72);
+  background: #fffcf6;
   box-shadow: 0 24px 80px rgba(63, 52, 39, 0.12);
 }
 
