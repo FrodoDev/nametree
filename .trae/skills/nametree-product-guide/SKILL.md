@@ -39,10 +39,10 @@ For learning a subject:
 Visualization rules:
 
 - The initial start point is only a guide for beginning tree growth; it is not a functional knowledge node.
-- The main trunk and main root are visible tree shapes, not ordinary circular nodes.
-- There must be exactly one main trunk and exactly one main root in a tree; never draw extra decorative roots, rootlets, tendrils, or fake root branches unless they are real user-created nodes.
+- The main trunk is a visible tree shape. Roots are represented by real root nodes growing from the trunk base, not by a single required visible main-root structure.
+- There must be exactly one main trunk. There may be multiple trunk-level root nodes; do not force a single main root unless the user explicitly changes direction.
 - The trunk should grow taller/thicker as output branches and leaves increase.
-- The main root should grow deeper/larger as input root branches increase.
+- The root system should grow deeper/wider as input root branches increase.
 - Branches created from the trunk must visually grow out of the trunk shape.
 - Branches created from the trunk must never share one identical visual departure point; each trunk child should attach to a distinct height along the trunk.
 - Branch-side layout should compromise toward XMind-style horizontal expansion: parent-child branches extend horizontally, siblings align vertically, and adding new branches pushes the output layout upward rather than below the ground line.
