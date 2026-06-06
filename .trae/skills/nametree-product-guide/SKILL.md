@@ -92,6 +92,71 @@ Recommended minimal model:
 - **Link direction**: reference links can be one-way or two-way.
 - **Metadata**: title, note/body, tags, timestamps, position, status.
 
+## Current UI and interaction decisions
+
+Use these decisions as baseline constraints unless the user explicitly changes direction:
+
+### macOS window and title
+
+- The document filename should be shown in the macOS window title area, similar to XMind.
+- Avoid drawing a heavy in-page document title inside the canvas.
+- Do not modify canvas layout, app-shell padding, or canvas height just to position the title.
+- Prefer the simplest stable Tauri title approach before custom titlebar/overlay work.
+- Avoid `hiddenTitle` / `titleBarStyle: Overlay` unless explicitly requested and carefully validated; these can make title placement and content layout fragile.
+
+### Local-first file behavior
+
+- Nametree documents use the `.nt` extension.
+- `.nt` files are structured JSON, preferably wrapped with format/version metadata for migration.
+- Do not use `localStorage` as the primary save mechanism for real documents.
+- Support real file save/open through Tauri commands.
+- `Cmd+S` should save; the first save should ask for filename/location.
+- `Cmd+O` should open a `.nt` file picker.
+- `Cmd+N` should create a fresh unsaved document.
+- The UI should stay lightweight: avoid persistent save-status text like “已自动保存” unless explicitly requested.
+
+### Canvas layout and scrolling
+
+- The initial full-window layout should not create page-level vertical scrolling.
+- Avoid `min-height: 100vh` plus top padding combinations that make the page taller than the window.
+- The canvas and right detail panel should visually align at the top and feel like one balanced workspace.
+- Two-finger trackpad vertical scrolling should pan/scroll the canvas view, not aggressively zoom.
+- Zoom should require modifier intent such as `Cmd` or `Ctrl` with wheel/scroll.
+- Keep zoom sensitivity calm.
+
+### Right detail panel
+
+- The right detail panel may be resizable.
+- Default width should be relatively compact, around 70% of the former wider panel.
+- Enforce a minimum width large enough to preserve the bottom brand block without wrapping.
+- The panel should edit selected knowledge node details, including title/note/style, but should not become a heavy explanatory sidebar.
+
+### Branding placement
+
+- Keep the canvas primary; brand should feel integrated, not like a floating call-to-action button.
+- The right detail panel bottom can contain a subtle integrated brand block with logo, **NameTree**, and the slogan.
+- The right detail panel brand block should sit at the panel bottom and can be visually fused with the panel, not styled as a card/button.
+- The canvas may also contain a subtle logo-only mark in the top-left.
+- Canvas logo-only mark should have a container whose corner radius and background match the canvas surface.
+- If the canvas has `border-radius: 28px`, the canvas logo container should use the same radius and the same background recipe.
+- Do not remove or alter the right detail panel brand when adding the canvas logo-only mark, unless explicitly requested.
+
+### Node styling
+
+- Knowledge nodes should support separate border and fill colors.
+- Existing `color` can represent border/stroke color.
+- Add `fillColor` for node fill/background color, defaulting to white for older `.nt` files.
+- Color pickers should be comfortably clickable; tiny 18px color inputs are too small.
+- Use larger color controls, around `44px × 32px`, with visible rounded swatches.
+
+### Tree growth interaction gotchas
+
+- Candidate/suggestion nodes must stop pointer events from bubbling into canvas pan logic.
+- Structure shapes such as main trunk/main root should not have overly large transparent hitboxes that cover candidate nodes.
+- Main trunk and main root are structural nodes, not ordinary tree-edge children.
+- Creating main trunk/main root should not add ordinary parent-child `tree_edges`; branch/root-branch/leaf creation should.
+- There must be exactly one main trunk and one main root.
+
 ## Product principles
 
 1. Local-first before cloud-first.

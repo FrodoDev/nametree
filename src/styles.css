@@ -37,8 +37,10 @@ button:disabled {
 .app-shell {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
-  min-height: 100vh;
+  grid-template-columns: minmax(0, 1fr) 6px 238px;
+  height: 100vh;
+  min-height: 0;
+  overflow: hidden;
   padding-top: 34px;
   background:
     radial-gradient(circle at 50% 15%, rgba(104, 143, 92, 0.16), transparent 32%),
@@ -51,11 +53,12 @@ button:disabled {
   left: 0;
   z-index: 10;
   width: 100vw;
-  height: 34px;
+  height: 30px;
   display: grid;
   place-items: center;
-  color: rgba(47, 36, 27, 0.72);
-  font-size: 14px;
+  transform: translateY(-2px);
+  color: rgba(47, 36, 27, 0.66);
+  font-size: 13px;
   font-weight: 650;
   letter-spacing: 0.01em;
   user-select: none;
@@ -63,31 +66,60 @@ button:disabled {
 }
 
 .detail-panel {
-  padding: 32px;
+  position: relative;
+  min-width: 190px;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 24px 92px;
   background: rgba(255, 252, 246, 0.82);
   border-left: 1px solid rgba(58, 74, 51, 0.12);
 }
 
+.panel-resizer {
+  width: 6px;
+  min-height: 0;
+  cursor: col-resize;
+  background: transparent;
+}
+
+.panel-resizer:hover {
+  background: rgba(58, 74, 51, 0.08);
+}
+
 .brand-card {
   position: absolute;
-  top: 28px;
-  left: 28px;
-  z-index: 1;
+  left: 0;
+  bottom: 0;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 14px 10px 10px;
-  border: 1px solid rgba(58, 74, 51, 0.1);
-  border-radius: 18px;
-  background: rgba(255, 252, 246, 0.78);
-  box-shadow: 0 8px 18px rgba(63, 52, 39, 0.06);
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 0;
+  opacity: 0.52;
+}
+
+.brand-copy {
+  width: 90px;
+}
+
+.brand-card .eyebrow {
+  width: 100%;
+  margin: 0 0 3px;
+  color: #2f241b;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 0.02em;
+  text-align: left;
+  text-transform: uppercase;
 }
 
 .app-logo {
-  width: 64px;
-  height: 64px;
+  width: 42px;
+  height: 42px;
   display: block;
-  border-radius: 18px;
+  border-radius: 12px;
 }
 
 .eyebrow {
@@ -124,9 +156,10 @@ h3 {
 .brand-card .slogan {
   margin: 0;
   color: #1f7a2e;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
   line-height: 1.1;
+  white-space: nowrap;
 }
 
 .toolbar {
@@ -155,10 +188,33 @@ h3 {
 .dot,
 .color-row i {
   flex: 0 0 auto;
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
+  border: 0;
   border-radius: 999px;
+  padding: 0;
+  background: transparent;
   display: inline-block;
+}
+
+.color-row input[type='color'] {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 32px;
+  border: 1px solid rgba(58, 74, 51, 0.16);
+  border-radius: 10px;
+  padding: 3px;
+  background: rgba(255, 252, 246, 0.86);
+  cursor: pointer;
+}
+
+.color-row input[type='color']::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.color-row input[type='color']::-webkit-color-swatch {
+  border: 0;
+  border-radius: 7px;
 }
 
 .root {
@@ -176,13 +232,28 @@ h3 {
 .canvas-panel {
   position: relative;
   display: grid;
+  min-height: 0;
   place-items: center;
   padding: 24px;
 }
 
+.canvas-logo {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 2;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  opacity: 0.58;
+  pointer-events: none;
+  user-select: none;
+}
+
 .tree-canvas {
   width: 100%;
-  height: min(820px, calc(100vh - 48px));
+  height: 100%;
+  min-height: 0;
   border: 1px solid rgba(58, 74, 51, 0.12);
   border-radius: 28px;
   background:

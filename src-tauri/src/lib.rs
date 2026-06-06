@@ -29,6 +29,8 @@ struct TreeNode {
     note: String,
     kind: NodeKind,
     color: String,
+    #[serde(default, rename = "fillColor")]
+    fill_color: Option<String>,
     x: i32,
     y: i32,
     side: Option<GrowthSide>,
@@ -95,6 +97,7 @@ fn load_sample_tree() -> NametreeDocument {
             note: "从这里开始。选择这个节点后，可以生长出主干或主根。".into(),
             kind: NodeKind::SeedRoot,
             color: "#7b6b55".into(),
+            fill_color: Some("#ffffff".into()),
             x: 450,
             y: 350,
             side: None,

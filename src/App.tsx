@@ -18,6 +18,7 @@ type TreeNode = {
   note: string;
   kind: NodeKind;
   color: string;
+  fillColor?: string;
   x: number;
   y: number;
   side?: GrowthSide;
@@ -56,6 +57,7 @@ type Suggestion = {
   note: string;
   kind: NodeKind;
   color: string;
+  fillColor: string;
   x: number;
   y: number;
   parentId: string;
@@ -98,14 +100,38 @@ function App() {
   const [canvasOffset, setCanvasOffset] = useState({ x: 0, y: 0 });
   const [panStart, setPanStart] = useState<{ pointerX: number; pointerY: number; offsetX: number; offsetY: number } | null>(null);
   const [isPanning, setIsPanning] = useState(false);
+  const [detailPanelWidth, setDetailPanelWidth] = useState(238);
+  const [panelResizeStart, setPanelResizeStart] = useState<{ pointerX: number; width: number } | null>(null);
 
   useEffect(() => {
     invoke<NametreeDocument>('load_sample_tree').then((tree) => {
       const normalizedTree = normalizeTreeLayout(tree);
       setDocument(normalizedTree);
       setSelectedNodeId(normalizedTree.nodes[0]?.id ?? null);
+      setCanvasOffset({ x: 0, y: 0 });
+      setZoom(1);
     });
   }, []);
+
+  useEffect(() => {
+    if (!panelResizeStart) return;
+
+    const handlePointerMove = (event: PointerEvent) => {
+      const nextWidth = panelResizeStart.width - (event.clientX - panelResizeStart.pointerX);
+      setDetailPanelWidth(Math.min(420, Math.max(190, nextWidth)));
+    };
+
+    const handlePointerUp = () => {
+      setPanelResizeStart(null);
+    };
+
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', handlePointerUp);
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', handlePointerUp);
+    };
+  }, [panelResizeStart]);
 
   useEffect(() => {
     if (!document) return;
@@ -266,17 +292,10 @@ function App() {
   const nodeById = new Map(document.nodes.map((node) => [node.id, node]));
 
   return (
-    <main className="app-shell">
+    <main className="app-shell" style={{ gridTemplateColumns: `minmax(0, 1fr) 6px ${detailPanelWidth}px` }}>
       <div className="window-title-bar" data-tauri-drag-region>{getDocumentFileName(document, documentPath)}</div>
       <section className="canvas-panel">
-
-        <div className="brand-card">
-          <img className="app-logo" src={nametreeLogo} alt="Nametree logo" />
-          <div>
-            <p className="eyebrow">NameTree</p>
-            <p className="slogan">{document.slogan}</p>
-          </div>
-        </div>
+        <img className="canvas-logo" src={nametreeLogo} alt="Nametree logo" />
 
         <svg
           className="tree-canvas"
@@ -454,7 +473,7 @@ function App() {
               {node.kind === 'leaf' ? (
                 <path className="leaf-node-shape" d={createLeafShapePath()} fill="#ffffff" stroke={node.color} />
               ) : (
-                <rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke={node.color} />
+                <rect x="-54" y="-17" width="108" height="34" rx="6" fill={node.fillColor ?? '#ffffff'} stroke={node.color} />
               )}
               {editingNodeId === node.id ? (
                 <foreignObject x="-50" y="-14" width="100" height="28">
@@ -480,6 +499,14 @@ function App() {
         </svg>
       </section>
 
+      <div
+        className="panel-resizer"
+        onPointerDown={(event) => {
+          event.preventDefault();
+          setPanelResizeStart({ pointerX: event.clientX, width: detailPanelWidth });
+        }}
+      />
+
       <aside className="detail-panel">
         {selectedNode ? (
           <>
@@ -491,10 +518,22 @@ function App() {
               <>
                 <h2>{selectedNode.title}</h2>
                 <span className="kind-pill">{kindLabel[selectedNode.kind]}</span>
-                <div className="color-row">
-                  <span>节点颜色</span>
-                  <i style={{ background: selectedNode.color }} />
-                </div>
+                <label className="color-row">
+                  <span>边框颜色</span>
+                  <input
+                    type="color"
+                    value={selectedNode.color}
+                    onChange={(event) => updateSelectedNode({ color: event.target.value })}
+                  />
+                </label>
+                <label className="color-row">
+                  <span>填充颜色</span>
+                  <input
+                    type="color"
+                    value={selectedNode.fillColor ?? '#ffffff'}
+                    onChange={(event) => updateSelectedNode({ fillColor: event.target.value })}
+                  />
+                </label>
                 <h3>可生长</h3>
                 <p className="note">{suggestions.length > 0 ? suggestions.map((suggestion) => suggestion.title).join('、') : '当前选择暂无可选生长方向。'}</p>
                 <h3>内容</h3>
@@ -517,6 +556,14 @@ function App() {
         ) : (
           <p>选择一个节点查看或编辑。</p>
         )}
+
+        <div className="brand-card">
+          <img className="app-logo" src={nametreeLogo} alt="Nametree logo" />
+          <div className="brand-copy">
+            <p className="eyebrow">NameTree</p>
+            <p className="slogan">{document.slogan}</p>
+          </div>
+        </div>
       </aside>
     </main>
   );
@@ -634,6 +681,7 @@ function createSuggestion(parent: TreeNode, kind: NodeKind, title: string, offse
     note: `这是一个${title}节点，可以继续编辑名称、颜色和备注。`,
     kind,
     color: defaultColorByKind[kind],
+    fillColor: '#ffffff',
     x: parent.x + offsetX,
     y: parent.y + offsetY,
     parentId: parent.id,
@@ -648,6 +696,7 @@ function createSuggestionAt(parent: TreeNode, kind: NodeKind, title: string, x: 
     note: `这是一个${title}节点，可以继续编辑名称、颜色和备注。`,
     kind,
     color: defaultColorByKind[kind],
+    fillColor: '#ffffff',
     x,
     y,
     parentId: parent.id,
