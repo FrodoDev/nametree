@@ -35,12 +35,31 @@ button:disabled {
 }
 
 .app-shell {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
   min-height: 100vh;
+  padding-top: 34px;
   background:
     radial-gradient(circle at 50% 15%, rgba(104, 143, 92, 0.16), transparent 32%),
     #f4f0e8;
+}
+
+.window-title-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: 100vw;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  color: rgba(47, 36, 27, 0.72);
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  user-select: none;
+  pointer-events: none;
 }
 
 .detail-panel {
@@ -51,8 +70,8 @@ button:disabled {
 
 .brand-card {
   position: absolute;
-  top: 24px;
-  left: 24px;
+  top: 28px;
+  left: 28px;
   z-index: 1;
   display: flex;
   align-items: center;
@@ -161,35 +180,6 @@ h3 {
   padding: 24px;
 }
 
-.zoom-controls {
-  position: absolute;
-  top: 40px;
-  right: 40px;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px;
-  border: 1px solid rgba(58, 74, 51, 0.12);
-  border-radius: 14px;
-  background: rgba(255, 252, 246, 0.88);
-  box-shadow: 0 12px 28px rgba(63, 52, 39, 0.1);
-}
-
-.zoom-controls button {
-  padding: 6px 10px;
-  border-radius: 10px;
-  font-size: 12px;
-}
-
-.zoom-controls span {
-  min-width: 42px;
-  color: #43513e;
-  font-size: 12px;
-  font-weight: 800;
-  text-align: center;
-}
-
 .tree-canvas {
   width: 100%;
   height: min(820px, calc(100vh - 48px));
@@ -264,18 +254,11 @@ h3 {
 }
 
 .trunk-shape {
-  fill: none;
-  stroke: rgba(12, 12, 12, 0.28);
-  stroke-width: 1.4;
+  fill: rgba(74, 48, 31, 0.68);
+  stroke: rgba(47, 36, 27, 0.34);
+  stroke-width: 1.1;
   stroke-linecap: round;
   stroke-linejoin: round;
-}
-
-.trunk-axis {
-  fill: none;
-  stroke: rgba(12, 12, 12, 0.5);
-  stroke-width: 1.7;
-  stroke-linecap: round;
 }
 
 .main-root-shape {
@@ -294,9 +277,7 @@ h3 {
 .tree-structure:hover .trunk-shape,
 .tree-structure.selected .trunk-shape,
 .tree-structure:hover .main-root-shape,
-.tree-structure.selected .main-root-shape,
-.tree-structure:hover .trunk-axis,
-.tree-structure.selected .trunk-axis {
+.tree-structure.selected .main-root-shape {
   stroke-opacity: 1;
 }
 

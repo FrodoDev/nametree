@@ -44,6 +44,9 @@ Visualization rules:
 - The trunk should grow taller/thicker as output branches and leaves increase.
 - The main root should grow deeper/larger as input root branches increase.
 - Branches created from the trunk must visually grow out of the trunk shape.
+- Branches created from the trunk must never share one identical visual departure point; each trunk child should attach to a distinct height along the trunk.
+- Branch-side layout should compromise toward XMind-style horizontal expansion: parent-child branches extend horizontally, siblings align vertically, and adding new branches pushes the output layout upward rather than below the ground line.
+- Output-side edges, including trunk-to-branch edges, should use horizontal XMind-style elbow lines instead of diagonal or curved branch lines when the user has chosen the simplified XMind layout direction.
 - Branch/root growth suggestions must appear on both left and right sides when applicable; the side chosen by the user must be persisted and respected by layout.
 - Root-side growth follows the same side-selection logic as trunk/branch growth.
 - Avoid overlapping existing nodes and pending suggestion nodes; never place a suggestion where it blocks another suggestion.
@@ -57,6 +60,7 @@ Visualization rules:
 - The canvas should support zooming so larger trees can remain navigable.
 - Keep the primary UI focused on the canvas. Avoid explanatory sidebars unless they provide direct editing or actionable information.
 - A lightweight brand block is acceptable, but it should not compete with the canvas.
+- Zoom must support large trees. Do not keep the minimum zoom too high; users should be able to zoom out enough to see a growing output tree.
 
 Interaction rules:
 
