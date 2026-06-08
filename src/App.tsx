@@ -404,9 +404,9 @@ function App() {
                 <path className="suggestion-edge" d={isOutputEdge(parent, suggestion) ? createOutputEdgePath(parent, suggestion, shape) : createCurve(getConnectionPoint(parent, suggestion, shape), suggestion)} />
                 <g transform={`translate(${suggestion.x}, ${suggestion.y})`}>
                   {suggestion.kind === 'leaf' ? (
-                    <path className="leaf-node-shape" d={createLeafShapePath()} fill="#ffffff" stroke={suggestion.color} />
+                    <path className="leaf-node-shape" d={createLeafShapePath()} fill={suggestion.fillColor} stroke={suggestion.color} />
                   ) : (
-                    <rect x="-58" y="-18" width="116" height="36" rx="6" fill="#ffffff" stroke={suggestion.color} />
+                    <rect x="-58" y="-18" width="116" height="36" rx="6" fill={suggestion.fillColor} stroke={suggestion.color} />
                   )}
                   <text textAnchor="middle" y="5">{suggestion.title}</text>
                 </g>
@@ -457,7 +457,7 @@ function App() {
               }}
             >
               {node.kind === 'leaf' ? (
-                <path className="leaf-node-shape" d={createLeafShapePath()} fill="#ffffff" stroke={node.color} />
+                <path className="leaf-node-shape" d={createLeafShapePath()} fill={node.fillColor ?? '#ffffff'} stroke={node.color} />
               ) : (
                 <rect x="-54" y="-17" width="108" height="34" rx="6" fill={node.fillColor ?? '#ffffff'} stroke={node.color} />
               )}
