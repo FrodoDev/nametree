@@ -1,0 +1,307 @@
+[
+  {
+    "file": "root-balanced.nt",
+    "mainTrunk": {
+      "x": 450,
+      "y": 335
+    },
+    "rootCount": {
+      "left": 6,
+      "right": 7,
+      "total": 13
+    },
+    "angles": [
+      {
+        "title": "左主根",
+        "side": "left",
+        "angle": 68.7,
+        "x": 354,
+        "y": 636.2
+      },
+      {
+        "title": "左主根",
+        "side": "left",
+        "angle": 64.9,
+        "x": 285.4,
+        "y": 741.7
+      },
+      {
+        "title": "左主根",
+        "side": "left",
+        "angle": 47.4,
+        "x": 36.5,
+        "y": 840.3
+      },
+      {
+        "title": "左主根",
+        "side": "left",
+        "angle": 27.7,
+        "x": -136.3,
+        "y": 697.5
+      },
+      {
+        "title": "左主根",
+        "side": "left",
+        "angle": 11.9,
+        "x": -371.8,
+        "y": 563
+      },
+      {
+        "title": "左主根",
+        "side": "left",
+        "angle": 3.2,
+        "x": -566.4,
+        "y": 446
+      },
+      {
+        "title": "右主根",
+        "side": "right",
+        "angle": 68.8,
+        "x": 546,
+        "y": 637.6
+      },
+      {
+        "title": "右主根",
+        "side": "right",
+        "angle": 68.9,
+        "x": 589.7,
+        "y": 751.8
+      },
+      {
+        "title": "右主根",
+        "side": "right",
+        "angle": 57.3,
+        "x": 733.6,
+        "y": 831
+      },
+      {
+        "title": "右主根",
+        "side": "right",
+        "angle": 41.6,
+        "x": 1008.7,
+        "y": 885.8
+      },
+      {
+        "title": "右主根",
+        "side": "right",
+        "angle": 25.8,
+        "x": 1205.8,
+        "y": 754.7
+      },
+      {
+        "title": "右主根",
+        "side": "right",
+        "angle": 11.9,
+        "x": 1445,
+        "y": 599.8
+      },
+      {
+        "title": "右主根",
+        "side": "right",
+        "angle": 2.7,
+        "x": 1644,
+        "y": 446
+      }
+    ],
+    "highBandRoots": 2,
+    "overlaps": {
+      "count": 0,
+      "pairs": []
+    },
+    "crossingRisk": 0,
+    "bounds": {
+      "minX": -620.4,
+      "maxX": 1698,
+      "minY": 318,
+      "maxY": 902.8
+    },
+    "warnings": []
+  },
+  {
+    "file": "root-left-dense.nt",
+    "mainTrunk": {
+      "x": 450,
+      "y": 335
+    },
+    "rootCount": {
+      "left": 6,
+      "right": 0,
+      "total": 6
+    },
+    "angles": [
+      {
+        "title": "左主根",
+        "side": "left",
+        "angle": 68.7,
+        "x": 354,
+        "y": 636.2
+      },
+      {
+        "title": "左主根",
+        "side": "left",
+        "angle": 64.9,
+        "x": 285.4,
+        "y": 741.7
+      },
+      {
+        "title": "左主根",
+        "side": "left",
+        "angle": 47.4,
+        "x": 36.5,
+        "y": 840.3
+      },
+      {
+        "title": "左主根",
+        "side": "left",
+        "angle": 27.7,
+        "x": -136.3,
+        "y": 697.5
+      },
+      {
+        "title": "左主根",
+        "side": "left",
+        "angle": 11.9,
+        "x": -371.8,
+        "y": 563
+      },
+      {
+        "title": "左主根",
+        "side": "left",
+        "angle": 3.2,
+        "x": -566.4,
+        "y": 446
+      }
+    ],
+    "highBandRoots": 1,
+    "overlaps": {
+      "count": 0,
+      "pairs": []
+    },
+    "crossingRisk": 0,
+    "bounds": {
+      "minX": -620.4,
+      "maxX": 504,
+      "minY": 318,
+      "maxY": 857.3
+    },
+    "warnings": []
+  },
+  {
+    "file": "root-with-children.nt",
+    "mainTrunk": {
+      "x": 450,
+      "y": 335
+    },
+    "rootCount": {
+      "left": 6,
+      "right": 7,
+      "total": 13
+    },
+    "angles": [
+      {
+        "title": "左主根",
+        "side": "left",
+        "angle": 68.7,
+        "x": 354,
+        "y": 636.2
+      },
+      {
+        "title": "左主根",
+        "side": "left",
+        "angle": 65.4,
+        "x": 180.5,
+        "y": 977.4
+      },
+      {
+        "title": "左主根",
+        "side": "left",
+        "angle": 47.7,
+        "x": -308.8,
+        "y": 1223.8
+      },
+      {
+        "title": "左主根",
+        "side": "left",
+        "angle": 27.7,
+        "x": -136.3,
+        "y": 697.5
+      },
+      {
+        "title": "左主根",
+        "side": "left",
+        "angle": 11.9,
+        "x": -371.8,
+        "y": 563
+      },
+      {
+        "title": "左主根",
+        "side": "left",
+        "angle": 3.2,
+        "x": -566.4,
+        "y": 446
+      },
+      {
+        "title": "右主根",
+        "side": "right",
+        "angle": 68.8,
+        "x": 546,
+        "y": 637.6
+      },
+      {
+        "title": "右主根",
+        "side": "right",
+        "angle": 68.9,
+        "x": 589.7,
+        "y": 751.8
+      },
+      {
+        "title": "右主根",
+        "side": "right",
+        "angle": 57.3,
+        "x": 733.6,
+        "y": 831
+      },
+      {
+        "title": "右主根",
+        "side": "right",
+        "angle": 41.6,
+        "x": 1008.7,
+        "y": 885.8
+      },
+      {
+        "title": "右主根",
+        "side": "right",
+        "angle": 25.8,
+        "x": 1205.8,
+        "y": 754.7
+      },
+      {
+        "title": "右主根",
+        "side": "right",
+        "angle": 11.9,
+        "x": 1445,
+        "y": 599.8
+      },
+      {
+        "title": "右主根",
+        "side": "right",
+        "angle": 2.7,
+        "x": 1644,
+        "y": 446
+      }
+    ],
+    "highBandRoots": 2,
+    "overlaps": {
+      "count": 0,
+      "pairs": []
+    },
+    "crossingRisk": 0,
+    "bounds": {
+      "minX": -623.5,
+      "maxX": 1698,
+      "minY": 318,
+      "maxY": 1240.8
+    },
+    "warnings": []
+  }
+]

@@ -329,6 +329,13 @@ h3 {
   stroke-linejoin: round;
 }
 
+.root-crown-shape {
+  fill: rgba(74, 48, 31, 0.68);
+  stroke: rgba(47, 36, 27, 0.24);
+  stroke-width: 0.9;
+  stroke-linejoin: round;
+}
+
 .main-root-shape {
   fill: none;
   stroke: rgba(12, 12, 12, 0.46);
@@ -446,6 +453,25 @@ h3 {
 
 .panel-heading .eyebrow {
   margin: 0;
+}
+
+.panel-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.panel-actions button {
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: #43513e;
+  background: rgba(255, 252, 246, 0.92);
+  border: 1px solid rgba(58, 74, 51, 0.16);
+  font-size: 12px;
+}
+
+.panel-actions .danger-action {
+  color: #8b3f35;
+  border-color: rgba(139, 63, 53, 0.24);
 }
 
 .kind-pill {

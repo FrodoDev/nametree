@@ -1,0 +1,156 @@
+{
+  "format": "nametree.document",
+  "version": 1,
+  "document": {
+    "id": "default-tree",
+    "title": "未保存",
+    "slogan": "Name it to own it",
+    "nodes": [
+      {
+        "id": "seed-root",
+        "title": "根节点",
+        "note": "从这里开始。选择这个节点后，可以生长出主干或主根。",
+        "kind": "seed_root",
+        "color": "#7b6b55",
+        "fillColor": "#ffffff",
+        "x": 450,
+        "y": 390,
+        "side": null
+      },
+      {
+        "id": "4e9e52a3-f93c-40d3-b296-57c020e275c2",
+        "title": "主干",
+        "note": "这是一个主干节点，可以继续编辑名称、颜色和备注。",
+        "kind": "main_trunk",
+        "color": "#5f7f45",
+        "fillColor": null,
+        "x": 450,
+        "y": 335,
+        "side": null
+      },
+      {
+        "id": "5fafcd14-cde5-41bc-94e6-8e6e4355114c",
+        "title": "左主根",
+        "note": "这是一个左主根节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#9a7b4f",
+        "fillColor": null,
+        "x": 407,
+        "y": 638,
+        "side": "left"
+      },
+      {
+        "id": "a01695a7-76c3-4a24-af86-6747d61e4703",
+        "title": "左主根",
+        "note": "这是一个左主根节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#9a7b4f",
+        "fillColor": null,
+        "x": 310,
+        "y": 752,
+        "side": "left"
+      },
+      {
+        "id": "63d4f948-c3de-479d-8c92-5ba7f5f31373",
+        "title": "左主根",
+        "note": "这是一个左主根节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#9a7b4f",
+        "fillColor": null,
+        "x": 166,
+        "y": 831,
+        "side": "left"
+      },
+      {
+        "id": "266d4b91-49ab-4c25-a670-c9635735fef8",
+        "title": "左主根",
+        "note": "这是一个左主根节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#9a7b4f",
+        "fillColor": null,
+        "x": -45,
+        "y": 828,
+        "side": "left"
+      },
+      {
+        "id": "878e5e03-92a3-4d42-839f-0d088005a72e",
+        "title": "左主根",
+        "note": "这是一个左主根节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#9a7b4f",
+        "fillColor": null,
+        "x": -306,
+        "y": 755,
+        "side": "left"
+      },
+      {
+        "id": "bb12a56b-265a-45bc-a53d-4a3745d55a29",
+        "title": "左主根",
+        "note": "这是一个左主根节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#9a7b4f",
+        "fillColor": null,
+        "x": -545,
+        "y": 600,
+        "side": "left"
+      },
+      {
+        "id": "12ce11ab-490f-4f3e-a83f-0a2cc6d17362",
+        "title": "左主根",
+        "note": "这是一个左主根节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#9a7b4f",
+        "fillColor": null,
+        "x": -744,
+        "y": 390,
+        "side": "left"
+      },
+      {
+        "id": "d0746cde-928d-476c-abf2-f96798fcc925",
+        "title": "左主根",
+        "note": "这是一个左主根节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#9a7b4f",
+        "fillColor": null,
+        "x": -908,
+        "y": 200,
+        "side": "left"
+      }
+    ],
+    "tree_edges": [
+      {
+        "parent_id": "4e9e52a3-f93c-40d3-b296-57c020e275c2",
+        "child_id": "5fafcd14-cde5-41bc-94e6-8e6e4355114c"
+      },
+      {
+        "parent_id": "4e9e52a3-f93c-40d3-b296-57c020e275c2",
+        "child_id": "a01695a7-76c3-4a24-af86-6747d61e4703"
+      },
+      {
+        "parent_id": "4e9e52a3-f93c-40d3-b296-57c020e275c2",
+        "child_id": "63d4f948-c3de-479d-8c92-5ba7f5f31373"
+      },
+      {
+        "parent_id": "4e9e52a3-f93c-40d3-b296-57c020e275c2",
+        "child_id": "266d4b91-49ab-4c25-a670-c9635735fef8"
+      },
+      {
+        "parent_id": "4e9e52a3-f93c-40d3-b296-57c020e275c2",
+        "child_id": "878e5e03-92a3-4d42-839f-0d088005a72e"
+      },
+      {
+        "parent_id": "4e9e52a3-f93c-40d3-b296-57c020e275c2",
+        "child_id": "bb12a56b-265a-45bc-a53d-4a3745d55a29"
+      },
+      {
+        "parent_id": "4e9e52a3-f93c-40d3-b296-57c020e275c2",
+        "child_id": "12ce11ab-490f-4f3e-a83f-0a2cc6d17362"
+      },
+      {
+        "parent_id": "4e9e52a3-f93c-40d3-b296-57c020e275c2",
+        "child_id": "d0746cde-928d-476c-abf2-f96798fcc925"
+      }
+    ],
+    "reference_links": []
+  }
+}

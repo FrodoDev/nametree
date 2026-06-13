@@ -31,8 +31,8 @@ struct TreeNode {
     color: String,
     #[serde(default, rename = "fillColor")]
     fill_color: Option<String>,
-    x: i32,
-    y: i32,
+    x: f64,
+    y: f64,
     side: Option<GrowthSide>,
 }
 
@@ -98,8 +98,8 @@ fn load_sample_tree() -> NametreeDocument {
             kind: NodeKind::SeedRoot,
             color: "#7b6b55".into(),
             fill_color: Some("#ffffff".into()),
-            x: 450,
-            y: 350,
+            x: 450.0,
+            y: 350.0,
             side: None,
         }],
         tree_edges: vec![],
@@ -164,8 +164,35 @@ pub fn run() {
                 MenuItem::with_id(app, "open-document", "Open...", true, Some("CmdOrCtrl+O"))?;
             let save_item =
                 MenuItem::with_id(app, "save-document", "Save", true, Some("CmdOrCtrl+S"))?;
-            let file_menu =
-                Submenu::with_items(app, "File", true, &[&new_item, &open_item, &save_item])?;
+            let save_as_item = MenuItem::with_id(
+                app,
+                "save-as-document",
+                "Save As...",
+                true,
+                Some("CmdOrCtrl+Shift+S"),
+            )?;
+            let undo_item =
+                MenuItem::with_id(app, "undo-document", "Undo", true, Some("CmdOrCtrl+Z"))?;
+            let delete_item = MenuItem::with_id(
+                app,
+                "delete-node",
+                "Delete Selected Node",
+                true,
+                Some("Delete"),
+            )?;
+            let file_menu = Submenu::with_items(
+                app,
+                "File",
+                true,
+                &[
+                    &new_item,
+                    &open_item,
+                    &save_item,
+                    &save_as_item,
+                    &undo_item,
+                    &delete_item,
+                ],
+            )?;
             let menu = Menu::with_items(app, &[&file_menu])?;
 
             app.set_menu(menu)?;
@@ -180,6 +207,15 @@ pub fn run() {
             }
             "save-document" => {
                 let _ = app.emit("menu-save-document", ());
+            }
+            "save-as-document" => {
+                let _ = app.emit("menu-save-as-document", ());
+            }
+            "undo-document" => {
+                let _ = app.emit("menu-undo-document", ());
+            }
+            "delete-node" => {
+                let _ = app.emit("menu-delete-node", ());
             }
             _ => {}
         })

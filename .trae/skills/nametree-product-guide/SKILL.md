@@ -68,6 +68,7 @@ Interaction rules:
 - Single-click selects a node; double-click edits the node title in place.
 - The selected node detail panel may edit longer content/notes, but title editing should not require a separate side-panel mode.
 - Root-side nodes and branch-side nodes should share the same interaction model whenever possible.
+- The app should support deleting the selected node and undoing recent document edits so users can recover from mistaken template/layout experiments without recreating the whole document.
 
 ## Data structure decision
 
@@ -153,9 +154,22 @@ Use these decisions as baseline constraints unless the user explicitly changes d
 
 - Candidate/suggestion nodes must stop pointer events from bubbling into canvas pan logic.
 - Structure shapes such as main trunk/main root should not have overly large transparent hitboxes that cover candidate nodes.
-- Main trunk and main root are structural nodes, not ordinary tree-edge children.
-- Creating main trunk/main root should not add ordinary parent-child `tree_edges`; branch/root-branch/leaf creation should.
-- There must be exactly one main trunk and one main root.
+- Main trunk is structural; trunk-level `root_branch` nodes are real main roots and may be multiple.
+- Creating main trunk should not add ordinary parent-child `tree_edges`; creating branch/root-branch/leaf should.
+- Root creation from the trunk should create a `root_branch` edge from the trunk base, not a separate visible `main_root` node.
+- Child roots created from a main root/root branch should extend horizontally like mirrored tree branches, with vertical stacking downward for layout.
+- Root nodes should only show one child-root suggestion; unlike branches, roots do not need separate branch/leaf candidate choices.
+- Main roots should not stack in one vertical column per side. Their direction should be dynamic: with one or two main roots per side they may grow more horizontally; as same-side root count increases, use explicit angle slots instead of linear x/y increments so roots do not collapse into one repeated slope. A dense side should use more downward probing angles, not too many roots in the high horizontal band.
+- Root layout milestone: the accepted baseline uses angle-slot main-root placement, compact XMind-like root labels, a subtle root-crown transition at the trunk base, and continuous cubic root curves. Preserve this baseline unless the user explicitly asks to revisit the visual model.
+- For root collision avoidance, extend a conflicted root along its existing angle/direction instead of pushing it straight down; vertical-only displacement can invert root ordering and create visual crossings in balanced left/right fixtures.
+- `make debug` must run the root layout fixture check and refresh `debug-output/*.svg`; use `debug-output/root-left-dense.svg`, `debug-output/root-balanced.svg`, and `debug-output/root-with-children.svg` as the primary visual regression snapshots.
+- The root fixture baseline should keep `overlaps: 0`, `crossingRisk: 0`, and no warnings before considering a root-layout iteration acceptable.
+- Main roots should visually emerge from a small root-crown area at the trunk base, not from one identical point. Use multiple attach points inside or immediately adjacent to the trunk base, and use a subtle crown transition shape if needed so roots do not appear detached from the trunk.
+- Main root curves should be relatively short and tied to the nearby root crown; avoid long radiating lines that make the roots look disconnected from the trunk base. Avoid hockey-stick/golf-club curves made from a long straight segment plus a hook; prefer continuous curved paths that first probe downward from the root crown and then bend toward the label.
+- Treat main-root rectangles as readable labels attached to natural root lines, not as the literal geometric end of the organic root itself. A short mounting segment from the root line to the label is acceptable.
+- Selecting the main trunk should preserve explicit left-main-root and right-main-root creation choices.
+- Root layout changes should be checked against the saved fixtures in `debug-fixtures/` with `npm run root:check`; inspect `debug-output/*.svg` and `debug-output/report.json` before relying on visual intuition only.
+- Root layout should include enough horizontal and vertical spacing to avoid node overlap, and should use slight asymmetric offsets so left/right root systems do not look mechanically mirrored.
 
 ## Product principles
 

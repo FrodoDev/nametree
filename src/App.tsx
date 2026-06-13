@@ -91,8 +91,48 @@ const defaultColorByKind: Record<NodeKind, string> = {
   root_branch: '#9a7b4f',
 };
 
+function getRootAngleSlots(count: number): number[] {
+  if (count <= 1) return [12];
+  if (count === 2) return [24, 8];
+  if (count === 3) return [68, 36, 10];
+  if (count === 4) return [76, 56, 30, 8];
+  if (count <= 6) return [80, 66, 48, 28, 12, 2];
+  return [82, 70, 58, 42, 26, 12, 0, -8];
+}
+
+function getDynamicRootOffset(index: number, count: number): { x: number; y: number } {
+  const slots = getRootAngleSlots(count);
+  const angle = slots[Math.min(index, slots.length - 1)] - Math.max(0, index - slots.length + 1) * 4;
+  const length = count <= 2 ? 250 + index * 170 : 250 + index * 135 + Math.max(0, index - 3) * 42;
+  const radians = angle * Math.PI / 180;
+
+  return {
+    x: Math.max(Math.cos(radians) * length, index < 2 ? 88 : 0),
+    y: Math.sin(radians) * length,
+  };
+}
+
+function avoidRootCollision(
+  offset: { x: number; y: number },
+  sideFactor: -1 | 1,
+  occupied: Array<{ x: number; y: number; span: number }>,
+  span = 44,
+): { x: number; y: number } {
+  let next = { ...offset };
+
+  while (occupied.some((node) => Math.abs(node.x - sideFactor * next.x) < 230 && Math.abs(node.y - next.y) < (node.span + span) / 2 + 34)) {
+    const angle = Math.atan2(next.y, Math.max(1, next.x));
+    next.x += Math.cos(angle) * 86;
+    next.y += Math.sin(angle) * 86;
+  }
+
+  occupied.push({ x: sideFactor * next.x, y: next.y, span });
+  return next;
+}
+
 function App() {
   const [document, setDocument] = useState<NametreeDocument | null>(null);
+  const [undoStack, setUndoStack] = useState<NametreeDocument[]>([]);
   const [documentPath, setDocumentPath] = useState<string | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
@@ -107,6 +147,7 @@ function App() {
     invoke<NametreeDocument>('load_sample_tree').then((tree) => {
       const normalizedTree = normalizeTreeLayout(tree);
       setDocument(normalizedTree);
+      setUndoStack([]);
       setSelectedNodeId(normalizedTree.nodes[0]?.id ?? null);
       setCanvasOffset({ x: 0, y: 0 });
       setZoom(1);
@@ -161,6 +202,21 @@ function App() {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const isTextInput = target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA';
+
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'z') {
+        event.preventDefault();
+        undoLastChange();
+        return;
+      }
+
+      if (!isTextInput && (event.key === 'Delete' || event.key === 'Backspace')) {
+        event.preventDefault();
+        deleteSelectedNode();
+        return;
+      }
+
       if (!(event.metaKey || event.ctrlKey)) return;
 
       if (event.key.toLowerCase() === 'n') {
@@ -170,7 +226,7 @@ function App() {
 
       if (event.key.toLowerCase() === 's') {
         event.preventDefault();
-        void saveCurrentDocument();
+        void saveCurrentDocument(event.shiftKey);
       }
 
       if (event.key.toLowerCase() === 'o') {
@@ -182,6 +238,9 @@ function App() {
     const unlistenNew = listen('menu-new-document', () => void createNewDocument());
     const unlistenOpen = listen('menu-open-document', () => void openDocumentFile());
     const unlistenSave = listen('menu-save-document', () => void saveCurrentDocument());
+    const unlistenSaveAs = listen('menu-save-as-document', () => void saveCurrentDocument(true));
+    const unlistenUndo = listen('menu-undo-document', () => undoLastChange());
+    const unlistenDelete = listen('menu-delete-node', () => deleteSelectedNode());
 
     window.addEventListener('keydown', handleKeyDown);
     return () => {
@@ -189,6 +248,9 @@ function App() {
       void unlistenNew.then((unlisten) => unlisten());
       void unlistenOpen.then((unlisten) => unlisten());
       void unlistenSave.then((unlisten) => unlisten());
+      void unlistenSaveAs.then((unlisten) => unlisten());
+      void unlistenUndo.then((unlisten) => unlisten());
+      void unlistenDelete.then((unlisten) => unlisten());
     };
   }, [document, documentPath]);
 
@@ -200,6 +262,7 @@ function App() {
       title: '未保存',
     });
     setDocument(normalizedTree);
+    setUndoStack([]);
     setDocumentPath(null);
     setSelectedNodeId(normalizedTree.nodes[0]?.id ?? null);
     setEditingNodeId(null);
@@ -207,17 +270,21 @@ function App() {
     setZoom(1);
   }
 
-  async function saveCurrentDocument() {
+  async function saveCurrentDocument(saveAs = false) {
     if (!document) return;
 
-    const targetPath = documentPath ?? await save({
-      defaultPath: getDocumentFileName(document),
-      filters: [{ name: 'Nametree', extensions: ['nt'] }],
-    });
-    if (!targetPath) return;
+    try {
+      const targetPath = !saveAs && documentPath ? documentPath : await save({
+        defaultPath: getDocumentFileName(document),
+        filters: [{ name: 'Nametree', extensions: ['nt'] }],
+      });
+      if (!targetPath) return;
 
-    const savedPath = await invoke<string>('save_nt_file', { path: targetPath, document });
-    setDocumentPath(savedPath);
+      const savedPath = await invoke<string>('save_nt_file', { path: targetPath, document });
+      setDocumentPath(savedPath);
+    } catch (error) {
+      console.error('Failed to save Nametree document', error);
+    }
   }
 
   async function openDocumentFile() {
@@ -230,11 +297,51 @@ function App() {
     const openedFile = await invoke<OpenedNtFile>('open_nt_file', { path: selectedPath });
     const normalizedTree = normalizeTreeLayout(openedFile.document);
     setDocument(normalizedTree);
+    setUndoStack([]);
     setDocumentPath(openedFile.path);
     setSelectedNodeId(normalizedTree.nodes[0]?.id ?? null);
     setEditingNodeId(null);
     setCanvasOffset({ x: 0, y: 0 });
     setZoom(1);
+  }
+
+  function commitDocument(nextDocument: NametreeDocument, nextSelectedNodeId = selectedNodeId) {
+    if (!document) return;
+
+    setUndoStack((stack) => [...stack.slice(-49), document]);
+    setDocument(normalizeTreeLayout(nextDocument));
+    setSelectedNodeId(nextSelectedNodeId ?? null);
+  }
+
+  function undoLastChange() {
+    setUndoStack((stack) => {
+      const previousDocument = stack[stack.length - 1];
+      if (!previousDocument) return stack;
+
+      setDocument(previousDocument);
+      setSelectedNodeId((currentId) => previousDocument.nodes.some((node) => node.id === currentId) ? currentId : previousDocument.nodes[0]?.id ?? null);
+      setEditingNodeId(null);
+      return stack.slice(0, -1);
+    });
+  }
+
+  function deleteSelectedNode() {
+    if (!document || !selectedNode || selectedNode.kind === 'seed_root') return;
+
+    const idsToDelete = collectDescendantNodeIds(document, selectedNode.id);
+    const nextDocument = {
+      ...document,
+      nodes: document.nodes.filter((node) => !idsToDelete.has(node.id)),
+      tree_edges: document.tree_edges.filter((edge) => !idsToDelete.has(edge.parent_id) && !idsToDelete.has(edge.child_id)),
+      reference_links: document.reference_links.filter((link) => !idsToDelete.has(link.source_id) && !idsToDelete.has(link.target_id)),
+    };
+    const parentEdge = document.tree_edges.find((edge) => edge.child_id === selectedNode.id);
+    const nextSelectedNodeId = parentEdge && !idsToDelete.has(parentEdge.parent_id)
+      ? parentEdge.parent_id
+      : nextDocument.nodes[0]?.id ?? null;
+
+    setEditingNodeId(null);
+    commitDocument(nextDocument, nextSelectedNodeId);
   }
 
   function updateSelectedNode(patch: Partial<TreeNode>) {
@@ -246,12 +353,12 @@ function App() {
   function updateNode(nodeId: string, patch: Partial<TreeNode>) {
     if (!document) return;
 
-    setDocument(normalizeTreeLayout({
+    commitDocument({
       ...document,
       nodes: document.nodes.map((node) => (
         node.id === nodeId ? { ...node, ...patch } : node
       )),
-    }));
+    });
   }
 
   function createSuggestedNode(suggestion: Suggestion) {
@@ -272,14 +379,13 @@ function App() {
       ? document.tree_edges
       : [...document.tree_edges, { parent_id: suggestion.parentId, child_id: newNode.id }];
 
-    const nextDocument = normalizeTreeLayout({
+    const nextDocument = {
       ...document,
       nodes: [...document.nodes, newNode],
       tree_edges: nextEdges,
-    });
+    };
 
-    setDocument(nextDocument);
-    setSelectedNodeId(newNode.id);
+    commitDocument(nextDocument, newNode.id);
   }
 
   if (!document) {
@@ -369,7 +475,7 @@ function App() {
               <path
                 key={`${edge.parent_id}-${edge.child_id}`}
                 className={child.kind === 'root_branch' ? 'root-edge' : parent.kind === 'main_trunk' ? 'trunk-edge' : 'tree-edge'}
-                d={isOutputEdge(parent, child) ? createOutputEdgePath(parent, child, shape) : createCurve(getConnectionPoint(parent, child, shape), child)}
+                d={isOutputEdge(parent, child) ? createOutputEdgePath(parent, child, shape) : isRootEdge(parent, child) ? createRootEdgePath(parent, child, shape) : createCurve(getConnectionPoint(parent, child, shape), child)}
               />
             );
           })}
@@ -401,7 +507,7 @@ function App() {
                   createSuggestedNode(suggestion);
                 }}
               >
-                <path className="suggestion-edge" d={isOutputEdge(parent, suggestion) ? createOutputEdgePath(parent, suggestion, shape) : createCurve(getConnectionPoint(parent, suggestion, shape), suggestion)} />
+                <path className="suggestion-edge" d={isOutputEdge(parent, suggestion) ? createOutputEdgePath(parent, suggestion, shape) : isRootEdge(parent, suggestion) ? createRootEdgePath(parent, suggestion, shape) : createCurve(getConnectionPoint(parent, suggestion, shape), suggestion)} />
                 <g transform={`translate(${suggestion.x}, ${suggestion.y})`}>
                   {suggestion.kind === 'leaf' ? (
                     <path className="leaf-node-shape" d={createLeafShapePath()} fill={suggestion.fillColor} stroke={suggestion.color} />
@@ -430,6 +536,7 @@ function App() {
                 height={shape.groundY + 12 - getTrunkTopY(shape, document.nodes, suggestions)}
                 rx="10"
               />
+              <path className="root-crown-shape" d={createRootCrownPath(shape)} />
               <rect
                 className="structure-hitbox"
                 x={shape.centerX - 18}
@@ -498,6 +605,10 @@ function App() {
           <>
             <div className="panel-heading">
               <p className="eyebrow">当前选择</p>
+              <div className="panel-actions">
+                <button type="button" onClick={undoLastChange} disabled={undoStack.length === 0}>撤销</button>
+                <button type="button" className="danger-action" onClick={deleteSelectedNode} disabled={selectedNode.kind === 'seed_root'}>删除</button>
+              </div>
             </div>
 
             {isKnowledgeNode(selectedNode) ? (
@@ -555,6 +666,23 @@ function App() {
   );
 }
 
+function collectDescendantNodeIds(document: NametreeDocument, nodeId: string): Set<string> {
+  const ids = new Set([nodeId]);
+  let changed = true;
+
+  while (changed) {
+    changed = false;
+    document.tree_edges.forEach((edge) => {
+      if (ids.has(edge.parent_id) && !ids.has(edge.child_id)) {
+        ids.add(edge.child_id);
+        changed = true;
+      }
+    });
+  }
+
+  return ids;
+}
+
 function isKnowledgeNode(node: TreeNode): boolean {
   return node.kind === 'branch' || node.kind === 'leaf' || node.kind === 'root_branch';
 }
@@ -588,10 +716,6 @@ function getTreeShape(document: NametreeDocument): TreeShape {
 
 function getSuggestions(document: NametreeDocument, selectedNode: TreeNode, shape: TreeShape): Suggestion[] {
   const hasMainTrunk = document.nodes.some((node) => node.kind === 'main_trunk');
-  const childNodes = document.tree_edges
-    .filter((edge) => edge.parent_id === selectedNode.id)
-    .map((edge) => document.nodes.find((node) => node.id === edge.child_id))
-    .filter((node): node is TreeNode => Boolean(node));
 
   if (selectedNode.kind === 'seed_root') {
     return [
@@ -608,13 +732,14 @@ function getSuggestions(document: NametreeDocument, selectedNode: TreeNode, shap
   }
 
   if (selectedNode.kind === 'root_branch') {
-    const leftCount = countSideChildren(childNodes, 'left');
-    const rightCount = countSideChildren(childNodes, 'right');
-    const parentSideFactor = selectedNode.x < shape.centerX ? -1 : 1;
+    const parentSide = selectedNode.side ?? (selectedNode.x < shape.centerX ? 'left' : 'right');
+    const parentSideFactor = parentSide === 'left' ? -1 : 1;
+    const childX = selectedNode.x + parentSideFactor * 178;
+    const siblingCount = document.tree_edges.filter((edge) => edge.parent_id === selectedNode.id).length;
+    const childY = findFreeRootSuggestionY(document.nodes, childX, Math.max(shape.groundY + 56, selectedNode.y + siblingCount * 70));
 
     return [
-      createSuggestion(selectedNode, 'root_branch', '左根系', parentSideFactor * (142 + leftCount * 48) - 16, 82 + leftCount * 54, 'left'),
-      createSuggestion(selectedNode, 'root_branch', '右根系', parentSideFactor * (142 + rightCount * 48) + 16, 82 + rightCount * 54, 'right'),
+      createSuggestionAt(selectedNode, 'root_branch', '子根系', childX, childY, parentSide),
     ];
   }
 
@@ -633,14 +758,20 @@ function getOutputSuggestions(document: NametreeDocument, selectedNode: TreeNode
       .filter((edge) => edge.parent_id === selectedNode.id)
       .map((edge) => document.nodes.find((node) => node.id === edge.child_id))
       .filter((node): node is TreeNode => node?.kind === 'root_branch');
-    const rootIndex = rootChildren.length;
-    const rootSide: GrowthSide = rootIndex % 2 === 0 ? 'left' : 'right';
-    const rootSideFactor = rootSide === 'left' ? -1 : 1;
-    const rootX = shape.centerX + rootSideFactor * (118 + Math.floor(rootIndex / 2) * 92);
-    const rootY = shape.groundY + 88 + Math.floor(rootIndex / 2) * 36;
+    const leftRootCount = rootChildren.filter((node) => (node.side ?? 'right') === 'left').length;
+    const rightRootCount = rootChildren.filter((node) => (node.side ?? 'right') === 'right').length;
+    const leftRootTotal = leftRootCount + 1;
+    const rightRootTotal = rightRootCount + 1;
+    const leftRootOffset = getDynamicRootOffset(leftRootCount, leftRootTotal);
+    const rightRootOffset = getDynamicRootOffset(rightRootCount, rightRootTotal);
+    const leftRootX = shape.centerX - leftRootOffset.x - 8;
+    const rightRootX = shape.centerX + rightRootOffset.x + 8;
+    const leftRootY = shape.groundY + leftRootOffset.y;
+    const rightRootY = shape.groundY + rightRootOffset.y;
 
     return [
-      createSuggestionAt(selectedNode, 'root_branch', '根系', rootX, rootY, rootSide),
+      createSuggestionAt(selectedNode, 'root_branch', '左主根', leftRootX, leftRootY, 'left'),
+      createSuggestionAt(selectedNode, 'root_branch', '右主根', rightRootX, rightRootY, 'right'),
       createSuggestionAt(selectedNode, 'branch', '左树枝', leftX, leftY, 'left'),
       createSuggestionAt(selectedNode, 'branch', '右树枝', rightX, rightY, 'right'),
     ];
@@ -702,8 +833,16 @@ function findFreeOutputSuggestionY(nodes: TreeNode[], x: number, preferredY: num
   return y;
 }
 
-function countSideChildren(nodes: TreeNode[], side: GrowthSide): number {
-  return nodes.filter((node) => node.side === side).length;
+function findFreeRootSuggestionY(nodes: TreeNode[], x: number, preferredY: number): number {
+  let y = preferredY;
+  const nodeHeight = 66;
+  const xTolerance = 150;
+
+  while (nodes.some((node) => Math.abs(node.x - x) < xTolerance && Math.abs(node.y - y) < nodeHeight)) {
+    y += nodeHeight + 18;
+  }
+
+  return y;
 }
 
 function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
@@ -752,45 +891,66 @@ function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
     shape.trunkTopY = Math.min(shape.trunkTopY, Math.max(16, highestOutputY - 72));
   }
 
+  const rootNodeHeight = 44;
+  const rootSiblingGap = 26;
+  const rootLevelDistance = 250;
+  const rootTopY = shape.groundY + 56;
+
   const getRootSpan = (node: TreeNode): number => {
     const children = rootChildrenByParent.get(node.id) ?? [];
-    if (children.length === 0) return 96;
+    if (children.length === 0) return rootNodeHeight;
 
-    return Math.max(96, children.reduce((total, child) => total + getRootSpan(child), 0) + (children.length - 1) * 28);
+    const total = children.reduce((sum, child) => sum + getRootSpan(child), 0) + Math.max(0, children.length - 1) * rootSiblingGap;
+    return Math.max(rootNodeHeight, total);
+  };
+
+  const layoutRootStack = (nodes: TreeNode[], sideFactor: -1 | 1, x: number, startY: number) => {
+    let cursor = Math.max(rootTopY, startY);
+
+    nodes.forEach((node) => {
+      const span = getRootSpan(node);
+      layoutRootSubtree(node, sideFactor, x, Math.max(rootTopY, cursor + span / 2));
+      cursor += span + rootSiblingGap;
+    });
   };
 
   const layoutRootSubtree = (node: TreeNode, sideFactor: -1 | 1, x: number, y: number) => {
     node.x = x;
-    node.y = y;
+    node.y = Math.max(rootTopY, y);
+    node.side = sideFactor === -1 ? 'left' : 'right';
 
     const children = rootChildrenByParent.get(node.id) ?? [];
     if (children.length === 0) return;
 
-    const totalSpan = children.reduce((total, child) => total + getRootSpan(child), 0) + (children.length - 1) * 28;
-    let cursor = x - sideFactor * totalSpan / 2;
-
-    children.forEach((child, index) => {
-      const span = getRootSpan(child);
-      const childX = cursor + sideFactor * span / 2;
-      const childY = y + 96 + index * 28;
-      layoutRootSubtree(child, sideFactor, childX, childY);
-      cursor += sideFactor * (span + 28);
-    });
+    const totalSpan = children.reduce((sum, child) => sum + getRootSpan(child), 0) + Math.max(0, children.length - 1) * rootSiblingGap;
+    layoutRootStack(children, sideFactor, x + sideFactor * rootLevelDistance, Math.max(rootTopY, node.y - totalSpan / 2));
   };
 
   const layoutRootSide = (side: GrowthSide, sideFactor: -1 | 1) => {
     const trunkRoots = (rootChildrenByParent.get(mainTrunk?.id ?? '') ?? []).filter((node) => (node.side ?? 'right') === side);
     const legacyRoots = (rootChildrenByParent.get(mainRoot?.id ?? '') ?? []).filter((node) => (node.side ?? 'right') === side);
     const children = [...trunkRoots, ...legacyRoots];
-    const totalSpan = children.reduce((total, child) => total + getRootSpan(child), 0) + Math.max(0, children.length - 1) * 36;
-    let cursor = shape.centerX + sideFactor * 140 - sideFactor * totalSpan / 2;
+    if (children.length === 0) return;
+
+    const occupied: Array<{ x: number; y: number; span: number }> = [];
+    const addDescendantOccupancy = (node: TreeNode) => {
+      const descendants = rootChildrenByParent.get(node.id) ?? [];
+      descendants.forEach((descendant) => {
+        occupied.push({
+          x: sideFactor * Math.abs(descendant.x - shape.centerX),
+          y: descendant.y - shape.groundY,
+          span: getRootSpan(descendant),
+        });
+        addDescendantOccupancy(descendant);
+      });
+    };
 
     children.forEach((child, index) => {
-      const span = getRootSpan(child);
-      const childX = cursor + sideFactor * span / 2;
-      const childY = shape.groundY + 82 + index * 24;
+      const offset = avoidRootCollision(getDynamicRootOffset(index, children.length), sideFactor, occupied, getRootSpan(child));
+      const childX = shape.centerX + sideFactor * (offset.x + 8);
+      const childY = Math.max(rootTopY, shape.groundY + offset.y);
       layoutRootSubtree(child, sideFactor, childX, childY);
-      cursor += sideFactor * (span + 36);
+      addDescendantOccupancy(child);
     });
   };
 
@@ -895,6 +1055,13 @@ function getTrunkTopY(shape: TreeShape, nodes: TreeNode[], suggestions: Suggesti
   return Math.min(...outputItems.map((node) => node.y)) - 36;
 }
 
+function createRootCrownPath(shape: TreeShape): string {
+  const x = shape.centerX;
+  const y = shape.groundY + 3;
+
+  return `M ${x - 11} ${y - 12} C ${x - 16} ${y - 3}, ${x - 24} ${y + 7}, ${x - 34} ${y + 15} C ${x - 18} ${y + 12}, ${x - 8} ${y + 12}, ${x} ${y + 16} C ${x + 8} ${y + 12}, ${x + 18} ${y + 12}, ${x + 34} ${y + 15} C ${x + 24} ${y + 7}, ${x + 16} ${y - 3}, ${x + 11} ${y - 12} Z`;
+}
+
 function createLeafShapePath(): string {
   return `M -52 0
     C -28 -26, 22 -24, 54 0
@@ -906,10 +1073,67 @@ function isOutputEdge(parent: Pick<TreeNode, 'kind'>, child: Pick<TreeNode, 'kin
   return (parent.kind === 'main_trunk' || parent.kind === 'branch') && (child.kind === 'branch' || child.kind === 'leaf');
 }
 
+function isRootEdge(parent: Pick<TreeNode, 'kind'>, child: Pick<TreeNode, 'kind'>): boolean {
+  return (parent.kind === 'main_trunk' || parent.kind === 'root_branch' || parent.kind === 'main_root') && child.kind === 'root_branch';
+}
+
 function createOutputEdgePath(parent: Pick<TreeNode, 'kind' | 'x' | 'y'>, child: Pick<TreeNode, 'kind' | 'x' | 'y'>, shape: TreeShape): string {
   const sideFactor = child.x < shape.centerX ? -1 : 1;
   const parentEdgeX = parent.kind === 'main_trunk' ? shape.centerX : parent.x + sideFactor * 54;
   const parentEdgeY = parent.kind === 'main_trunk' ? child.y : parent.y;
+  const childEdgeX = child.x - sideFactor * 54;
+  const middleX = (parentEdgeX + childEdgeX) / 2;
+
+  return `M ${parentEdgeX} ${parentEdgeY} L ${middleX} ${parentEdgeY} L ${middleX} ${child.y} L ${childEdgeX} ${child.y}`;
+}
+
+function getRootCrownAttachPoint(child: Pick<TreeNode, 'x' | 'y'>, shape: TreeShape): Pick<TreeNode, 'x' | 'y'> {
+  const side: GrowthSide = child.x < shape.centerX ? 'left' : 'right';
+  const sideFactor = side === 'left' ? -1 : 1;
+  const dx = Math.abs(child.x - shape.centerX);
+  const dy = Math.max(0, child.y - shape.groundY);
+  const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+  const fanIndex = angle > 72 ? 0 : angle > 56 ? 1 : angle > 36 ? 2 : angle > 16 ? 3 : 4;
+  const crownSlots = [
+    { x: 8, y: 12 },
+    { x: 12, y: 8 },
+    { x: 14, y: 4 },
+    { x: 11, y: 1 },
+    { x: 7, y: -2 },
+  ];
+  const slot = crownSlots[Math.min(fanIndex, crownSlots.length - 1)];
+
+  return {
+    x: shape.centerX + sideFactor * slot.x,
+    y: shape.groundY + slot.y,
+  };
+}
+
+function createRootEdgePath(parent: Pick<TreeNode, 'kind' | 'x' | 'y'>, child: Pick<TreeNode, 'kind' | 'x' | 'y'>, shape: TreeShape): string {
+  const sideFactor = child.x < shape.centerX ? -1 : 1;
+
+  if (parent.kind === 'main_trunk' || parent.kind === 'main_root') {
+    const parentEdge = getRootCrownAttachPoint(child, shape);
+    const labelEdge = {
+      x: child.x - sideFactor * 58,
+      y: child.y,
+    };
+    const verticalDrop = Math.max(1, labelEdge.y - parentEdge.y);
+    const horizontalReach = Math.max(1, Math.abs(labelEdge.x - parentEdge.x));
+    const firstControl = {
+      x: parentEdge.x + sideFactor * Math.min(20, horizontalReach * 0.08),
+      y: parentEdge.y + verticalDrop * 0.56,
+    };
+    const secondControl = {
+      x: labelEdge.x - sideFactor * Math.min(180, Math.max(72, horizontalReach * 0.42)),
+      y: labelEdge.y - verticalDrop * 0.34,
+    };
+
+    return `M ${parentEdge.x} ${parentEdge.y} C ${firstControl.x} ${firstControl.y}, ${secondControl.x} ${secondControl.y}, ${labelEdge.x} ${labelEdge.y}`;
+  }
+
+  const parentEdgeX = parent.x + sideFactor * 54;
+  const parentEdgeY = parent.y;
   const childEdgeX = child.x - sideFactor * 54;
   const middleX = (parentEdgeX + childEdgeX) / 2;
 

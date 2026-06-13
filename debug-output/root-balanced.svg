@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-740.4 -120 2558.4 1142.8" width="2558.4" height="1142.8">
+  <rect x="-740.4" y="-120" width="2558.4" height="1142.8" fill="#fffcf6"/>
+  <text x="-716.4" y="-84" font-size="18" font-weight="700" fill="#2f241b">root-balanced.nt</text>
+  <line x1="-740.4" y1="390" x2="1818" y2="390" stroke="#d8cab7" stroke-dasharray="6 6"/>
+  <path d="M 438 398 C 435.92 531.3930854217092, 484 555.2132792470144, 412 636.201938253052" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 438 398 C 430.4325113932654 590.4804006677448, 415.4063924158169 624.8519007869849, 343.4063924158169 741.7150011924014" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 436 394 C 416 643.9536279740086, 237.9339744769885 688.5882043979386, 94.50685254653195 840.3457642393009" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 439 391 C 419 562.6421692298647, 101.66932667740286 593.2925565923406, -78.33067332259714 697.5038736247584" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 443 388 C 423 485.99021498581044, -133.81880381052633 503.488467661848, -313.81880381052633 562.9825267603758" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 443 388 C 423 420.48, -328.38534446226765 426.28, -508.38534446226765 446" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 462 398 C 464.08 532.1575296238199, 416 556.1142313423591, 488 637.5670171853926" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 462 398 C 467.5742204144306 596.1177290414419, 459.6777551803825 631.4958949416994, 531.6777551803825 751.7816590025748" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 462 398 C 479.08464139210133 640.4716056007513, 585.8636500927346 683.7701066008855, 675.5580174012666 830.9850100013416" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 464 394 C 484 669.4224364146719, 770.6703156787491 718.6050143458632, 950.6703156787491 885.825779311914" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 461 391 C 481 594.685884711967, 967.796646520907 631.0583641248181, 1147.796646520907 754.7247941285124" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 457 388 C 477 506.59842177966675, 1206.95092914041 527.7767113831786, 1386.95092914041 599.7828960351192" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 457 388 C 477 420.48, 1406 426.28, 1586 446" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+  <rect x="438" y="340" width="24" height="62" rx="12" fill="#826f62"/><path d="M 439 381 C 434 390, 426 400, 416 408 C 432 405, 442 405, 450 409 C 458 405, 468 405, 484 408 C 474 400, 466 390, 461 381 Z" fill="#826f62" stroke="rgba(47, 36, 27, 0.24)" stroke-width="0.9"/>
+<g transform="translate(354 636.201938253052)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#9a7b4f" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">左主根</text></g>
+<g transform="translate(285.4063924158169 741.7150011924014)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#9a7b4f" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">左主根</text></g>
+<g transform="translate(36.506852546531945 840.3457642393009)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#9a7b4f" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">左主根</text></g>
+<g transform="translate(-136.33067332259714 697.5038736247584)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#9a7b4f" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">左主根</text></g>
+<g transform="translate(-371.81880381052633 562.9825267603758)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#9a7b4f" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">左主根</text></g>
+<g transform="translate(-566.3853444622677 446)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#9a7b4f" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">左主根</text></g>
+<g transform="translate(546 637.5670171853926)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#9a7b4f" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">右主根</text></g>
+<g transform="translate(589.6777551803825 751.7816590025748)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#9a7b4f" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">右主根</text></g>
+<g transform="translate(733.5580174012666 830.9850100013416)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#9a7b4f" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">右主根</text></g>
+<g transform="translate(1008.6703156787491 885.825779311914)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#9a7b4f" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">右主根</text></g>
+<g transform="translate(1205.796646520907 754.7247941285124)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#9a7b4f" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">右主根</text></g>
+<g transform="translate(1444.95092914041 599.7828960351192)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#9a7b4f" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">右主根</text></g>
+<g transform="translate(1644 446)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#9a7b4f" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">右主根</text></g>
+</svg>
