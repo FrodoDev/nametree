@@ -221,6 +221,12 @@ function App() {
         return;
       }
 
+      if (!isTextInput && event.key === 'Tab' && !event.shiftKey && !(event.metaKey || event.ctrlKey || event.altKey)) {
+        event.preventDefault();
+        createDefaultChildForSelectedNode();
+        return;
+      }
+
       if (!(event.metaKey || event.ctrlKey)) return;
 
       if (event.key.toLowerCase() === 'n') {
@@ -280,7 +286,7 @@ function App() {
       void unlistenUndo.then((unlisten) => unlisten());
       void unlistenDelete.then((unlisten) => unlisten());
     };
-  }, [document, documentPath]);
+  }, [document, documentPath, selectedNodeId, suggestions]);
 
   async function createNewDocument() {
     const tree = await invoke<NametreeDocument>('load_sample_tree');
@@ -428,6 +434,13 @@ function App() {
     };
 
     commitDocument(nextDocument, newNode.id);
+  }
+
+  function createDefaultChildForSelectedNode() {
+    const suggestion = getDefaultChildSuggestion(selectedNode, suggestions);
+    if (!suggestion) return;
+
+    createSuggestedNode(suggestion);
   }
 
   if (!document) {
@@ -726,6 +739,26 @@ function collectDescendantNodeIds(document: NametreeDocument, nodeId: string): S
 
 function isKnowledgeNode(node: TreeNode): boolean {
   return node.kind === 'branch' || node.kind === 'leaf' || node.kind === 'root_branch';
+}
+
+function getDefaultChildSuggestion(selectedNode: TreeNode | null, suggestions: Suggestion[]): Suggestion | null {
+  if (!selectedNode) return null;
+
+  if (selectedNode.kind === 'main_trunk') {
+    return suggestions.find((suggestion) => suggestion.kind === 'branch' && suggestion.side === 'right')
+      ?? suggestions.find((suggestion) => suggestion.kind === 'branch')
+      ?? null;
+  }
+
+  if (selectedNode.kind === 'branch') {
+    return suggestions.find((suggestion) => suggestion.kind === 'branch') ?? null;
+  }
+
+  if (selectedNode.kind === 'root_branch') {
+    return suggestions.find((suggestion) => suggestion.kind === 'root_branch') ?? null;
+  }
+
+  return null;
 }
 
 function getDocumentFileName(document: NametreeDocument, documentPath?: string | null): string {
