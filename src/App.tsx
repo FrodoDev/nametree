@@ -1041,17 +1041,17 @@ function layoutOutputTree(
     layoutStack(children, sideFactor, x + sideFactor * levelDistance, y - totalSpan / 2);
   };
 
+  const trunkChildren = childrenByParent.get(mainTrunk.id) ?? [];
+
   const layoutTrunkSide = (side: GrowthSide, sideFactor: -1 | 1) => {
-    const children = (childrenByParent.get(mainTrunk.id) ?? [])
-      .filter((node) => (node.side ?? 'right') === side)
-      .reverse();
+    const children = trunkChildren.filter((node) => (node.side ?? 'right') === side);
+    let cursor = shape.groundY - 82 + (side === 'right' ? -22 : 0);
 
-    const totalSpan = children.reduce((sum, child) => sum + getSpan(child), 0) + Math.max(0, children.length - 1) * siblingGap;
-    const lowestAllowedY = shape.groundY - 82;
-    const sideYOffset = side === 'left' ? 0 : -(nodeHeight + siblingGap) / 2;
-    const startY = lowestAllowedY - totalSpan + sideYOffset;
-
-    layoutStack(children, sideFactor, shape.centerX + sideFactor * 238, startY);
+    children.forEach((node) => {
+      const span = getSpan(node);
+      layoutSubtree(node, sideFactor, shape.centerX + sideFactor * 238, cursor - span / 2);
+      cursor -= span + siblingGap;
+    });
   };
 
   layoutTrunkSide('left', -1);
@@ -1120,9 +1120,17 @@ function isRootEdge(parent: Pick<TreeNode, 'kind'>, child: Pick<TreeNode, 'kind'
 
 function createOutputEdgePath(parent: Pick<TreeNode, 'kind' | 'x' | 'y'>, child: Pick<TreeNode, 'kind' | 'x' | 'y'>, shape: TreeShape): string {
   const sideFactor = child.x < shape.centerX ? -1 : 1;
-  const parentEdgeX = parent.kind === 'main_trunk' ? shape.centerX : parent.x + sideFactor * 54;
-  const parentEdgeY = parent.kind === 'main_trunk' ? child.y : parent.y;
   const childEdgeX = child.x - sideFactor * 54;
+
+  if (parent.kind === 'main_trunk') {
+    const parentEdgeX = shape.centerX + sideFactor * 10;
+    const parentEdgeY = child.y + 42;
+
+    return `M ${parentEdgeX} ${parentEdgeY} L ${childEdgeX} ${child.y}`;
+  }
+
+  const parentEdgeX = parent.x + sideFactor * 54;
+  const parentEdgeY = parent.y;
   const middleX = (parentEdgeX + childEdgeX) / 2;
 
   return `M ${parentEdgeX} ${parentEdgeY} L ${middleX} ${parentEdgeY} L ${middleX} ${child.y} L ${childEdgeX} ${child.y}`;
