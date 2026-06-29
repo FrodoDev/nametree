@@ -1,0 +1,156 @@
+{
+  "format": "nametree.document",
+  "version": 1,
+  "document": {
+    "id": "a9a106bc-b329-4b2d-82fa-32becc1547d4",
+    "title": "未保存",
+    "slogan": "Name it to own it",
+    "nodes": [
+      {
+        "id": "seed-root",
+        "title": "根节点",
+        "note": "从这里开始。选择这个节点后，可以生长出主干或主根。",
+        "kind": "seed_root",
+        "color": "#7b6b55",
+        "fillColor": "#ffffff",
+        "x": 450.0,
+        "y": 390.0,
+        "side": null
+      },
+      {
+        "id": "1d0ad88b-0bae-4cad-ac42-9217a0e36557",
+        "title": "主干",
+        "note": "这是一个主干节点，可以继续编辑名称、颜色和备注。",
+        "kind": "main_trunk",
+        "color": "#5f7f45",
+        "fillColor": null,
+        "x": 450.0,
+        "y": 335.0,
+        "side": null
+      },
+      {
+        "id": "3a4e8238-3c65-4d41-b80c-f4794e9388cf",
+        "title": "右主根",
+        "note": "这是一个右主根节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#9a7b4f",
+        "fillColor": null,
+        "x": 702.5369001834514,
+        "y": 446.0,
+        "side": "right"
+      },
+      {
+        "id": "0c47fddf-99ac-4cb3-bc57-b73ecc966e98",
+        "title": "子根系",
+        "note": "这是一个子根系节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#9a7b4f",
+        "fillColor": null,
+        "x": 952.5369001834514,
+        "y": 468.0,
+        "side": "right"
+      },
+      {
+        "id": "e8d6b61d-6b16-4177-b80d-9721d1af1aea",
+        "title": "子根系",
+        "note": "这是一个子根系节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#9a7b4f",
+        "fillColor": null,
+        "x": 952.5369001834514,
+        "y": 538.0,
+        "side": "right"
+      },
+      {
+        "id": "98dc0394-03c1-4a56-8928-e24524fd3217",
+        "title": "七里香",
+        "note": "这是一个左主根节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#9a7b4f",
+        "fillColor": "#00fdff",
+        "x": 197.46309981654855,
+        "y": 446.0,
+        "side": "left"
+      },
+      {
+        "id": "9e3b0b6e-ec60-4293-9fed-7d24f2061c42",
+        "title": "子根系",
+        "note": "这是一个子根系节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#9a7b4f",
+        "fillColor": null,
+        "x": -52.53690018345142,
+        "y": 468.0,
+        "side": "left"
+      },
+      {
+        "id": "6b764495-536c-4b8a-83ae-a538600cc5fb",
+        "title": "子根系",
+        "note": "这是一个子根系节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#9a7b4f",
+        "fillColor": null,
+        "x": -302.5369001834514,
+        "y": 468.0,
+        "side": "left"
+      },
+      {
+        "id": "d4df8732-8ef9-467c-a951-4ae7b1060d30",
+        "title": "七里香",
+        "note": "这是一个左树枝节点，可以继续编辑名称、颜色和备注。",
+        "kind": "branch",
+        "color": "#d9a441",
+        "fillColor": "#00fdff",
+        "x": 212.0,
+        "y": 286.0,
+        "side": "left"
+      },
+      {
+        "id": "9d5ff327-8179-476b-a9cb-8a745bfb4cfe",
+        "title": "叶子",
+        "note": "这是一个叶子节点，可以继续编辑名称、颜色和备注。",
+        "kind": "leaf",
+        "color": "#7fb069",
+        "fillColor": null,
+        "x": 34.0,
+        "y": 286.0,
+        "side": "left"
+      }
+    ],
+    "tree_edges": [
+      {
+        "parent_id": "1d0ad88b-0bae-4cad-ac42-9217a0e36557",
+        "child_id": "3a4e8238-3c65-4d41-b80c-f4794e9388cf"
+      },
+      {
+        "parent_id": "3a4e8238-3c65-4d41-b80c-f4794e9388cf",
+        "child_id": "0c47fddf-99ac-4cb3-bc57-b73ecc966e98"
+      },
+      {
+        "parent_id": "3a4e8238-3c65-4d41-b80c-f4794e9388cf",
+        "child_id": "e8d6b61d-6b16-4177-b80d-9721d1af1aea"
+      },
+      {
+        "parent_id": "1d0ad88b-0bae-4cad-ac42-9217a0e36557",
+        "child_id": "98dc0394-03c1-4a56-8928-e24524fd3217"
+      },
+      {
+        "parent_id": "98dc0394-03c1-4a56-8928-e24524fd3217",
+        "child_id": "9e3b0b6e-ec60-4293-9fed-7d24f2061c42"
+      },
+      {
+        "parent_id": "9e3b0b6e-ec60-4293-9fed-7d24f2061c42",
+        "child_id": "6b764495-536c-4b8a-83ae-a538600cc5fb"
+      },
+      {
+        "parent_id": "1d0ad88b-0bae-4cad-ac42-9217a0e36557",
+        "child_id": "d4df8732-8ef9-467c-a951-4ae7b1060d30"
+      },
+      {
+        "parent_id": "d4df8732-8ef9-467c-a951-4ae7b1060d30",
+        "child_id": "9d5ff327-8179-476b-a9cb-8a745bfb4cfe"
+      }
+    ],
+    "reference_links": []
+  }
+}

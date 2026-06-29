@@ -69,6 +69,7 @@ Interaction rules:
 - The selected node detail panel may edit longer content/notes, but title editing should not require a separate side-panel mode.
 - Root-side nodes and branch-side nodes should share the same interaction model whenever possible.
 - The app should support deleting the selected node and undoing recent document edits so users can recover from mistaken template/layout experiments without recreating the whole document.
+- The app should support copying and pasting selected knowledge node content. Text inputs/textareas must keep native system copy/paste behavior; canvas-level `Cmd+C`/`Cmd+V` should only apply when focus is outside text editing controls, and paste should directly fill/append visible content rather than creating an unexplained placeholder node.
 
 ## Data structure decision
 

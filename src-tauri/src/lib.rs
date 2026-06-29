@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::{fs, path::Path};
 use tauri::{
-    menu::{Menu, MenuItem, Submenu},
+    menu::{Menu, MenuItem, PredefinedMenuItem, Submenu},
     Emitter,
 };
 
@@ -193,7 +193,17 @@ pub fn run() {
                     &delete_item,
                 ],
             )?;
-            let menu = Menu::with_items(app, &[&file_menu])?;
+            let cut_item = PredefinedMenuItem::cut(app, None)?;
+            let copy_item = PredefinedMenuItem::copy(app, None)?;
+            let paste_item = PredefinedMenuItem::paste(app, None)?;
+            let select_all_item = PredefinedMenuItem::select_all(app, None)?;
+            let edit_menu = Submenu::with_items(
+                app,
+                "Edit",
+                true,
+                &[&cut_item, &copy_item, &paste_item, &select_all_item],
+            )?;
+            let menu = Menu::with_items(app, &[&file_menu, &edit_menu])?;
 
             app.set_menu(menu)?;
             Ok(())

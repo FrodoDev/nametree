@@ -201,9 +201,13 @@ function App() {
   );
 
   useEffect(() => {
+    const isTextEditingTarget = (target: EventTarget | null) => {
+      const element = target as HTMLElement | null;
+      return element?.tagName === 'INPUT' || element?.tagName === 'TEXTAREA';
+    };
+
     const handleKeyDown = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement | null;
-      const isTextInput = target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA';
+      const isTextInput = isTextEditingTarget(event.target);
 
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'z') {
         event.preventDefault();
@@ -235,6 +239,26 @@ function App() {
       }
     };
 
+    const handleCopy = (event: ClipboardEvent) => {
+      if (isTextEditingTarget(event.target)) return;
+
+      const text = getSelectedNodeCopyText();
+      if (!text) return;
+
+      event.preventDefault();
+      event.clipboardData?.setData('text/plain', text);
+    };
+
+    const handlePaste = (event: ClipboardEvent) => {
+      if (isTextEditingTarget(event.target)) return;
+
+      const text = event.clipboardData?.getData('text/plain') ?? '';
+      if (!text.trim()) return;
+
+      event.preventDefault();
+      pasteTextIntoSelectedNode(text);
+    };
+
     const unlistenNew = listen('menu-new-document', () => void createNewDocument());
     const unlistenOpen = listen('menu-open-document', () => void openDocumentFile());
     const unlistenSave = listen('menu-save-document', () => void saveCurrentDocument());
@@ -243,8 +267,12 @@ function App() {
     const unlistenDelete = listen('menu-delete-node', () => deleteSelectedNode());
 
     window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('copy', handleCopy);
+    window.addEventListener('paste', handlePaste);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('copy', handleCopy);
+      window.removeEventListener('paste', handlePaste);
       void unlistenNew.then((unlisten) => unlisten());
       void unlistenOpen.then((unlisten) => unlisten());
       void unlistenSave.then((unlisten) => unlisten());
@@ -344,6 +372,20 @@ function App() {
     commitDocument(nextDocument, nextSelectedNodeId);
   }
 
+  function getSelectedNodeCopyText(): string {
+    if (!selectedNode || !isKnowledgeNode(selectedNode)) return '';
+
+    return selectedNode.note.trim()
+      ? `${selectedNode.title}\n${selectedNode.note}`
+      : selectedNode.title;
+  }
+
+  function pasteTextIntoSelectedNode(text: string) {
+    if (!selectedNode || !isKnowledgeNode(selectedNode)) return;
+
+    updateSelectedNode({ note: selectedNode.note ? `${selectedNode.note}\n${text}` : text });
+  }
+
   function updateSelectedNode(patch: Partial<TreeNode>) {
     if (!document || !selectedNodeId || !selectedNode || !isKnowledgeNode(selectedNode)) return;
 
@@ -398,7 +440,6 @@ function App() {
 
   return (
     <main className="app-shell" style={{ gridTemplateColumns: `minmax(0, 1fr) 6px ${detailPanelWidth}px` }}>
-      <div className="window-title-bar" data-tauri-drag-region>{getDocumentFileName(document, documentPath)}</div>
       <section className="canvas-panel">
         <img className="canvas-logo" src={nametreeLogo} alt="Nametree logo" />
 
