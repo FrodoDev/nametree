@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 import { getCurrentWindow } from '@tauri-apps/api/window';
@@ -78,22 +78,26 @@ type TreeShape = {
   rootWidth: number;
 };
 
-const kindLabel: Record<NodeKind, string> = {
-  seed_root: '开始',
-  main_trunk: '主干',
-  main_root: '主根',
-  branch: '树枝',
-  leaf: '叶子',
-  root_branch: '根系',
+type OutlineItem = {
+  title: string;
+  level: number;
+  parent: OutlineItem | null;
 };
+
+const outputSiblingGapY = 8;
+const rootSiblingGapY = 16;
+const rootChildSuggestionGapY = 56;
+
+const defaultNodeBorderColor = '#7a9a6d';
+const defaultNodeFillColor = '#f8fbf4';
 
 const defaultColorByKind: Record<NodeKind, string> = {
   seed_root: '#7b6b55',
   main_trunk: '#5f7f45',
   main_root: '#8b6f47',
-  branch: '#d9a441',
-  leaf: '#7fb069',
-  root_branch: '#9a7b4f',
+  branch: defaultNodeBorderColor,
+  leaf: defaultNodeBorderColor,
+  root_branch: defaultNodeBorderColor,
 };
 
 function getRootAngleSlots(count: number): number[] {
@@ -147,6 +151,27 @@ function App() {
   const [isPanning, setIsPanning] = useState(false);
   const [detailPanelWidth, setDetailPanelWidth] = useState(238);
   const [panelResizeStart, setPanelResizeStart] = useState<{ pointerX: number; width: number } | null>(null);
+  const [outlineDraft, setOutlineDraft] = useState('');
+  const canvasPanelRef = useRef<HTMLElement | null>(null);
+  const [canvasSize, setCanvasSize] = useState({ width: 900, height: 700 });
+
+  useEffect(() => {
+    const panel = canvasPanelRef.current;
+    if (!panel) return;
+
+    const updateCanvasSize = () => {
+      const rect = panel.getBoundingClientRect();
+      setCanvasSize({
+        width: Math.max(360, Math.round(rect.width)),
+        height: Math.max(420, Math.round(rect.height)),
+      });
+    };
+
+    updateCanvasSize();
+    const observer = new ResizeObserver(updateCanvasSize);
+    observer.observe(panel);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     invoke<NametreeDocument>('load_sample_tree').then((tree) => {
@@ -164,7 +189,8 @@ function App() {
 
     const handlePointerMove = (event: PointerEvent) => {
       const nextWidth = panelResizeStart.width - (event.clientX - panelResizeStart.pointerX);
-      setDetailPanelWidth(Math.min(420, Math.max(190, nextWidth)));
+      const maxPanelWidth = Math.max(238, window.innerWidth - 360);
+      setDetailPanelWidth(Math.min(maxPanelWidth, Math.max(238, nextWidth)));
     };
 
     const handlePointerUp = () => {
@@ -204,6 +230,15 @@ function App() {
     () => (document && selectedNode ? getSuggestions(document, selectedNode, shape) : []),
     [document, selectedNode, shape],
   );
+
+  useEffect(() => {
+    if (!document || !selectedNode || !isKnowledgeNode(selectedNode)) {
+      setOutlineDraft('');
+      return;
+    }
+
+    setOutlineDraft(serializeNodeOutline(document, selectedNode.id));
+  }, [document, selectedNode]);
 
   useEffect(() => {
     const isTextEditingTarget = (target: EventTarget | null) => {
@@ -392,7 +427,17 @@ function App() {
   }
 
   function pasteTextIntoSelectedNode(text: string) {
-    if (!selectedNode || !isKnowledgeNode(selectedNode)) return;
+    if (!document || !selectedNode || !isKnowledgeNode(selectedNode)) return;
+
+    const outlineItems = parseOutlineText(text);
+    const pastedOutlineItems = outlineItems[0]?.title.trim() === selectedNode.title.trim()
+      ? outlineItems.filter((item) => item.parent !== null)
+      : outlineItems;
+
+    if (pastedOutlineItems.length > 0) {
+      pasteOutlineIntoSelectedNode(pastedOutlineItems);
+      return;
+    }
 
     updateSelectedNode({ note: selectedNode.note ? `${selectedNode.note}\n${text}` : text });
   }
@@ -412,6 +457,81 @@ function App() {
         node.id === nodeId ? { ...node, ...patch } : node
       )),
     });
+  }
+
+  function pasteOutlineIntoSelectedNode(outlineItems: OutlineItem[]) {
+    if (!document || !selectedNode || !isKnowledgeNode(selectedNode)) return;
+
+    const nextDocument = insertOutlineUnderSelectedNode(outlineItems);
+    if (nextDocument) {
+      commitDocument(nextDocument, selectedNode.id);
+    }
+  }
+
+  function insertOutlineUnderSelectedNode(outlineItems: OutlineItem[], baseDocument = document) {
+    if (!baseDocument || !selectedNode || !isKnowledgeNode(selectedNode)) return null;
+
+    const pastedNodes: TreeNode[] = [];
+    const pastedEdges: TreeEdge[] = [];
+    const nodeByOutlineItem = new Map<OutlineItem, TreeNode>();
+    const defaultKind: NodeKind = selectedNode.kind === 'root_branch' ? 'root_branch' : 'branch';
+    const defaultSide = selectedNode.side ?? (selectedNode.x < shape.centerX ? 'left' : 'right');
+
+    outlineItems.forEach((item) => {
+      const parentNode = item.parent ? nodeByOutlineItem.get(item.parent) ?? selectedNode : selectedNode;
+      if (!parentNode) return;
+
+      const siblingCount = pastedEdges.filter((edge) => edge.parent_id === parentNode.id).length;
+      const sideFactor = defaultSide === 'left' ? -1 : 1;
+      const newNode: TreeNode = {
+        id: crypto.randomUUID(),
+        title: item.title,
+        note: '',
+        kind: defaultKind,
+        color: defaultColorByKind[defaultKind],
+        fillColor: defaultNodeFillColor,
+        x: parentNode.x + sideFactor * 178,
+        y: parentNode.y + siblingCount * (singleLineNodeLabelHeight + outputSiblingGapY),
+        side: defaultSide,
+      };
+
+      pastedNodes.push(newNode);
+      pastedEdges.push({ parent_id: parentNode.id, child_id: newNode.id });
+      nodeByOutlineItem.set(item, newNode);
+    });
+
+    if (pastedNodes.length === 0) return null;
+
+    return {
+      ...baseDocument,
+      nodes: [...baseDocument.nodes, ...pastedNodes],
+      tree_edges: [...baseDocument.tree_edges, ...pastedEdges],
+    };
+  }
+
+  function applyOutlineDraft() {
+    if (!document || !selectedNode || !isKnowledgeNode(selectedNode)) return;
+
+    const outlineItems = parseOutlineText(outlineDraft, { allowPlainLines: true });
+    const descendantIds = collectDescendantNodeIds(document, selectedNode.id);
+    descendantIds.delete(selectedNode.id);
+
+    const baseDocument = {
+      ...document,
+      nodes: document.nodes.filter((node) => !descendantIds.has(node.id)),
+      tree_edges: document.tree_edges.filter((edge) => !descendantIds.has(edge.parent_id) && !descendantIds.has(edge.child_id)),
+      reference_links: document.reference_links.filter((link) => !descendantIds.has(link.source_id) && !descendantIds.has(link.target_id)),
+    };
+
+    if (outlineItems.length === 0) {
+      commitDocument(baseDocument, selectedNode.id);
+      return;
+    }
+
+    const nextDocument = insertOutlineUnderSelectedNode(outlineItems, baseDocument);
+    if (nextDocument) {
+      commitDocument(nextDocument, selectedNode.id);
+    }
   }
 
   function createSuggestedNode(suggestion: Suggestion) {
@@ -457,13 +577,13 @@ function App() {
   const nodeById = new Map(document.nodes.map((node) => [node.id, node]));
 
   return (
-    <main className="app-shell" style={{ gridTemplateColumns: `minmax(0, 1fr) 6px ${detailPanelWidth}px` }}>
-      <section className="canvas-panel">
+    <main className="app-shell" style={{ gridTemplateColumns: `minmax(360px, 1fr) 14px ${detailPanelWidth}px` }}>
+      <section className="canvas-panel" ref={canvasPanelRef}>
         <img className="canvas-logo" src={nametreeLogo} alt="Nametree logo" />
 
         <svg
           className="tree-canvas"
-          viewBox="0 0 900 700"
+          viewBox={`0 0 ${canvasSize.width} ${canvasSize.height}`}
           role="img"
           aria-label="Nametree knowledge tree"
           onWheel={(event) => {
@@ -508,7 +628,7 @@ function App() {
             setPanStart(null);
           }}
         >
-          <g transform={`translate(${450 + canvasOffset.x} ${350 + canvasOffset.y}) scale(${zoom}) translate(-450 -350)`}>
+          <g transform={`translate(${canvasSize.width / 2 + canvasOffset.x} ${canvasSize.height / 2 + canvasOffset.y}) scale(${zoom}) translate(-450 -350)`}>
 
           {!mainTrunk && seed && (
             <g
@@ -626,8 +746,22 @@ function App() {
                 setEditingNodeId(node.id);
               }}
             >
+              {selectedNodeId === node.id && (
+                node.kind === 'leaf' ? (
+                  <path className="node-selection-ring" d={createLeafShapePath()} />
+                ) : (
+                  <rect
+                    className="node-selection-ring"
+                    x={-nodeLabelWidth / 2 - 4}
+                    y={-labelHeight / 2 - 4}
+                    width={nodeLabelWidth + 8}
+                    height={labelHeight + 8}
+                    rx="9"
+                  />
+                )
+              )}
               {node.kind === 'leaf' ? (
-                <path className="leaf-node-shape" d={createLeafShapePath()} fill={node.fillColor ?? '#ffffff'} stroke={node.color} />
+                <path className="leaf-node-shape" d={createLeafShapePath()} fill={node.fillColor ?? defaultNodeFillColor} stroke={node.color} />
               ) : (
                 <rect
                   x={-nodeLabelWidth / 2}
@@ -635,7 +769,7 @@ function App() {
                   width={nodeLabelWidth}
                   height={labelHeight}
                   rx="6"
-                  fill={node.fillColor ?? '#ffffff'}
+                  fill={node.fillColor ?? defaultNodeFillColor}
                   stroke={node.color}
                 />
               )}
@@ -692,54 +826,55 @@ function App() {
 
       <aside className="detail-panel">
         {selectedNode ? (
-          <>
-            <div className="panel-heading">
-              <p className="eyebrow">当前选择</p>
-              <div className="panel-actions">
-                <button type="button" onClick={undoLastChange} disabled={undoStack.length === 0}>撤销</button>
-                <button type="button" className="danger-action" onClick={deleteSelectedNode} disabled={selectedNode.kind === 'seed_root'}>删除</button>
-              </div>
-            </div>
-
+          <div className="panel-editor">
             {isKnowledgeNode(selectedNode) ? (
               <>
-                <h2>{selectedNode.title}</h2>
-                <span className="kind-pill">{kindLabel[selectedNode.kind]}</span>
-                <label className="color-row">
-                  <span>边框颜色</span>
-                  <input
-                    type="color"
-                    value={selectedNode.color}
-                    onChange={(event) => updateSelectedNode({ color: event.target.value })}
+                <input
+                  className="panel-title-input"
+                  value={selectedNode.title}
+                  onChange={(event) => updateSelectedNode({ title: event.target.value })}
+                />
+                <div className="panel-color-grid">
+                  <label className="color-swatch-control" style={{ backgroundColor: selectedNode.color }}>
+                    <span>边框</span>
+                    <input
+                      type="color"
+                      value={selectedNode.color}
+                      onChange={(event) => updateSelectedNode({ color: event.target.value })}
+                    />
+                  </label>
+                  <label className="color-swatch-control" style={{ backgroundColor: selectedNode.fillColor ?? defaultNodeFillColor }}>
+                    <span>填充</span>
+                    <input
+                      type="color"
+                      value={selectedNode.fillColor ?? defaultNodeFillColor}
+                      onChange={(event) => updateSelectedNode({ fillColor: event.target.value })}
+                    />
+                  </label>
+                </div>
+                <details className="note-section">
+                  <summary>备注</summary>
+                  <textarea
+                    className="node-note-editor"
+                    value={selectedNode.note}
+                    onChange={(event) => updateSelectedNode({ note: event.target.value })}
                   />
-                </label>
-                <label className="color-row">
-                  <span>填充颜色</span>
-                  <input
-                    type="color"
-                    value={selectedNode.fillColor ?? '#ffffff'}
-                    onChange={(event) => updateSelectedNode({ fillColor: event.target.value })}
-                  />
-                </label>
-                <h3>可生长</h3>
-                <p className="note">{suggestions.length > 0 ? suggestions.map((suggestion) => suggestion.title).join('、') : '当前选择暂无可选生长方向。'}</p>
-                <h3>内容</h3>
+                </details>
+                <div className="outline-editor-header">
+                  <h3>大纲</h3>
+                  <button type="button" onClick={applyOutlineDraft}>应用</button>
+                </div>
                 <textarea
-                  className="node-note-editor"
-                  value={selectedNode.note}
-                  onChange={(event) => updateSelectedNode({ note: event.target.value })}
+                  className="node-outline-editor"
+                  value={outlineDraft}
+                  placeholder={`编辑当前节点的子树大纲\n每行一个节点，用两个空格缩进表示层级`}
+                  onChange={(event) => setOutlineDraft(event.target.value)}
                 />
               </>
             ) : (
-              <>
-                <h2>{selectedNode.title}</h2>
-                <span className="kind-pill">{kindLabel[selectedNode.kind]}</span>
-                <p className="note structure-note">这是树的结构或起点，不作为普通知识节点编辑。</p>
-                <h3>可生长</h3>
-                <p className="note">{suggestions.length > 0 ? suggestions.map((suggestion) => suggestion.title).join('、') : '当前选择暂无可选生长方向。'}</p>
-              </>
+              <p className="note structure-note">选择知识节点后编辑大纲。</p>
             )}
-          </>
+          </div>
         ) : (
           <p>选择一个节点查看或编辑。</p>
         )}
@@ -783,6 +918,69 @@ function isMultilineNodeTitle(title: string): boolean {
 
 function getNodeLabelHeight(node: Pick<TreeNode, 'title'>): number {
   return isMultilineNodeTitle(node.title) ? multiLineNodeLabelHeight : singleLineNodeLabelHeight;
+}
+
+function serializeNodeOutline(document: NametreeDocument, nodeId: string): string {
+  const nodeById = new Map(document.nodes.map((node) => [node.id, node]));
+  const childrenByParent = new Map<string, TreeNode[]>();
+
+  document.tree_edges.forEach((edge) => {
+    const child = nodeById.get(edge.child_id);
+    if (!child || !isKnowledgeNode(child)) return;
+
+    childrenByParent.set(edge.parent_id, [...(childrenByParent.get(edge.parent_id) ?? []), child]);
+  });
+
+  const lines: string[] = [];
+  const appendChildren = (parentId: string, level: number) => {
+    const children = childrenByParent.get(parentId) ?? [];
+
+    children.forEach((child) => {
+      lines.push(`${'  '.repeat(level)}${child.title}`);
+      appendChildren(child.id, level + 1);
+    });
+  };
+
+  appendChildren(nodeId, 0);
+  return lines.join('\n');
+}
+
+function parseOutlineText(text: string, options: { allowPlainLines?: boolean } = {}): OutlineItem[] {
+  const lines = text
+    .replace(/\r\n?/g, '\n')
+    .split('\n')
+    .map((line) => line.replace(/\s+$/g, ''))
+    .filter((line) => line.trim().length > 0);
+
+  if (!options.allowPlainLines && lines.length < 2) return [];
+
+  const parsedLines = lines.map((line) => {
+    const indentText = line.match(/^[\t ]*/)?.[0] ?? '';
+    const indent = [...indentText].reduce((sum, char) => sum + (char === '\t' ? 2 : 1), 0);
+    const title = line.trim().replace(/^(?:[-*+]\s+|\d+[.)]\s+)/, '').trim();
+    const hasMarker = title !== line.trim();
+
+    return { indent, title, hasMarker };
+  }).filter((line) => line.title.length > 0);
+
+  const hasOutlineSignal = options.allowPlainLines || parsedLines.some((line) => line.indent > 0) || parsedLines.some((line) => line.hasMarker);
+  if (!hasOutlineSignal) return [];
+
+  const sortedIndents = Array.from(new Set(parsedLines.map((line) => line.indent))).sort((a, b) => a - b);
+  const stack: OutlineItem[] = [];
+  const items: OutlineItem[] = [];
+
+  parsedLines.forEach((line) => {
+    const level = sortedIndents.indexOf(line.indent);
+    const parent = level > 0 ? stack[level - 1] ?? null : null;
+    const item: OutlineItem = { title: line.title, level, parent };
+
+    stack[level] = item;
+    stack.length = level + 1;
+    items.push(item);
+  });
+
+  return items;
 }
 
 function getDefaultChildSuggestion(selectedNode: TreeNode | null, suggestions: Suggestion[]): Suggestion | null {
@@ -854,7 +1052,7 @@ function getSuggestions(document: NametreeDocument, selectedNode: TreeNode, shap
     const parentSideFactor = parentSide === 'left' ? -1 : 1;
     const childX = selectedNode.x + parentSideFactor * 178;
     const siblingCount = document.tree_edges.filter((edge) => edge.parent_id === selectedNode.id).length;
-    const childY = findFreeRootSuggestionY(document.nodes, childX, Math.max(shape.groundY + 56, selectedNode.y + siblingCount * 70));
+    const childY = findFreeRootSuggestionY(document.nodes, childX, Math.max(shape.groundY + 56, selectedNode.y + siblingCount * rootChildSuggestionGapY));
 
     return [
       createSuggestionAt(selectedNode, 'root_branch', '子根系', childX, childY, parentSide),
@@ -901,7 +1099,7 @@ function getOutputSuggestions(document: NametreeDocument, selectedNode: TreeNode
   const placed: TreeNode[] = [...document.nodes];
   const branchY = findFreeOutputSuggestionY(placed, childX, selectedNode.y);
   placed.push({ ...selectedNode, id: `${selectedNode.id}-branch-candidate`, kind: 'branch', x: childX, y: branchY, side: parentSide });
-  const leafY = findFreeOutputSuggestionY(placed, childX, selectedNode.y - 76);
+  const leafY = findFreeOutputSuggestionY(placed, childX, selectedNode.y - (singleLineNodeLabelHeight + outputSiblingGapY));
 
   return [
     createSuggestionAt(selectedNode, 'branch', '子分支', childX, branchY, parentSide),
@@ -916,7 +1114,7 @@ function createSuggestion(parent: TreeNode, kind: NodeKind, title: string, offse
     note: `这是一个${title}节点，可以继续编辑名称、颜色和备注。`,
     kind,
     color: defaultColorByKind[kind],
-    fillColor: '#ffffff',
+    fillColor: defaultNodeFillColor,
     x: parent.x + offsetX,
     y: parent.y + offsetY,
     parentId: parent.id,
@@ -931,7 +1129,7 @@ function createSuggestionAt(parent: TreeNode, kind: NodeKind, title: string, x: 
     note: `这是一个${title}节点，可以继续编辑名称、颜色和备注。`,
     kind,
     color: defaultColorByKind[kind],
-    fillColor: '#ffffff',
+    fillColor: defaultNodeFillColor,
     x,
     y,
     parentId: parent.id,
@@ -941,11 +1139,11 @@ function createSuggestionAt(parent: TreeNode, kind: NodeKind, title: string, x: 
 
 function findFreeOutputSuggestionY(nodes: TreeNode[], x: number, preferredY: number): number {
   let y = preferredY;
-  const nodeHeight = multiLineNodeLabelHeight + 10;
+  const nodeHeight = singleLineNodeLabelHeight;
   const xTolerance = 120;
 
-  while (nodes.some((node) => Math.abs(node.x - x) < xTolerance && Math.abs(node.y - y) < nodeHeight)) {
-    y -= nodeHeight + 18;
+  while (nodes.some((node) => Math.abs(node.x - x) < xTolerance && Math.abs(node.y - y) < nodeHeight + outputSiblingGapY)) {
+    y -= nodeHeight + outputSiblingGapY;
   }
 
   return y;
@@ -953,11 +1151,11 @@ function findFreeOutputSuggestionY(nodes: TreeNode[], x: number, preferredY: num
 
 function findFreeRootSuggestionY(nodes: TreeNode[], x: number, preferredY: number): number {
   let y = preferredY;
-  const nodeHeight = 66;
+  const nodeHeight = 44;
   const xTolerance = 150;
 
-  while (nodes.some((node) => Math.abs(node.x - x) < xTolerance && Math.abs(node.y - y) < nodeHeight)) {
-    y += nodeHeight + 18;
+  while (nodes.some((node) => Math.abs(node.x - x) < xTolerance && Math.abs(node.y - y) < nodeHeight + rootSiblingGapY)) {
+    y += nodeHeight + rootSiblingGapY;
   }
 
   return y;
@@ -1010,7 +1208,7 @@ function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
   }
 
   const rootNodeHeight = 44;
-  const rootSiblingGap = 26;
+  const rootSiblingGap = rootSiblingGapY;
   const rootLevelDistance = 250;
   const rootTopY = shape.groundY + 56;
 
@@ -1085,8 +1283,8 @@ function layoutOutputTree(
 ) {
   if (!mainTrunk) return;
 
-  const nodeHeight = multiLineNodeLabelHeight + 10;
-  const siblingGap = 12;
+  const nodeHeight = singleLineNodeLabelHeight;
+  const siblingGap = outputSiblingGapY;
   const levelDistance = 178;
 
   const getSpan = (node: TreeNode): number => {

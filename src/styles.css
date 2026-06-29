@@ -37,7 +37,7 @@ button:disabled {
 .app-shell {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 6px 238px;
+  grid-template-columns: minmax(360px, 1fr) 14px 238px;
   height: 100vh;
   min-height: 0;
   overflow: hidden;
@@ -48,34 +48,31 @@ button:disabled {
 
 .detail-panel {
   position: relative;
-  min-width: 190px;
+  min-width: 238px;
   min-height: 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding: 24px 24px 92px;
+  padding: 18px 18px 64px;
   background: rgba(255, 252, 246, 0.82);
-  border-left: 1px solid rgba(58, 74, 51, 0.12);
+  border-left: 0;
 }
 
 .panel-resizer {
-  width: 6px;
+  width: 14px;
   min-height: 0;
   cursor: col-resize;
   background: transparent;
-}
-
-.panel-resizer:hover {
-  background: rgba(58, 74, 51, 0.08);
+  position: relative;
 }
 
 .brand-card {
   position: absolute;
-  left: 0;
+  right: 0;
   bottom: 0;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: flex-end;
   gap: 8px;
   padding: 0;
   opacity: 0.52;
@@ -212,20 +209,21 @@ h3 {
 
 .canvas-panel {
   position: relative;
-  display: grid;
+  display: block;
   min-height: 0;
-  place-items: center;
-  padding: 24px;
+  padding: 0;
+  overflow: hidden;
+  background: #fffcf6;
 }
 
 .canvas-logo {
   position: absolute;
-  top: 24px;
-  left: 24px;
+  top: 16px;
+  left: 16px;
   z-index: 2;
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
+  width: 48px;
+  height: 48px;
+  border-radius: 0;
   opacity: 0.58;
   pointer-events: none;
   user-select: none;
@@ -235,10 +233,10 @@ h3 {
   width: 100%;
   height: 100%;
   min-height: 0;
-  border: 1px solid rgba(58, 74, 51, 0.12);
-  border-radius: 28px;
+  border: 0;
+  border-radius: 0;
   background: #fffcf6;
-  box-shadow: 0 24px 80px rgba(63, 52, 39, 0.12);
+  box-shadow: none;
 }
 
 .zone-label {
@@ -400,15 +398,25 @@ h3 {
   cursor: pointer;
 }
 
-.tree-node rect {
+.tree-node rect,
+.tree-node .leaf-node-shape {
   stroke-width: 1.5;
-  transition: stroke-width 120ms ease;
+  transition: stroke 120ms ease, stroke-width 120ms ease;
 }
 
 .tree-node:hover rect,
-.tree-node.selected rect {
-  stroke: #111;
-  stroke-width: 2.2;
+.tree-node:hover .leaf-node-shape,
+.tree-node.selected rect:not(.node-selection-ring),
+.tree-node.selected .leaf-node-shape {
+  stroke: #4f6f46;
+  stroke-width: 2;
+}
+
+.node-selection-ring {
+  fill: none;
+  stroke: rgba(79, 111, 70, 0.24);
+  stroke-width: 7;
+  pointer-events: none;
 }
 
 .tree-node text {
@@ -470,45 +478,72 @@ h3 {
   font-weight: 700;
 }
 
-.panel-heading {
+.panel-editor {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 18px;
+  flex-direction: column;
 }
 
-.panel-heading .eyebrow {
-  margin: 0;
+.panel-title-input {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid rgba(58, 74, 51, 0.14);
+  padding: 0 0 10px;
+  color: #172033;
+  background: transparent;
+  font-size: 22px;
+  font-weight: 850;
+  line-height: 1.2;
+  outline: none;
 }
 
-.panel-actions {
-  display: flex;
-  gap: 8px;
+.panel-title-input:focus {
+  border-bottom-color: rgba(58, 74, 51, 0.36);
 }
 
-.panel-actions button {
-  border-radius: 8px;
-  padding: 6px 10px;
-  color: #43513e;
-  background: rgba(255, 252, 246, 0.92);
-  border: 1px solid rgba(58, 74, 51, 0.16);
-  font-size: 12px;
+.panel-color-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
 }
 
-.panel-actions .danger-action {
-  color: #8b3f35;
-  border-color: rgba(139, 63, 53, 0.24);
-}
-
-.kind-pill {
-  display: inline-flex;
-  padding: 6px 10px;
-  border-radius: 999px;
-  color: #43513e;
-  background: #e8eadf;
+.color-swatch-control {
+  position: relative;
+  display: grid;
+  min-height: 42px;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(58, 74, 51, 0.12);
+  border-radius: 6px;
+  color: #172033;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.color-swatch-control::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 252, 246, 0.32);
+}
+
+.color-swatch-control span {
+  position: relative;
+  z-index: 1;
+}
+
+.color-swatch-control input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
 }
 
 .color-row {
@@ -548,24 +583,81 @@ h3 {
   font-weight: 800;
 }
 
-.editor input,
-.editor select,
-.node-note-editor {
+.node-note-editor,
+.node-outline-editor {
   width: 100%;
-  min-height: 180px;
-  border: 1px solid rgba(58, 74, 51, 0.18);
-  border-radius: 14px;
-  padding: 11px 12px;
+  min-height: 96px;
+  border: 1px solid rgba(58, 74, 51, 0.1);
+  border-radius: 6px;
+  padding: 10px 11px;
   color: #172033;
-  background: rgba(255, 252, 246, 0.92);
+  background: rgba(255, 252, 246, 0.62);
   line-height: 1.6;
   resize: vertical;
   outline: none;
 }
 
-.node-note-editor:focus {
+.node-outline-editor {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  font-size: 13px;
+  tab-size: 2;
+}
+
+.note-section {
+  margin-top: 16px;
+}
+
+.note-section summary {
+  cursor: pointer;
+  color: #43513e;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.note-section .node-note-editor {
+  margin-top: 8px;
+}
+
+.node-note-editor:focus,
+.node-outline-editor:focus {
   border-color: #66745d;
   box-shadow: 0 0 0 3px rgba(102, 116, 93, 0.15);
+}
+
+.node-outline-editor::placeholder {
+  color: rgba(67, 81, 62, 0.42);
+}
+
+.outline-editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+  margin-bottom: 8px;
+}
+
+.outline-editor-header h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.outline-editor-header button {
+  padding: 5px 12px;
+  border: 1px solid rgba(79, 111, 70, 0.24);
+  border-radius: 6px;
+  color: #2f4c2b;
+  background: rgba(122, 154, 109, 0.12);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.outline-editor-header button:hover {
+  border-color: rgba(79, 111, 70, 0.38);
+  background: rgba(122, 154, 109, 0.18);
 }
 
 .editor textarea {
