@@ -45,8 +45,10 @@ Visualization rules:
 - The root system should grow deeper/wider as input root branches increase.
 - Branches created from the trunk must visually grow out of the trunk shape.
 - Branches created from the trunk must never share one identical visual departure point; each trunk child should attach to a distinct height along the trunk.
+- Trunk-level branch layout baseline: left and right trunk branches should each avoid overlap only within their own side, so opposite sides may occupy nearby vertical bands and the crown stays compact. Add a small asymmetric side offset so left/right main branch departure points do not become perfectly mirrored. Preserve creation-order stacking from lower to higher within each side.
+- Trunk-to-first-level branch edges should be a single straight angled line from the trunk to the branch label, not a partial diagonal followed by a horizontal segment. Child branch and leaf edges can keep the compact XMind-style horizontal elbow lines.
 - Branch-side layout should compromise toward XMind-style horizontal expansion: parent-child branches extend horizontally, siblings align vertically, and adding new branches pushes the output layout upward rather than below the ground line.
-- Output-side edges, including trunk-to-branch edges, should use horizontal XMind-style elbow lines instead of diagonal or curved branch lines when the user has chosen the simplified XMind layout direction.
+- Output-side edges after the first trunk-to-branch edge should keep compact XMind-style elbow lines where they support readability.
 - Branch/root growth suggestions must appear on both left and right sides when applicable; the side chosen by the user must be persisted and respected by layout.
 - Root-side growth follows the same side-selection logic as trunk/branch growth.
 - Avoid overlapping existing nodes and pending suggestion nodes; never place a suggestion where it blocks another suggestion.
