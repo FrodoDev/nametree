@@ -6,6 +6,11 @@ import { open, save } from '@tauri-apps/plugin-dialog';
 
 const treeReferenceImage = new URL('../images/tree1.jpg', import.meta.url).href;
 const nametreeLogo = treeReferenceImage;
+const nodeLabelWidth = 108;
+const singleLineNodeLabelHeight = 34;
+const multiLineNodeLabelHeight = 48;
+const nodeLabelPaddingX = 6;
+const nodeLabelPaddingY = 4;
 
 type NodeKind = 'seed_root' | 'main_trunk' | 'main_root' | 'branch' | 'leaf' | 'root_branch';
 type LinkDirection = 'one_way' | 'two_way';
@@ -602,7 +607,11 @@ function App() {
             </g>
           )}
 
-          {visibleKnowledgeNodes.map((node) => (
+          {visibleKnowledgeNodes.map((node) => {
+            const labelHeight = getNodeLabelHeight(node);
+            const isMultiLine = isMultilineNodeTitle(node.title);
+
+            return (
             <g
               key={node.id}
               className={`tree-node ${selectedNodeId === node.id ? 'selected' : ''}`}
@@ -620,28 +629,55 @@ function App() {
               {node.kind === 'leaf' ? (
                 <path className="leaf-node-shape" d={createLeafShapePath()} fill={node.fillColor ?? '#ffffff'} stroke={node.color} />
               ) : (
-                <rect x="-54" y="-17" width="108" height="34" rx="6" fill={node.fillColor ?? '#ffffff'} stroke={node.color} />
+                <rect
+                  x={-nodeLabelWidth / 2}
+                  y={-labelHeight / 2}
+                  width={nodeLabelWidth}
+                  height={labelHeight}
+                  rx="6"
+                  fill={node.fillColor ?? '#ffffff'}
+                  stroke={node.color}
+                />
               )}
               {editingNodeId === node.id ? (
-                <foreignObject x="-50" y="-14" width="100" height="28">
-                  <input
+                <foreignObject
+                  x={-nodeLabelWidth / 2 + nodeLabelPaddingX}
+                  y={-labelHeight / 2 + nodeLabelPaddingY}
+                  width={nodeLabelWidth - nodeLabelPaddingX * 2}
+                  height={labelHeight - nodeLabelPaddingY * 2}
+                >
+                  <textarea
                     className="node-title-input"
                     autoFocus
                     value={node.title}
                     onChange={(event) => updateNode(node.id, { title: event.target.value })}
                     onBlur={() => setEditingNodeId(null)}
                     onKeyDown={(event) => {
-                      if (event.key === 'Enter' || event.key === 'Escape') {
+                      if (event.key === 'Enter' && !event.altKey) {
+                        event.preventDefault();
+                        event.currentTarget.blur();
+                      }
+
+                      if (event.key === 'Escape') {
                         event.currentTarget.blur();
                       }
                     }}
                   />
                 </foreignObject>
               ) : (
-                <text textAnchor="middle" y="5">{node.title}</text>
+                <foreignObject
+                  className={`node-title-view ${isMultiLine ? 'multi-line' : 'single-line'}`}
+                  x={-nodeLabelWidth / 2 + nodeLabelPaddingX}
+                  y={-labelHeight / 2 + nodeLabelPaddingY}
+                  width={nodeLabelWidth - nodeLabelPaddingX * 2}
+                  height={labelHeight - nodeLabelPaddingY * 2}
+                >
+                  <div>{node.title}</div>
+                </foreignObject>
               )}
             </g>
-          ))}
+            );
+          })}
           </g>
         </svg>
       </section>
@@ -739,6 +775,14 @@ function collectDescendantNodeIds(document: NametreeDocument, nodeId: string): S
 
 function isKnowledgeNode(node: TreeNode): boolean {
   return node.kind === 'branch' || node.kind === 'leaf' || node.kind === 'root_branch';
+}
+
+function isMultilineNodeTitle(title: string): boolean {
+  return title.includes('\n');
+}
+
+function getNodeLabelHeight(node: Pick<TreeNode, 'title'>): number {
+  return isMultilineNodeTitle(node.title) ? multiLineNodeLabelHeight : singleLineNodeLabelHeight;
 }
 
 function getDefaultChildSuggestion(selectedNode: TreeNode | null, suggestions: Suggestion[]): Suggestion | null {
@@ -897,7 +941,7 @@ function createSuggestionAt(parent: TreeNode, kind: NodeKind, title: string, x: 
 
 function findFreeOutputSuggestionY(nodes: TreeNode[], x: number, preferredY: number): number {
   let y = preferredY;
-  const nodeHeight = 58;
+  const nodeHeight = multiLineNodeLabelHeight + 10;
   const xTolerance = 120;
 
   while (nodes.some((node) => Math.abs(node.x - x) < xTolerance && Math.abs(node.y - y) < nodeHeight)) {
@@ -1041,7 +1085,7 @@ function layoutOutputTree(
 ) {
   if (!mainTrunk) return;
 
-  const nodeHeight = 44;
+  const nodeHeight = multiLineNodeLabelHeight + 10;
   const siblingGap = 12;
   const levelDistance = 178;
 
@@ -1153,7 +1197,7 @@ function isRootEdge(parent: Pick<TreeNode, 'kind'>, child: Pick<TreeNode, 'kind'
 
 function createOutputEdgePath(parent: Pick<TreeNode, 'kind' | 'x' | 'y'>, child: Pick<TreeNode, 'kind' | 'x' | 'y'>, shape: TreeShape): string {
   const sideFactor = child.x < shape.centerX ? -1 : 1;
-  const childEdgeX = child.x - sideFactor * 54;
+  const childEdgeX = child.x - sideFactor * (nodeLabelWidth / 2);
 
   if (parent.kind === 'main_trunk') {
     const parentEdgeX = shape.centerX + sideFactor * 10;
@@ -1162,7 +1206,7 @@ function createOutputEdgePath(parent: Pick<TreeNode, 'kind' | 'x' | 'y'>, child:
     return `M ${parentEdgeX} ${parentEdgeY} L ${childEdgeX} ${child.y}`;
   }
 
-  const parentEdgeX = parent.x + sideFactor * 54;
+  const parentEdgeX = parent.x + sideFactor * (nodeLabelWidth / 2);
   const parentEdgeY = parent.y;
   const middleX = (parentEdgeX + childEdgeX) / 2;
 
@@ -1214,9 +1258,9 @@ function createRootEdgePath(parent: Pick<TreeNode, 'kind' | 'x' | 'y'>, child: P
     return `M ${parentEdge.x} ${parentEdge.y} C ${firstControl.x} ${firstControl.y}, ${secondControl.x} ${secondControl.y}, ${labelEdge.x} ${labelEdge.y}`;
   }
 
-  const parentEdgeX = parent.x + sideFactor * 54;
+  const parentEdgeX = parent.x + sideFactor * (nodeLabelWidth / 2);
   const parentEdgeY = parent.y;
-  const childEdgeX = child.x - sideFactor * 54;
+  const childEdgeX = child.x - sideFactor * (nodeLabelWidth / 2);
   const middleX = (parentEdgeX + childEdgeX) / 2;
 
   return `M ${parentEdgeX} ${parentEdgeY} L ${middleX} ${parentEdgeY} L ${middleX} ${child.y} L ${childEdgeX} ${child.y}`;

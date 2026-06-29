@@ -418,6 +418,52 @@ h3 {
   pointer-events: none;
 }
 
+.node-title-view {
+  pointer-events: none;
+}
+
+.node-title-view div,
+.node-title-input {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  color: #333;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.35;
+  text-align: center;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.node-title-view.single-line div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.node-title-view.multi-line div {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.node-title-input {
+  display: block;
+  resize: none;
+  outline: none;
+  overflow: hidden;
+}
+
+.node-title-input:focus {
+  outline: none;
+}
+
 .tree-node .node-kind {
   fill: rgba(23, 32, 51, 0.68);
   font-size: 10px;
