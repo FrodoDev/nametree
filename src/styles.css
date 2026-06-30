@@ -56,12 +56,12 @@ button:disabled {
   min-width: 0;
   height: 28px;
   padding: 0 92px;
-  color: #333333;
+  color: #ffffff;
   font-size: 13px;
   font-weight: 700;
   line-height: 1;
-  background: #ffffff;
-  border-bottom: 1px solid #eeeeee;
+  background: #3f8a2a;
+  border-bottom: 1px solid rgba(40, 112, 24, 0.58);
   user-select: none;
   -webkit-user-select: none;
   -webkit-app-region: drag;
