@@ -1,57 +1,50 @@
 [
   {
-    "file": "JAY.nt",
+    "file": "JAY bak.nt",
     "mainTrunk": {
       "x": 450,
       "y": 335
     },
     "rootCount": {
-      "left": 3,
+      "left": 2,
       "right": 3,
-      "total": 6
+      "total": 5
     },
     "angles": [
       {
-        "title": "成长过程主要事件",
+        "title": "成长经历",
         "side": "right",
         "angle": 66.3,
         "x": 551.7,
         "y": 621.8
       },
       {
-        "title": "生平",
+        "title": "出道契机",
         "side": "left",
-        "angle": 66.3,
-        "x": 348.3,
-        "y": 621.8
+        "angle": 23.3,
+        "x": 213.6,
+        "y": 491.7
       },
       {
-        "title": "主要舆论新闻",
-        "side": "left",
-        "angle": 35.6,
-        "x": -147.8,
-        "y": 818.5
-      },
-      {
-        "title": "关键合作者",
+        "title": "重要合伙人",
         "side": "right",
         "angle": 35.6,
         "x": 1047.8,
         "y": 818.5
       },
       {
-        "title": "音乐养分",
+        "title": "感情与绯闻",
         "side": "left",
-        "angle": 9.9,
-        "x": -154.8,
-        "y": 495.2
+        "angle": 7.9,
+        "x": -314.6,
+        "y": 496.3
       },
       {
-        "title": "商业与产业",
+        "title": "重要事件",
         "side": "right",
         "angle": 9.9,
-        "x": 1054.8,
-        "y": 495.2
+        "x": 1817,
+        "y": 629.6
       }
     ],
     "highBandRoots": 2,
@@ -61,10 +54,72 @@
     },
     "crossingRisk": 0,
     "bounds": {
-      "minX": -458.8,
-      "maxX": 1351.8,
-      "minY": -210,
-      "maxY": 905.5
+      "minX": -868.6,
+      "maxX": 2371,
+      "minY": -3906,
+      "maxY": 1675
+    },
+    "warnings": []
+  },
+  {
+    "file": "JAY.nt",
+    "mainTrunk": {
+      "x": 450,
+      "y": 335
+    },
+    "rootCount": {
+      "left": 2,
+      "right": 3,
+      "total": 5
+    },
+    "angles": [
+      {
+        "title": "成长经历",
+        "side": "right",
+        "angle": 66.3,
+        "x": 551.7,
+        "y": 621.8
+      },
+      {
+        "title": "出道契机",
+        "side": "left",
+        "angle": 23.3,
+        "x": 213.6,
+        "y": 491.7
+      },
+      {
+        "title": "重要合伙人",
+        "side": "right",
+        "angle": 35.6,
+        "x": 1047.8,
+        "y": 818.5
+      },
+      {
+        "title": "感情与绯闻",
+        "side": "left",
+        "angle": 7.9,
+        "x": -314.6,
+        "y": 496.3
+      },
+      {
+        "title": "重要事件",
+        "side": "right",
+        "angle": 9.9,
+        "x": 1817,
+        "y": 629.6
+      }
+    ],
+    "highBandRoots": 2,
+    "overlaps": {
+      "count": 0,
+      "pairs": []
+    },
+    "crossingRisk": 0,
+    "bounds": {
+      "minX": -868.6,
+      "maxX": 2371,
+      "minY": -3906,
+      "maxY": 1675
     },
     "warnings": []
   },
@@ -372,6 +427,70 @@
       "maxY": 1240.8
     },
     "warnings": []
+  },
+  {
+    "file": "sxfdl.nt",
+    "mainTrunk": {
+      "x": 450,
+      "y": 335
+    },
+    "rootCount": {
+      "left": 2,
+      "right": 3,
+      "total": 5
+    },
+    "angles": [
+      {
+        "title": "游戏缘起",
+        "side": "right",
+        "angle": 66.3,
+        "x": 551.7,
+        "y": 621.8
+      },
+      {
+        "title": "她的样子",
+        "side": "left",
+        "angle": 23.3,
+        "x": 213.6,
+        "y": 491.7
+      },
+      {
+        "title": "我的感受",
+        "side": "right",
+        "angle": 35.6,
+        "x": 1047.8,
+        "y": 818.5
+      },
+      {
+        "title": "我们的象征",
+        "side": "left",
+        "angle": 7.9,
+        "x": -314.6,
+        "y": 496.3
+      },
+      {
+        "title": "冲突与确认",
+        "side": "right",
+        "angle": 9.9,
+        "x": 1054.8,
+        "y": 495.2
+      }
+    ],
+    "highBandRoots": 3,
+    "overlaps": {
+      "count": 0,
+      "pairs": []
+    },
+    "crossingRisk": 0,
+    "bounds": {
+      "minX": -618.6,
+      "maxX": 1358.8,
+      "minY": -622,
+      "maxY": 940.5
+    },
+    "warnings": [
+      "高位主根偏多：3/5"
+    ]
   },
   {
     "file": "橙汁儿.nt",

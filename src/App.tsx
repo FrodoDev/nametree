@@ -1367,8 +1367,14 @@ function getSuggestions(document: NametreeDocument, selectedNode: TreeNode, shap
 
 function getOutputSuggestions(document: NametreeDocument, selectedNode: TreeNode, shape: TreeShape): Suggestion[] {
   if (selectedNode.kind === 'main_trunk') {
-    const leftX = shape.centerX - 238;
-    const rightX = shape.centerX + 238;
+    const outputChildren = document.tree_edges
+      .filter((edge) => edge.parent_id === selectedNode.id)
+      .map((edge) => document.nodes.find((node) => node.id === edge.child_id))
+      .filter((node): node is TreeNode => node?.kind === 'branch' || node?.kind === 'leaf');
+    const leftBranchCount = outputChildren.filter((node) => (node.side ?? 'right') === 'left').length;
+    const rightBranchCount = outputChildren.filter((node) => (node.side ?? 'right') === 'right').length;
+    const leftX = shape.centerX - getTrunkBranchDistance(leftBranchCount, leftBranchCount + 1);
+    const rightX = shape.centerX + getTrunkBranchDistance(rightBranchCount, rightBranchCount + 1);
     const placed: TreeNode[] = [...document.nodes];
     const leftY = findFreeOutputSuggestionY(placed, leftX, shape.groundY - 112);
     placed.push({ ...selectedNode, id: `${selectedNode.id}-left-candidate`, kind: 'branch', x: leftX, y: leftY, side: 'left' });
@@ -1438,6 +1444,18 @@ function createSuggestionAt(parent: TreeNode, kind: NodeKind, title: string, x: 
     parentId: parent.id,
     side,
   };
+}
+
+function getTrunkBranchDistance(index: number, total: number): number {
+  if (total <= 1) return 238;
+
+  const position = index / Math.max(1, total - 1);
+  const crown = Math.sin(position * Math.PI);
+  const scale = Math.min(1, Math.max(0, (total - 2) / 8));
+  const edgeDistance = 210 + scale * 12;
+  const centerDistance = 292 + scale * 28;
+
+  return Math.round(edgeDistance + (centerDistance - edgeDistance) * crown);
 }
 
 function findFreeOutputSuggestionY(nodes: TreeNode[], x: number, preferredY: number): number {
@@ -1651,9 +1669,10 @@ function layoutOutputTree(
     const children = trunkChildren.filter((node) => (node.side ?? 'right') === side);
     let cursor = shape.groundY - 82 + (side === 'right' ? -22 : 0);
 
-    children.forEach((node) => {
+    children.forEach((node, index) => {
       const span = getSpan(node);
-      layoutSubtree(node, sideFactor, shape.centerX + sideFactor * 238, cursor - span / 2);
+      const branchDistance = getTrunkBranchDistance(index, children.length);
+      layoutSubtree(node, sideFactor, shape.centerX + sideFactor * branchDistance, cursor - span / 2);
       cursor -= span + siblingGap;
     });
   };
