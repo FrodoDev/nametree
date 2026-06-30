@@ -490,6 +490,46 @@ h3 {
   pointer-events: none;
 }
 
+.document-title-tag {
+  cursor: text;
+}
+
+.document-title-tag text {
+  fill: rgba(23, 32, 51, 0.7);
+  font-size: 19px;
+  font-weight: 780;
+  letter-spacing: 0;
+  paint-order: stroke;
+  stroke: rgba(255, 255, 255, 0.72);
+  stroke-width: 6px;
+  stroke-linejoin: round;
+}
+
+.document-title-tag.placeholder text {
+  fill: rgba(23, 32, 51, 0.34);
+  font-size: 15px;
+  font-weight: 680;
+}
+
+.document-title-input {
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(58, 74, 51, 0.14);
+  border-radius: 6px;
+  padding: 3px 8px;
+  color: #172033;
+  background: rgba(255, 255, 255, 0.9);
+  font-size: 18px;
+  font-weight: 760;
+  line-height: 1.2;
+  outline: none;
+}
+
+.document-title-input:focus {
+  border-color: rgba(63, 138, 42, 0.46);
+  box-shadow: 0 0 0 3px rgba(63, 138, 42, 0.12);
+}
+
 .node-title-view {
   pointer-events: none;
 }

@@ -45,6 +45,7 @@ type ReferenceLink = {
 type NametreeDocument = {
   id: string;
   title: string;
+  titleTag?: string;
   slogan: string;
   nodes: TreeNode[];
   tree_edges: TreeEdge[];
@@ -147,6 +148,8 @@ function App() {
   const [documentPath, setDocumentPath] = useState<string | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
+  const [isEditingDocumentTitle, setIsEditingDocumentTitle] = useState(false);
+  const [documentTitleDraft, setDocumentTitleDraft] = useState('');
   const [zoom, setZoom] = useState(1);
   const [canvasOffset, setCanvasOffset] = useState({ x: 0, y: 0 });
   const [panStart, setPanStart] = useState<{ pointerX: number; pointerY: number; offsetX: number; offsetY: number } | null>(null);
@@ -156,6 +159,7 @@ function App() {
   const [outlineDraft, setOutlineDraft] = useState('');
   const canvasPanelRef = useRef<HTMLElement | null>(null);
   const nodeTitleInputRef = useRef<HTMLTextAreaElement | null>(null);
+  const documentTitleInputRef = useRef<HTMLInputElement | null>(null);
   const [canvasSize, setCanvasSize] = useState({ width: 900, height: 700 });
 
   useEffect(() => {
@@ -198,6 +202,14 @@ function App() {
       input.scrollTop = input.scrollHeight;
     });
   }, [editingNodeId]);
+
+  useEffect(() => {
+    if (!isEditingDocumentTitle) return;
+
+    requestAnimationFrame(() => {
+      documentTitleInputRef.current?.select();
+    });
+  }, [isEditingDocumentTitle]);
 
   useEffect(() => {
     if (!panelResizeStart) return;
@@ -359,6 +371,7 @@ function App() {
     setDocumentPath(null);
     setSelectedNodeId(normalizedTree.nodes[0]?.id ?? null);
     setEditingNodeId(null);
+    setIsEditingDocumentTitle(false);
     setCanvasOffset({ x: 0, y: 0 });
     setZoom(1);
   }
@@ -394,6 +407,7 @@ function App() {
     setDocumentPath(openedFile.path);
     setSelectedNodeId(normalizedTree.nodes[0]?.id ?? null);
     setEditingNodeId(null);
+    setIsEditingDocumentTitle(false);
     setCanvasOffset({ x: 0, y: 0 });
     setZoom(1);
   }
@@ -406,6 +420,20 @@ function App() {
     setSelectedNodeId(nextSelectedNodeId ?? null);
   }
 
+  function updateDocumentTitleTag(titleTag: string) {
+    if (!document || titleTag === (document.titleTag ?? '')) return;
+
+    commitDocument({
+      ...document,
+      titleTag,
+    });
+  }
+
+  function finishDocumentTitleEdit() {
+    updateDocumentTitleTag(documentTitleDraft.trim());
+    setIsEditingDocumentTitle(false);
+  }
+
   function undoLastChange() {
     setUndoStack((stack) => {
       const previousDocument = stack[stack.length - 1];
@@ -414,6 +442,7 @@ function App() {
       setDocument(previousDocument);
       setSelectedNodeId((currentId) => previousDocument.nodes.some((node) => node.id === currentId) ? currentId : previousDocument.nodes[0]?.id ?? null);
       setEditingNodeId(null);
+      setIsEditingDocumentTitle(false);
       return stack.slice(0, -1);
     });
   }
@@ -698,6 +727,8 @@ function App() {
   const mainTrunk = document.nodes.find((node) => node.kind === 'main_trunk');
   const nodeById = new Map(document.nodes.map((node) => [node.id, node]));
   const windowTitle = getDocumentFileName(document, documentPath);
+  const titleTagText = getDocumentTitleTagText(document, documentPath);
+  const isTitleTagPlaceholder = titleTagText.isPlaceholder;
 
   return (
     <main className="app-shell" style={{ gridTemplateColumns: `minmax(360px, 1fr) 6px ${detailPanelWidth}px` }}>
@@ -760,6 +791,37 @@ function App() {
           <g transform={`translate(${canvasSize.width / 2 + canvasOffset.x} ${canvasSize.height / 2 + canvasOffset.y}) scale(${zoom}) translate(-450 -350)`}>
             <rect className="canvas-branch-ground" x="-50000" y="-50000" width="100000" height={50000 + shape.groundY} />
             <rect className="canvas-root-ground" x="-50000" y={shape.groundY} width="100000" height="100000" />
+
+            <g
+              className={`document-title-tag ${isTitleTagPlaceholder ? 'placeholder' : ''}`}
+              transform={`translate(${shape.centerX + 28}, ${shape.groundY - 8})`}
+              onPointerDown={(event) => event.stopPropagation()}
+              onDoubleClick={() => {
+                setSelectedNodeId(null);
+                setEditingNodeId(null);
+                setDocumentTitleDraft(document.title || '未命名作品');
+                setIsEditingDocumentTitle(true);
+              }}
+            >
+              {isEditingDocumentTitle ? (
+                <foreignObject x="0" y="-22" width="220" height="34">
+                  <input
+                    ref={documentTitleInputRef}
+                    className="document-title-input"
+                    value={documentTitleDraft}
+                    onChange={(event) => setDocumentTitleDraft(event.target.value)}
+                    onBlur={finishDocumentTitleEdit}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === 'Escape') {
+                        event.currentTarget.blur();
+                      }
+                    }}
+                  />
+                </foreignObject>
+              ) : (
+                <text x="0" y="0">{titleTagText.text}</text>
+              )}
+            </g>
 
           {!mainTrunk && seed && (
             <g
@@ -880,7 +942,7 @@ function App() {
             >
               {selectedNodeId === node.id && (
                 node.kind === 'leaf' ? (
-                  <path className="node-selection-ring" d={createLeafShapePath()} transform="scale(1.16)" stroke={node.color} />
+                  <path className="node-selection-ring" d={createLeafShapePath()} transform="scale(1.09)" stroke={node.color} />
                 ) : (
                   <rect
                     className="node-selection-ring"
@@ -1224,6 +1286,29 @@ function getDocumentFileName(document: NametreeDocument, documentPath?: string |
 
   const title = document.title.trim() || '未保存';
   return title.endsWith('.nt') ? title : `${title}.nt`;
+}
+
+function getDocumentTitleTagText(document: NametreeDocument, documentPath?: string | null): { text: string; isPlaceholder: boolean } {
+  const titleTag = document.titleTag?.trim();
+  if (titleTag) {
+    return { text: titleTag, isPlaceholder: false };
+  }
+
+  if (documentPath) {
+    const fileName = documentPath.split(/[\\/]/).pop() ?? '';
+    return { text: stripNtExtension(fileName) || '双击填写作品主题', isPlaceholder: false };
+  }
+
+  const title = document.title.trim();
+  if (!title || title === '未保存') {
+    return { text: '双击填写作品主题', isPlaceholder: true };
+  }
+
+  return { text: stripNtExtension(title), isPlaceholder: false };
+}
+
+function stripNtExtension(fileName: string): string {
+  return fileName.replace(/\.nt$/i, '');
 }
 
 function getTreeShape(document: NametreeDocument): TreeShape {
