@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 import { getCurrentWindow } from '@tauri-apps/api/window';
@@ -223,7 +223,11 @@ function App() {
   useEffect(() => {
     if (!document) return;
 
-    void getCurrentWindow().setTitle(getDocumentFileName(document, documentPath));
+    const windowTitle = getDocumentFileName(document, documentPath);
+    window.document.title = windowTitle;
+    void getCurrentWindow().setTitle(windowTitle).catch((error) => {
+      console.error('Failed to update Nametree window title', error);
+    });
   }, [document, documentPath]);
 
   const selectedNode = useMemo(
@@ -245,10 +249,9 @@ function App() {
     () => (document && selectedNode ? getSuggestions(document, selectedNode, shape) : []),
     [document, selectedNode, shape],
   );
-  const groundScreenY = Math.round(canvasSize.height / 2 + canvasOffset.y + (shape.groundY - 350) * zoom);
 
   useEffect(() => {
-    if (!document || !selectedNode || !isKnowledgeNode(selectedNode)) {
+    if (!document || !selectedNode || !canEditOutline(selectedNode)) {
       setOutlineDraft('');
       return;
     }
@@ -484,21 +487,27 @@ function App() {
     }
   }
 
-  function insertOutlineUnderSelectedNode(outlineItems: OutlineItem[], baseDocument = document) {
-    if (!baseDocument || !selectedNode || !isKnowledgeNode(selectedNode)) return null;
+  function insertOutlineUnderNode(
+    outlineItems: OutlineItem[],
+    parentNode: TreeNode,
+    defaultKind: NodeKind,
+    baseDocument = document,
+    sideForItem?: (item: OutlineItem) => GrowthSide,
+  ) {
+    if (!baseDocument) return null;
 
     const pastedNodes: TreeNode[] = [];
     const pastedEdges: TreeEdge[] = [];
     const nodeByOutlineItem = new Map<OutlineItem, TreeNode>();
-    const defaultKind: NodeKind = selectedNode.kind === 'root_branch' ? 'root_branch' : 'branch';
-    const defaultSide = selectedNode.side ?? (selectedNode.x < shape.centerX ? 'left' : 'right');
+    const parentDefaultSide = parentNode.side ?? (parentNode.x < shape.centerX ? 'left' : 'right');
 
     outlineItems.forEach((item) => {
-      const parentNode = item.parent ? nodeByOutlineItem.get(item.parent) ?? selectedNode : selectedNode;
-      if (!parentNode) return;
+      const outlineParentNode = item.parent ? nodeByOutlineItem.get(item.parent) ?? parentNode : parentNode;
+      if (!outlineParentNode) return;
 
-      const siblingCount = pastedEdges.filter((edge) => edge.parent_id === parentNode.id).length;
-      const sideFactor = defaultSide === 'left' ? -1 : 1;
+      const siblingCount = pastedEdges.filter((edge) => edge.parent_id === outlineParentNode.id).length;
+      const itemSide = sideForItem?.(item) ?? outlineParentNode.side ?? parentDefaultSide;
+      const sideFactor = itemSide === 'left' ? -1 : 1;
       const newNode: TreeNode = {
         id: crypto.randomUUID(),
         title: item.title,
@@ -506,13 +515,13 @@ function App() {
         kind: defaultKind,
         color: defaultColorByKind[defaultKind],
         fillColor: defaultNodeFillColor,
-        x: parentNode.x + sideFactor * 178,
-        y: parentNode.y + siblingCount * (multiLineNodeLabelHeight + outputSiblingGapY),
-        side: defaultSide,
+        x: outlineParentNode.x + sideFactor * 178,
+        y: outlineParentNode.y + siblingCount * (multiLineNodeLabelHeight + outputSiblingGapY),
+        side: itemSide,
       };
 
       pastedNodes.push(newNode);
-      pastedEdges.push({ parent_id: parentNode.id, child_id: newNode.id });
+      pastedEdges.push({ parent_id: outlineParentNode.id, child_id: newNode.id });
       nodeByOutlineItem.set(item, newNode);
     });
 
@@ -525,10 +534,107 @@ function App() {
     };
   }
 
+  function insertOutlineUnderSelectedNode(outlineItems: OutlineItem[], baseDocument = document) {
+    if (!baseDocument || !selectedNode || !isKnowledgeNode(selectedNode)) return null;
+
+    const defaultKind: NodeKind = selectedNode.kind === 'root_branch' ? 'root_branch' : 'branch';
+    return insertOutlineUnderNode(outlineItems, selectedNode, defaultKind, baseDocument);
+  }
+
+  function getOutlineItemsUnderGroup(outlineItems: OutlineItem[], groupTitle: string): OutlineItem[] {
+    const group = outlineItems.find((item) => item.parent === null && item.title.trim() === groupTitle);
+    if (!group) return [];
+
+    const items: OutlineItem[] = [];
+    const itemMap = new Map<OutlineItem, OutlineItem>();
+
+    outlineItems.forEach((item) => {
+      let parent = item.parent;
+      let isDescendant = false;
+      while (parent) {
+        if (parent === group) {
+          isDescendant = true;
+          break;
+        }
+        parent = parent.parent;
+      }
+
+      if (!isDescendant) return;
+
+      const clonedParent = item.parent === group ? null : item.parent ? itemMap.get(item.parent) ?? null : null;
+      const clonedItem: OutlineItem = {
+        title: item.title,
+        level: Math.max(0, item.level - group.level - 1),
+        parent: clonedParent,
+      };
+      itemMap.set(item, clonedItem);
+      items.push(clonedItem);
+    });
+
+    return items;
+  }
+
+  function getOutlineTopLevelSide(item: OutlineItem, topLevelItems: OutlineItem[]): GrowthSide {
+    let topLevel = item;
+    while (topLevel.parent) {
+      topLevel = topLevel.parent;
+    }
+
+    const index = Math.max(0, topLevelItems.findIndex((candidate) => candidate === topLevel));
+    return index % 2 === 0 ? 'right' : 'left';
+  }
+
+  function applyTrunkOutlineDraft(outlineItems: OutlineItem[]) {
+    if (!document || !selectedNode || selectedNode.kind !== 'main_trunk') return;
+
+    const descendantIds = collectDescendantNodeIds(document, selectedNode.id);
+    descendantIds.delete(selectedNode.id);
+
+    let baseDocument: NametreeDocument = {
+      ...document,
+      nodes: document.nodes.filter((node) => !descendantIds.has(node.id)),
+      tree_edges: document.tree_edges.filter((edge) => !descendantIds.has(edge.parent_id) && !descendantIds.has(edge.child_id)),
+      reference_links: document.reference_links.filter((link) => !descendantIds.has(link.source_id) && !descendantIds.has(link.target_id)),
+    };
+
+    const branchItems = getOutlineItemsUnderGroup(outlineItems, '树枝');
+    const rootItems = getOutlineItemsUnderGroup(outlineItems, '树根');
+    const topLevelBranchItems = branchItems.filter((item) => item.parent === null);
+    const topLevelRootItems = rootItems.filter((item) => item.parent === null);
+
+    const branchDocument = insertOutlineUnderNode(
+      branchItems,
+      selectedNode,
+      'branch',
+      baseDocument,
+      (item) => getOutlineTopLevelSide(item, topLevelBranchItems),
+    );
+    if (branchDocument) baseDocument = branchDocument;
+
+    const rootDocument = insertOutlineUnderNode(
+      rootItems,
+      selectedNode,
+      'root_branch',
+      baseDocument,
+      (item) => getOutlineTopLevelSide(item, topLevelRootItems),
+    );
+    if (rootDocument) baseDocument = rootDocument;
+
+    commitDocument(baseDocument, selectedNode.id);
+  }
+
   function applyOutlineDraft() {
-    if (!document || !selectedNode || !isKnowledgeNode(selectedNode)) return;
+    if (!document || !selectedNode || !canEditOutline(selectedNode)) return;
 
     const outlineItems = parseOutlineText(outlineDraft, { allowPlainLines: true });
+
+    if (selectedNode.kind === 'main_trunk') {
+      applyTrunkOutlineDraft(outlineItems);
+      return;
+    }
+
+    if (!isKnowledgeNode(selectedNode)) return;
+
     const descendantIds = collectDescendantNodeIds(document, selectedNode.id);
     descendantIds.delete(selectedNode.id);
 
@@ -591,13 +697,16 @@ function App() {
   const seed = document.nodes.find((node) => node.kind === 'seed_root');
   const mainTrunk = document.nodes.find((node) => node.kind === 'main_trunk');
   const nodeById = new Map(document.nodes.map((node) => [node.id, node]));
+  const windowTitle = getDocumentFileName(document, documentPath);
 
   return (
-    <main className="app-shell" style={{ gridTemplateColumns: `minmax(360px, 1fr) 14px ${detailPanelWidth}px` }}>
+    <main className="app-shell" style={{ gridTemplateColumns: `minmax(360px, 1fr) 6px ${detailPanelWidth}px` }}>
+      <header className="window-titlebar" data-tauri-drag-region>
+        <span data-tauri-drag-region>{windowTitle}</span>
+      </header>
       <section
         className="canvas-panel"
         ref={canvasPanelRef}
-        style={{ '--ground-screen-y': `${Math.max(0, groundScreenY)}px` } as CSSProperties}
       >
         <img className="canvas-logo" src={nametreeLogo} alt="Nametree logo" />
 
@@ -649,6 +758,8 @@ function App() {
           }}
         >
           <g transform={`translate(${canvasSize.width / 2 + canvasOffset.x} ${canvasSize.height / 2 + canvasOffset.y}) scale(${zoom}) translate(-450 -350)`}>
+            <rect className="canvas-branch-ground" x="-50000" y="-50000" width="100000" height={50000 + shape.groundY} />
+            <rect className="canvas-root-ground" x="-50000" y={shape.groundY} width="100000" height="100000" />
 
           {!mainTrunk && seed && (
             <g
@@ -899,8 +1010,21 @@ function App() {
                   onChange={(event) => setOutlineDraft(event.target.value)}
                 />
               </>
+            ) : selectedNode.kind === 'main_trunk' ? (
+              <>
+                <div className="outline-editor-header">
+                  <h3>大纲</h3>
+                  <button type="button" onClick={applyOutlineDraft}>应用</button>
+                </div>
+                <textarea
+                  className="node-outline-editor"
+                  value={outlineDraft}
+                  placeholder={`树枝\n  输出分支\n\n树根\n  输入材料`}
+                  onChange={(event) => setOutlineDraft(event.target.value)}
+                />
+              </>
             ) : (
-              <p className="note structure-note">选择知识节点后编辑大纲。</p>
+              <p className="note structure-note">选择主干或知识节点后编辑大纲。</p>
             )}
           </div>
         ) : (
@@ -938,6 +1062,10 @@ function collectDescendantNodeIds(document: NametreeDocument, nodeId: string): S
 
 function isKnowledgeNode(node: TreeNode): boolean {
   return node.kind === 'branch' || node.kind === 'leaf' || node.kind === 'root_branch';
+}
+
+function canEditOutline(node: TreeNode): boolean {
+  return node.kind === 'main_trunk' || isKnowledgeNode(node);
 }
 
 function getTitleCharWidth(char: string): number {
@@ -997,6 +1125,7 @@ function getNodeVisualHeight(node: Pick<TreeNode, 'title'>): number {
 
 function serializeNodeOutline(document: NametreeDocument, nodeId: string): string {
   const nodeById = new Map(document.nodes.map((node) => [node.id, node]));
+  const selectedNode = nodeById.get(nodeId);
   const childrenByParent = new Map<string, TreeNode[]>();
 
   document.tree_edges.forEach((edge) => {
@@ -1007,14 +1136,23 @@ function serializeNodeOutline(document: NametreeDocument, nodeId: string): strin
   });
 
   const lines: string[] = [];
-  const appendChildren = (parentId: string, level: number) => {
+  const appendChildren = (parentId: string, level: number, filter?: (node: TreeNode) => boolean) => {
     const children = childrenByParent.get(parentId) ?? [];
 
-    children.forEach((child) => {
+    children.filter((child) => filter?.(child) ?? true).forEach((child) => {
       lines.push(`${'  '.repeat(level)}${child.title}`);
       appendChildren(child.id, level + 1);
     });
   };
+
+  if (selectedNode?.kind === 'main_trunk') {
+    lines.push('树枝');
+    appendChildren(nodeId, 1, (child) => child.kind === 'branch' || child.kind === 'leaf');
+    lines.push('');
+    lines.push('树根');
+    appendChildren(nodeId, 1, (child) => child.kind === 'root_branch');
+    return lines.join('\n');
+  }
 
   appendChildren(nodeId, 0);
   return lines.join('\n');
