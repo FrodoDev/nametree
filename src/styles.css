@@ -91,6 +91,20 @@ button:disabled {
   border-left: 1px solid #eeeeee;
 }
 
+.export-image-button {
+  width: 100%;
+  margin-bottom: 14px;
+  padding: 9px 12px;
+  border: 1px solid rgba(95, 127, 69, 0.28);
+  color: #426235;
+  background: #f8fbf4;
+  font-size: 13px;
+}
+
+.export-image-button:hover {
+  background: #eef6e7;
+}
+
 .panel-resizer {
   width: 6px;
   min-height: 0;

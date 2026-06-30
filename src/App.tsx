@@ -158,6 +158,7 @@ function App() {
   const [panelResizeStart, setPanelResizeStart] = useState<{ pointerX: number; width: number } | null>(null);
   const [outlineDraft, setOutlineDraft] = useState('');
   const canvasPanelRef = useRef<HTMLElement | null>(null);
+  const treeSvgRef = useRef<SVGSVGElement | null>(null);
   const nodeTitleInputRef = useRef<HTMLTextAreaElement | null>(null);
   const documentTitleInputRef = useRef<HTMLInputElement | null>(null);
   const [canvasSize, setCanvasSize] = useState({ width: 900, height: 700 });
@@ -314,6 +315,11 @@ function App() {
         event.preventDefault();
         void openDocumentFile();
       }
+
+      if (event.shiftKey && event.key.toLowerCase() === 'e') {
+        event.preventDefault();
+        void exportCanvasAsPng();
+      }
     };
 
     const handleCopy = (event: ClipboardEvent) => {
@@ -340,6 +346,7 @@ function App() {
     const unlistenOpen = listen('menu-open-document', () => void openDocumentFile());
     const unlistenSave = listen('menu-save-document', () => void saveCurrentDocument());
     const unlistenSaveAs = listen('menu-save-as-document', () => void saveCurrentDocument(true));
+    const unlistenExportPng = listen('menu-export-png', () => void exportCanvasAsPng());
     const unlistenUndo = listen('menu-undo-document', () => undoLastChange());
     const unlistenDelete = listen('menu-delete-node', () => deleteSelectedNode());
 
@@ -354,6 +361,7 @@ function App() {
       void unlistenOpen.then((unlisten) => unlisten());
       void unlistenSave.then((unlisten) => unlisten());
       void unlistenSaveAs.then((unlisten) => unlisten());
+      void unlistenExportPng.then((unlisten) => unlisten());
       void unlistenUndo.then((unlisten) => unlisten());
       void unlistenDelete.then((unlisten) => unlisten());
     };
@@ -410,6 +418,26 @@ function App() {
     setIsEditingDocumentTitle(false);
     setCanvasOffset({ x: 0, y: 0 });
     setZoom(1);
+  }
+
+  async function exportCanvasAsPng() {
+    if (!document || !treeSvgRef.current) return;
+
+    try {
+      const fileName = `${getDocumentBaseName(document, documentPath)}.png`;
+      const targetPath = await save({
+        defaultPath: fileName,
+        filters: [{ name: 'PNG Image', extensions: ['png'] }],
+      });
+      if (!targetPath) return;
+
+      const bytes = await renderTreeSvgToPngBytes(treeSvgRef.current, document, shape);
+      const savedPath = await invoke<string>('save_png_file', { path: targetPath, fileName, bytes: Array.from(bytes) });
+      window.alert(`已导出 PNG：${savedPath}`);
+    } catch (error) {
+      console.error('Failed to export Nametree PNG', error);
+      window.alert(`导出 PNG 失败：${error instanceof Error ? error.message : String(error)}`);
+    }
   }
 
   function commitDocument(nextDocument: NametreeDocument, nextSelectedNodeId = selectedNodeId) {
@@ -742,6 +770,7 @@ function App() {
         <img className="canvas-logo" src={nametreeLogo} alt="Nametree logo" />
 
         <svg
+          ref={treeSvgRef}
           className="tree-canvas"
           viewBox={`0 0 ${canvasSize.width} ${canvasSize.height}`}
           role="img"
@@ -1022,6 +1051,9 @@ function App() {
       />
 
       <aside className="detail-panel">
+        <button className="export-image-button" type="button" onClick={() => void exportCanvasAsPng()}>
+          导出 PNG
+        </button>
         {selectedNode ? (
           <div className="panel-editor">
             {isKnowledgeNode(selectedNode) ? (
@@ -1274,6 +1306,160 @@ function getDefaultChildSuggestion(selectedNode: TreeNode | null, suggestions: S
   return null;
 }
 
+async function renderTreeSvgToPngBytes(_svg: SVGSVGElement, document: NametreeDocument, shape: TreeShape): Promise<Uint8Array> {
+  const trunkTopY = getTrunkTopY(shape, document, []);
+  const exportBounds = getExportBounds(document, shape, trunkTopY);
+  const serializedSvg = renderExportSvg(document, shape, exportBounds, trunkTopY);
+  const svgBlob = new Blob([serializedSvg], { type: 'image/svg+xml;charset=utf-8' });
+  const imageUrl = URL.createObjectURL(svgBlob);
+
+  try {
+    const image = await loadImage(imageUrl);
+    const scale = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
+    const canvas = window.document.createElement('canvas');
+    canvas.width = Math.ceil(exportBounds.width * scale);
+    canvas.height = Math.ceil(exportBounds.height * scale);
+    const context = canvas.getContext('2d');
+    if (!context) throw new Error('Canvas 2D context is unavailable');
+
+    context.fillStyle = '#ffffff';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+    const pngBlob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('Failed to encode PNG')), 'image/png');
+    });
+    return new Uint8Array(await pngBlob.arrayBuffer());
+  } finally {
+    URL.revokeObjectURL(imageUrl);
+  }
+}
+
+function renderExportSvg(document: NametreeDocument, shape: TreeShape, bounds: { x: number; y: number; width: number; height: number }, trunkTopY: number): string {
+  const nodeById = new Map(document.nodes.map((node) => [node.id, node]));
+  const titleTagText = getDocumentTitleTagText(document);
+  const edges = document.tree_edges.map((edge) => {
+    const parent = nodeById.get(edge.parent_id);
+    const child = nodeById.get(edge.child_id);
+    if (!parent || !child || !isKnowledgeNode(child)) return '';
+    const className = child.kind === 'root_branch' ? 'root-edge' : parent.kind === 'main_trunk' ? 'trunk-edge' : 'tree-edge';
+    const path = isOutputEdge(parent, child)
+      ? createOutputEdgePath(parent, child, shape)
+      : isRootEdge(parent, child)
+        ? createRootEdgePath(parent, child, shape)
+        : createCurve(getConnectionPoint(parent, child, shape), child);
+    return `<path class="${className}" d="${path}"/>`;
+  }).join('\n');
+  const references = document.reference_links.map((link) => {
+    const source = nodeById.get(link.source_id);
+    const target = nodeById.get(link.target_id);
+    if (!source || !target) return '';
+    return `<path class="reference-link" d="${createCurve(source, target)}"/>`;
+  }).join('\n');
+  const trunk = document.nodes.find((node) => node.kind === 'main_trunk')
+    ? `<path class="trunk-spine-base" d="${createTrunkSpinePath(shape, trunkTopY)}"/>
+      <path class="trunk-spine-root" d="${createTrunkRootFusePath(shape, 'left')}"/>
+      <path class="trunk-spine-root" d="${createTrunkRootFusePath(shape, 'right')}"/>
+      <path class="trunk-spine-foot" d="${createTrunkSpineFootPath(shape)}"/>`
+    : '';
+  const nodes = document.nodes.filter(isKnowledgeNode).map(renderExportNode).join('\n');
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${bounds.width}" height="${bounds.height}" viewBox="${bounds.x} ${bounds.y} ${bounds.width} ${bounds.height}">
+    <style>${getExportSvgCss()}</style>
+    <rect x="${bounds.x}" y="${bounds.y}" width="${bounds.width}" height="${bounds.height}" fill="#ffffff"/>
+    <rect x="-50000" y="-50000" width="100000" height="${50000 + shape.groundY}" fill="#ffffff"/>
+    <rect x="-50000" y="${shape.groundY}" width="100000" height="100000" fill="#e1e2df"/>
+    <text class="document-title-export" x="${shape.centerX + 28}" y="${shape.groundY - 8}">${escapeXml(titleTagText.text)}</text>
+    ${edges}
+    ${references}
+    ${trunk}
+    ${nodes}
+  </svg>`;
+}
+
+function renderExportNode(node: TreeNode): string {
+  const titlePreviewLines = getNodeTitlePreviewLines(node.title);
+  const labelHeight = getNodeVisualHeight(node);
+  const fill = node.fillColor ?? defaultNodeFillColor;
+  const titleLines = titlePreviewLines.map((line, index) => {
+    const y = titlePreviewLines.length === 1 ? 5 : -5 + index * 14;
+    return `<text x="0" y="${y}" text-anchor="middle">${escapeXml(line)}</text>`;
+  }).join('\n');
+
+  if (node.kind === 'leaf') {
+    return `<g class="tree-node-export" transform="translate(${node.x}, ${node.y})">
+      <path d="${createLeafShapePath()}" fill="${fill}" stroke="${node.color}"/>
+      ${titleLines}
+    </g>`;
+  }
+
+  return `<g class="tree-node-export" transform="translate(${node.x}, ${node.y})">
+    <rect x="${-nodeLabelWidth / 2}" y="${-labelHeight / 2}" width="${nodeLabelWidth}" height="${labelHeight}" rx="6" fill="${fill}" stroke="${node.color}"/>
+    ${titleLines}
+  </g>`;
+}
+
+function getExportSvgCss(): string {
+  return `
+    .tree-edge, .trunk-edge, .root-edge { fill: none; stroke: rgba(64, 64, 64, 0.76); stroke-width: 1.45; }
+    .root-edge { stroke-width: 1.35; }
+    .reference-link { fill: none; stroke: rgba(22, 110, 122, 0.32); stroke-width: 1.4; stroke-dasharray: 8 6; }
+    .trunk-spine-base { fill: none; stroke: #705e51; stroke-width: 8; stroke-linecap: round; opacity: 0.84; }
+    .trunk-spine-root { fill: none; stroke: #705e51; stroke-width: 5.2; stroke-linecap: round; opacity: 0.62; }
+    .trunk-spine-foot { fill: rgba(112, 94, 81, 0.28); stroke: none; }
+    .tree-node-export rect, .tree-node-export path { stroke-width: 1.35; }
+    .tree-node-export text { fill: #1f2a1d; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; font-weight: 700; dominant-baseline: middle; }
+    .document-title-export { fill: #4d5665; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 18px; font-weight: 850; }
+  `;
+}
+
+function escapeXml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function getExportBounds(document: NametreeDocument, shape: TreeShape, trunkTopY: number): { x: number; y: number; width: number; height: number } {
+  const nodes = document.nodes.filter((node) => node.kind !== 'seed_root');
+  const padding = 96;
+  const nodeRects = nodes.map((node) => {
+    const height = getNodeVisualHeight(node);
+    const width = node.kind === 'leaf' ? 92 : nodeLabelWidth;
+    return {
+      minX: node.x - width / 2,
+      maxX: node.x + width / 2,
+      minY: node.y - height / 2,
+      maxY: node.y + height / 2,
+    };
+  });
+  const titleTag = getDocumentTitleTagText(document);
+  const titleWidth = Math.max(160, titleTag.text.length * 24);
+  nodeRects.push({ minX: shape.centerX - 90, maxX: shape.centerX + titleWidth, minY: trunkTopY - 80, maxY: shape.groundY + 50 });
+
+  const minX = Math.floor(Math.min(...nodeRects.map((rect) => rect.minX)) - padding);
+  const maxX = Math.ceil(Math.max(...nodeRects.map((rect) => rect.maxX)) + padding);
+  const minY = Math.floor(Math.min(...nodeRects.map((rect) => rect.minY)) - padding);
+  const maxY = Math.ceil(Math.max(...nodeRects.map((rect) => rect.maxY)) + padding);
+
+  return {
+    x: minX,
+    y: minY,
+    width: Math.max(720, maxX - minX),
+    height: Math.max(520, maxY - minY),
+  };
+}
+
+function loadImage(url: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error('Failed to render SVG for export'));
+    image.src = url;
+  });
+}
+
 function getDocumentFileName(document: NametreeDocument, documentPath?: string | null): string {
   if (documentPath) {
     return documentPath.split(/[\\/]/).pop() ?? '未保存.nt';
@@ -1281,6 +1467,10 @@ function getDocumentFileName(document: NametreeDocument, documentPath?: string |
 
   const title = document.title.trim() || '未保存';
   return title.endsWith('.nt') ? title : `${title}.nt`;
+}
+
+function getDocumentBaseName(document: NametreeDocument, documentPath?: string | null): string {
+  return stripNtExtension(getDocumentFileName(document, documentPath)) || 'Nametree';
 }
 
 function getInitialSelectedNodeId(document: NametreeDocument): string | null {
