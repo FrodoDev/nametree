@@ -213,7 +213,13 @@ h3 {
   min-height: 0;
   padding: 0;
   overflow: hidden;
-  background: #fffcf6;
+  background: linear-gradient(
+    to bottom,
+    #fffcf6 0,
+    #fffcf6 var(--ground-screen-y, 100%),
+    #eceee9 var(--ground-screen-y, 100%),
+    #eceee9 100%
+  );
 }
 
 .canvas-logo {
@@ -235,7 +241,7 @@ h3 {
   min-height: 0;
   border: 0;
   border-radius: 0;
-  background: #fffcf6;
+  background: transparent;
   box-shadow: none;
 }
 
@@ -405,18 +411,46 @@ h3 {
 }
 
 .tree-node:hover rect,
-.tree-node:hover .leaf-node-shape,
+.tree-node:hover .leaf-node-shape {
+  stroke: #78946e;
+  stroke-width: 1.7;
+}
+
 .tree-node.selected rect:not(.node-selection-ring),
 .tree-node.selected .leaf-node-shape {
-  stroke: #4f6f46;
-  stroke-width: 2;
+  fill: #fcfff0;
+  stroke: #6f8f18;
+  stroke-width: 2.4;
 }
 
 .node-selection-ring {
-  fill: none;
-  stroke: rgba(79, 111, 70, 0.24);
-  stroke-width: 7;
+  fill: rgba(181, 214, 60, 0.14);
+  stroke: rgba(132, 166, 22, 0.72);
+  stroke-width: 2.6;
   pointer-events: none;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.tree-node.selected .node-selection-ring {
+  animation: selected-node-breathe 2.6s ease-in-out infinite;
+}
+
+@keyframes selected-node-breathe {
+  0%,
+  100% {
+    fill-opacity: 0.08;
+    stroke-opacity: 0.48;
+    stroke-width: 2.2;
+    transform: scale(1);
+  }
+
+  50% {
+    fill-opacity: 0.2;
+    stroke-opacity: 0.92;
+    stroke-width: 3.2;
+    transform: scale(1.035);
+  }
 }
 
 .tree-node text {
@@ -455,9 +489,16 @@ h3 {
 }
 
 .node-title-view.multi-line div {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+.node-title-view.multi-line span {
+  display: block;
+  height: 1.35em;
   overflow: hidden;
 }
 

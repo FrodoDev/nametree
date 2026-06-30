@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 import { getCurrentWindow } from '@tauri-apps/api/window';
@@ -86,7 +86,7 @@ type OutlineItem = {
 
 const outputSiblingGapY = 8;
 const rootSiblingGapY = 16;
-const rootChildSuggestionGapY = 56;
+const rootChildSuggestionGapY = singleLineNodeLabelHeight + outputSiblingGapY;
 
 const defaultNodeBorderColor = '#7a9a6d';
 const defaultNodeFillColor = '#f8fbf4';
@@ -109,10 +109,12 @@ function getRootAngleSlots(count: number): number[] {
   return [82, 70, 58, 42, 26, 12, 0, -8];
 }
 
-function getDynamicRootOffset(index: number, count: number): { x: number; y: number } {
+function getDynamicRootOffset(index: number, count: number, side: GrowthSide = 'right'): { x: number; y: number } {
   const slots = getRootAngleSlots(count);
-  const angle = slots[Math.min(index, slots.length - 1)] - Math.max(0, index - slots.length + 1) * 4;
-  const length = count <= 2 ? 250 + index * 170 : 250 + index * 135 + Math.max(0, index - 3) * 42;
+  const sideAngleOffset = side === 'left' ? 5 : -3;
+  const angle = slots[Math.min(index, slots.length - 1)] + sideAngleOffset - Math.max(0, index - slots.length + 1) * 4;
+  const sideLengthOffset = side === 'left' ? index * 22 : -index * 12;
+  const length = (count <= 2 ? 250 + index * 170 : 250 + index * 135 + Math.max(0, index - 3) * 42) + sideLengthOffset;
   const radians = angle * Math.PI / 180;
 
   return {
@@ -153,6 +155,7 @@ function App() {
   const [panelResizeStart, setPanelResizeStart] = useState<{ pointerX: number; width: number } | null>(null);
   const [outlineDraft, setOutlineDraft] = useState('');
   const canvasPanelRef = useRef<HTMLElement | null>(null);
+  const nodeTitleInputRef = useRef<HTMLTextAreaElement | null>(null);
   const [canvasSize, setCanvasSize] = useState({ width: 900, height: 700 });
 
   useEffect(() => {
@@ -183,6 +186,18 @@ function App() {
       setZoom(1);
     });
   }, []);
+
+  useEffect(() => {
+    if (!editingNodeId) return;
+
+    requestAnimationFrame(() => {
+      const input = nodeTitleInputRef.current;
+      if (!input) return;
+      const endPosition = input.value.length;
+      input.setSelectionRange(endPosition, endPosition);
+      input.scrollTop = input.scrollHeight;
+    });
+  }, [editingNodeId]);
 
   useEffect(() => {
     if (!panelResizeStart) return;
@@ -230,6 +245,7 @@ function App() {
     () => (document && selectedNode ? getSuggestions(document, selectedNode, shape) : []),
     [document, selectedNode, shape],
   );
+  const groundScreenY = Math.round(canvasSize.height / 2 + canvasOffset.y + (shape.groundY - 350) * zoom);
 
   useEffect(() => {
     if (!document || !selectedNode || !isKnowledgeNode(selectedNode)) {
@@ -491,7 +507,7 @@ function App() {
         color: defaultColorByKind[defaultKind],
         fillColor: defaultNodeFillColor,
         x: parentNode.x + sideFactor * 178,
-        y: parentNode.y + siblingCount * (singleLineNodeLabelHeight + outputSiblingGapY),
+        y: parentNode.y + siblingCount * (multiLineNodeLabelHeight + outputSiblingGapY),
         side: defaultSide,
       };
 
@@ -578,7 +594,11 @@ function App() {
 
   return (
     <main className="app-shell" style={{ gridTemplateColumns: `minmax(360px, 1fr) 14px ${detailPanelWidth}px` }}>
-      <section className="canvas-panel" ref={canvasPanelRef}>
+      <section
+        className="canvas-panel"
+        ref={canvasPanelRef}
+        style={{ '--ground-screen-y': `${Math.max(0, groundScreenY)}px` } as CSSProperties}
+      >
         <img className="canvas-logo" src={nametreeLogo} alt="Nametree logo" />
 
         <svg
@@ -728,8 +748,9 @@ function App() {
           )}
 
           {visibleKnowledgeNodes.map((node) => {
-            const labelHeight = getNodeLabelHeight(node);
-            const isMultiLine = isMultilineNodeTitle(node.title);
+            const titlePreviewLines = getNodeTitlePreviewLines(node.title);
+            const labelHeight = getNodeVisualHeight(node);
+            const isMultiLine = titlePreviewLines.length > 1;
 
             return (
             <g
@@ -748,15 +769,15 @@ function App() {
             >
               {selectedNodeId === node.id && (
                 node.kind === 'leaf' ? (
-                  <path className="node-selection-ring" d={createLeafShapePath()} />
+                  <path className="node-selection-ring" d={createLeafShapePath()} transform="scale(1.16)" />
                 ) : (
                   <rect
                     className="node-selection-ring"
-                    x={-nodeLabelWidth / 2 - 4}
-                    y={-labelHeight / 2 - 4}
-                    width={nodeLabelWidth + 8}
-                    height={labelHeight + 8}
-                    rx="9"
+                    x={-nodeLabelWidth / 2 - 8}
+                    y={-labelHeight / 2 - 8}
+                    width={nodeLabelWidth + 16}
+                    height={labelHeight + 16}
+                    rx="12"
                   />
                 )
               )}
@@ -782,11 +803,14 @@ function App() {
                 >
                   <textarea
                     className="node-title-input"
+                    ref={nodeTitleInputRef}
                     autoFocus
                     value={node.title}
                     onChange={(event) => updateNode(node.id, { title: event.target.value })}
                     onBlur={() => setEditingNodeId(null)}
                     onKeyDown={(event) => {
+                      if (event.nativeEvent.isComposing) return;
+
                       if (event.key === 'Enter' && !event.altKey) {
                         event.preventDefault();
                         event.currentTarget.blur();
@@ -806,7 +830,11 @@ function App() {
                   width={nodeLabelWidth - nodeLabelPaddingX * 2}
                   height={labelHeight - nodeLabelPaddingY * 2}
                 >
-                  <div>{node.title}</div>
+                  <div>
+                    {titlePreviewLines.map((line, index) => (
+                      <span key={index}>{line}</span>
+                    ))}
+                  </div>
                 </foreignObject>
               )}
             </g>
@@ -912,12 +940,59 @@ function isKnowledgeNode(node: TreeNode): boolean {
   return node.kind === 'branch' || node.kind === 'leaf' || node.kind === 'root_branch';
 }
 
-function isMultilineNodeTitle(title: string): boolean {
-  return title.includes('\n');
+function getTitleCharWidth(char: string): number {
+  return /[\u{2E80}-\u{9FFF}\u{F900}-\u{FAFF}]/u.test(char) ? 1 : 0.56;
 }
 
-function getNodeLabelHeight(node: Pick<TreeNode, 'title'>): number {
-  return isMultilineNodeTitle(node.title) ? multiLineNodeLabelHeight : singleLineNodeLabelHeight;
+function getNodeTitlePreviewLines(title: string): string[] {
+  const maxLines = 2;
+  const maxLineWidth = 8.2;
+  const source = title.replace(/\r\n?/g, '\n').trimStart();
+  const lines: string[] = [];
+  let current = '';
+  let currentWidth = 0;
+  let index = 0;
+
+  while (index < source.length && lines.length < maxLines) {
+    const char = source[index];
+
+    if (char === '\n') {
+      lines.push(current);
+      current = '';
+      currentWidth = 0;
+      index += 1;
+      continue;
+    }
+
+    const charWidth = getTitleCharWidth(char);
+    if (current.length > 0 && currentWidth + charWidth > maxLineWidth) {
+      lines.push(current);
+      current = '';
+      currentWidth = 0;
+      continue;
+    }
+
+    current += char;
+    currentWidth += charWidth;
+    index += 1;
+  }
+
+  if (lines.length < maxLines && current.length > 0) {
+    lines.push(current);
+  }
+
+  if (lines.length === 0) return [''];
+
+  if (index < source.length) {
+    const lastIndex = lines.length - 1;
+    lines[lastIndex] = `${lines[lastIndex].replace(/.$/u, '')}…`;
+  }
+
+  return lines;
+}
+
+function getNodeVisualHeight(node: Pick<TreeNode, 'title'>): number {
+  return getNodeTitlePreviewLines(node.title).length > 1 ? multiLineNodeLabelHeight : singleLineNodeLabelHeight;
 }
 
 function serializeNodeOutline(document: NametreeDocument, nodeId: string): string {
@@ -1078,8 +1153,8 @@ function getOutputSuggestions(document: NametreeDocument, selectedNode: TreeNode
     const rightRootCount = rootChildren.filter((node) => (node.side ?? 'right') === 'right').length;
     const leftRootTotal = leftRootCount + 1;
     const rightRootTotal = rightRootCount + 1;
-    const leftRootOffset = getDynamicRootOffset(leftRootCount, leftRootTotal);
-    const rightRootOffset = getDynamicRootOffset(rightRootCount, rightRootTotal);
+    const leftRootOffset = getDynamicRootOffset(leftRootCount, leftRootTotal, 'left');
+    const rightRootOffset = getDynamicRootOffset(rightRootCount, rightRootTotal, 'right');
     const leftRootX = shape.centerX - leftRootOffset.x - 8;
     const rightRootX = shape.centerX + rightRootOffset.x + 8;
     const leftRootY = shape.groundY + leftRootOffset.y;
@@ -1139,11 +1214,11 @@ function createSuggestionAt(parent: TreeNode, kind: NodeKind, title: string, x: 
 
 function findFreeOutputSuggestionY(nodes: TreeNode[], x: number, preferredY: number): number {
   let y = preferredY;
-  const nodeHeight = singleLineNodeLabelHeight;
+  const suggestionHeight = singleLineNodeLabelHeight;
   const xTolerance = 120;
 
-  while (nodes.some((node) => Math.abs(node.x - x) < xTolerance && Math.abs(node.y - y) < nodeHeight + outputSiblingGapY)) {
-    y -= nodeHeight + outputSiblingGapY;
+  while (nodes.some((node) => Math.abs(node.x - x) < xTolerance && Math.abs(node.y - y) < (getNodeVisualHeight(node) + suggestionHeight) / 2 + outputSiblingGapY)) {
+    y -= suggestionHeight + outputSiblingGapY;
   }
 
   return y;
@@ -1151,11 +1226,11 @@ function findFreeOutputSuggestionY(nodes: TreeNode[], x: number, preferredY: num
 
 function findFreeRootSuggestionY(nodes: TreeNode[], x: number, preferredY: number): number {
   let y = preferredY;
-  const nodeHeight = 44;
+  const suggestionHeight = singleLineNodeLabelHeight;
   const xTolerance = 150;
 
-  while (nodes.some((node) => Math.abs(node.x - x) < xTolerance && Math.abs(node.y - y) < nodeHeight + rootSiblingGapY)) {
-    y += nodeHeight + rootSiblingGapY;
+  while (nodes.some((node) => Math.abs(node.x - x) < xTolerance && Math.abs(node.y - y) < (getNodeVisualHeight(node) + suggestionHeight) / 2 + rootSiblingGapY)) {
+    y += suggestionHeight + rootSiblingGapY;
   }
 
   return y;
@@ -1207,17 +1282,17 @@ function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
     shape.trunkTopY = Math.min(shape.trunkTopY, Math.max(16, highestOutputY - 72));
   }
 
-  const rootNodeHeight = 44;
-  const rootSiblingGap = rootSiblingGapY;
-  const rootLevelDistance = 250;
+  const rootSiblingGap = outputSiblingGapY;
+  const rootLevelDistance = 178;
   const rootTopY = shape.groundY + 56;
 
   const getRootSpan = (node: TreeNode): number => {
+    const nodeHeight = getNodeVisualHeight(node);
     const children = rootChildrenByParent.get(node.id) ?? [];
-    if (children.length === 0) return rootNodeHeight;
+    if (children.length === 0) return nodeHeight;
 
     const total = children.reduce((sum, child) => sum + getRootSpan(child), 0) + Math.max(0, children.length - 1) * rootSiblingGap;
-    return Math.max(rootNodeHeight, total);
+    return Math.max(nodeHeight, total);
   };
 
   const layoutRootStack = (nodes: TreeNode[], sideFactor: -1 | 1, x: number, startY: number) => {
@@ -1262,7 +1337,7 @@ function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
     };
 
     children.forEach((child, index) => {
-      const offset = avoidRootCollision(getDynamicRootOffset(index, children.length), sideFactor, occupied, getRootSpan(child));
+      const offset = avoidRootCollision(getDynamicRootOffset(index, children.length, side), sideFactor, occupied, getRootSpan(child));
       const childX = shape.centerX + sideFactor * (offset.x + 8);
       const childY = Math.max(rootTopY, shape.groundY + offset.y);
       layoutRootSubtree(child, sideFactor, childX, childY);
@@ -1283,11 +1358,11 @@ function layoutOutputTree(
 ) {
   if (!mainTrunk) return;
 
-  const nodeHeight = singleLineNodeLabelHeight;
   const siblingGap = outputSiblingGapY;
   const levelDistance = 178;
 
   const getSpan = (node: TreeNode): number => {
+    const nodeHeight = getNodeVisualHeight(node);
     const children = childrenByParent.get(node.id) ?? [];
     if (children.length === 0) return nodeHeight;
 

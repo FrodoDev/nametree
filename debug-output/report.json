@@ -1,5 +1,74 @@
 [
   {
+    "file": "JAY.nt",
+    "mainTrunk": {
+      "x": 450,
+      "y": 335
+    },
+    "rootCount": {
+      "left": 3,
+      "right": 3,
+      "total": 6
+    },
+    "angles": [
+      {
+        "title": "成长过程主要事件",
+        "side": "right",
+        "angle": 66.3,
+        "x": 551.7,
+        "y": 621.8
+      },
+      {
+        "title": "生平",
+        "side": "left",
+        "angle": 66.3,
+        "x": 348.3,
+        "y": 621.8
+      },
+      {
+        "title": "主要舆论新闻",
+        "side": "left",
+        "angle": 35.6,
+        "x": -147.8,
+        "y": 818.5
+      },
+      {
+        "title": "关键合作者",
+        "side": "right",
+        "angle": 35.6,
+        "x": 1047.8,
+        "y": 818.5
+      },
+      {
+        "title": "音乐养分",
+        "side": "left",
+        "angle": 9.9,
+        "x": -154.8,
+        "y": 495.2
+      },
+      {
+        "title": "商业与产业",
+        "side": "right",
+        "angle": 9.9,
+        "x": 1054.8,
+        "y": 495.2
+      }
+    ],
+    "highBandRoots": 2,
+    "overlaps": {
+      "count": 0,
+      "pairs": []
+    },
+    "crossingRisk": 0,
+    "bounds": {
+      "minX": -458.8,
+      "maxX": 1351.8,
+      "minY": -210,
+      "maxY": 905.5
+    },
+    "warnings": []
+  },
+  {
     "file": "root-balanced.nt",
     "mainTrunk": {
       "x": 450,
@@ -301,6 +370,47 @@
       "maxX": 1698,
       "minY": 318,
       "maxY": 1240.8
+    },
+    "warnings": []
+  },
+  {
+    "file": "橙汁儿.nt",
+    "mainTrunk": {
+      "x": 450,
+      "y": 335
+    },
+    "rootCount": {
+      "left": 1,
+      "right": 1,
+      "total": 2
+    },
+    "angles": [
+      {
+        "title": "右主根",
+        "side": "right",
+        "angle": 12.5,
+        "x": 702.5,
+        "y": 446
+      },
+      {
+        "title": "七里香",
+        "side": "left",
+        "angle": 12.5,
+        "x": 197.5,
+        "y": 446
+      }
+    ],
+    "highBandRoots": 2,
+    "overlaps": {
+      "count": 0,
+      "pairs": []
+    },
+    "crossingRisk": 0,
+    "bounds": {
+      "minX": -356.5,
+      "maxX": 1006.5,
+      "minY": 269,
+      "maxY": 555
     },
     "warnings": []
   }

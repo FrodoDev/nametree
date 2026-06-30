@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-476.5 -120 1603 795" width="1603" height="795">
+  <rect x="-476.5" y="-120" width="1603" height="795" fill="#fffcf6"/>
+  <text x="-452.5" y="-84" font-size="18" font-weight="700" fill="#2f241b">橙汁儿.nt</text>
+  <line x1="-476.5" y1="390" x2="1126.5" y2="390" stroke="#d8cab7" stroke-dasharray="6 6"/>
+  <path d="M 457 388 C 472.0029520146761 420.48, 565.7714021064019 426.28, 644.5369001834514 446" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 756.5369001834514 446 L 827.5369001834514 446 L 827.5369001834514 468 L 898.5369001834514 468" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 756.5369001834514 446 L 827.5369001834514 446 L 827.5369001834514 538 L 898.5369001834514 538" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 443 388 C 427.9970479853239 420.48, 334.2285978935982 426.28, 255.46309981654858 446" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 143.46309981654858 446 L 72.46309981654858 446 L 72.46309981654858 468 L 1.4630998165485778 468" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -106.53690018345142 468 L -177.5369001834514 468 L -177.5369001834514 468 L -248.5369001834514 468" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+
+
+  <rect x="438" y="238" width="24" height="164" rx="12" fill="#826f62"/><path d="M 439 381 C 434 390, 426 400, 416 408 C 432 405, 442 405, 450 409 C 458 405, 468 405, 484 408 C 474 400, 466 390, 461 381 Z" fill="#826f62" stroke="rgba(47, 36, 27, 0.24)" stroke-width="0.9"/>
+<g transform="translate(702.5369001834514 446)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#9a7b4f" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">右主根</text></g>
+<g transform="translate(952.5369001834514 468)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#9a7b4f" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">子根系</text></g>
+<g transform="translate(952.5369001834514 538)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#9a7b4f" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">子根系</text></g>
+<g transform="translate(197.46309981654858 446)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#00fdff" stroke="#9a7b4f" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">七里香</text></g>
+<g transform="translate(-52.53690018345142 468)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#9a7b4f" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">子根系</text></g>
+<g transform="translate(-302.5369001834514 468)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#9a7b4f" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">子根系</text></g>
+<g transform="translate(212 286)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#00fdff" stroke="#d9a441" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">七里香</text></g>
+<g transform="translate(34 286)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#7fb069" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">叶子</text></g>
+</svg>
