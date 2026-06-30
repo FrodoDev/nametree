@@ -341,19 +341,26 @@ h3 {
   cursor: pointer;
 }
 
-.trunk-shape {
-  fill: rgba(74, 48, 31, 0.68);
-  stroke: rgba(47, 36, 27, 0.34);
-  stroke-width: 1.1;
+.trunk-spine-base {
+  fill: none;
+  stroke: #705e51;
+  stroke-width: 8;
   stroke-linecap: round;
-  stroke-linejoin: round;
+  opacity: 0.84;
 }
 
-.root-crown-shape {
-  fill: rgba(74, 48, 31, 0.68);
-  stroke: rgba(47, 36, 27, 0.24);
-  stroke-width: 0.9;
-  stroke-linejoin: round;
+.trunk-spine-root-left,
+.trunk-spine-root-right {
+  fill: none;
+  stroke: #705e51;
+  stroke-width: 5.2;
+  stroke-linecap: round;
+  opacity: 0.62;
+}
+
+.trunk-spine-foot {
+  fill: rgba(112, 94, 81, 0.28);
+  stroke: none;
 }
 
 .main-root-shape {
@@ -369,11 +376,15 @@ h3 {
   stroke: transparent;
 }
 
-.tree-structure:hover .trunk-shape,
-.tree-structure.selected .trunk-shape,
+.tree-structure:hover .trunk-spine-base,
+.tree-structure.selected .trunk-spine-base,
+.tree-structure:hover .trunk-spine-root-left,
+.tree-structure.selected .trunk-spine-root-left,
+.tree-structure:hover .trunk-spine-root-right,
+.tree-structure.selected .trunk-spine-root-right,
 .tree-structure:hover .main-root-shape,
 .tree-structure.selected .main-root-shape {
-  stroke-opacity: 1;
+  opacity: 1;
 }
 
 .structure-label {

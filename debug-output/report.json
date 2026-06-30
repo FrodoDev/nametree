@@ -53,6 +53,7 @@
       "pairs": []
     },
     "crossingRisk": 0,
+    "detachedTrunkBranches": [],
     "bounds": {
       "minX": -868.6,
       "maxX": 2371,
@@ -115,6 +116,7 @@
       "pairs": []
     },
     "crossingRisk": 0,
+    "detachedTrunkBranches": [],
     "bounds": {
       "minX": -868.6,
       "maxX": 2371,
@@ -233,6 +235,7 @@
       "pairs": []
     },
     "crossingRisk": 0,
+    "detachedTrunkBranches": [],
     "bounds": {
       "minX": -620.4,
       "maxX": 1698,
@@ -302,6 +305,7 @@
       "pairs": []
     },
     "crossingRisk": 0,
+    "detachedTrunkBranches": [],
     "bounds": {
       "minX": -620.4,
       "maxX": 504,
@@ -420,6 +424,7 @@
       "pairs": []
     },
     "crossingRisk": 0,
+    "detachedTrunkBranches": [],
     "bounds": {
       "minX": -623.5,
       "maxX": 1698,
@@ -482,6 +487,7 @@
       "pairs": []
     },
     "crossingRisk": 0,
+    "detachedTrunkBranches": [],
     "bounds": {
       "minX": -618.6,
       "maxX": 1358.8,
@@ -525,6 +531,7 @@
       "pairs": []
     },
     "crossingRisk": 0,
+    "detachedTrunkBranches": [],
     "bounds": {
       "minX": -356.5,
       "maxX": 1006.5,

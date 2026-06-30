@@ -170,11 +170,11 @@ function getRootCrownAttachPoint(child, shape) {
   const angle = Math.atan2(dy, dx) * 180 / Math.PI;
   const fanIndex = angle > 72 ? 0 : angle > 56 ? 1 : angle > 36 ? 2 : angle > 16 ? 3 : 4;
   const crownSlots = [
-    { x: 8, y: 12 },
-    { x: 12, y: 8 },
-    { x: 14, y: 4 },
-    { x: 11, y: 1 },
-    { x: 7, y: -2 },
+    { x: 0, y: 22 },
+    { x: 4, y: 17 },
+    { x: 8, y: 11 },
+    { x: 8, y: 5 },
+    { x: 5, y: 0 },
   ];
   const slot = crownSlots[Math.min(fanIndex, crownSlots.length - 1)];
 
@@ -184,11 +184,35 @@ function getRootCrownAttachPoint(child, shape) {
   };
 }
 
+function createTrunkSpinePath(shape, trunkTopY) {
+  const x = shape.centerX;
+  const y = shape.groundY;
+  return `M ${x} ${trunkTopY + 6} C ${x - 1} ${trunkTopY + 80}, ${x + 2} ${y - 98}, ${x} ${y + 30}`;
+}
+
+function createTrunkRootFusePath(shape, sideFactor) {
+  const x = shape.centerX;
+  const y = shape.groundY;
+  return `M ${x} ${y + 20} C ${x + sideFactor * 18} ${y + 27}, ${x + sideFactor * 42} ${y + 30}, ${x + sideFactor * 76} ${y + 34}`;
+}
+
+function createTrunkSpineFootPath(shape) {
+  const x = shape.centerX;
+  const y = shape.groundY;
+  return `M ${x} ${y + 9} C ${x - 6} ${y + 18}, ${x - 8} ${y + 25}, ${x} ${y + 34} C ${x + 8} ${y + 25}, ${x + 6} ${y + 18}, ${x} ${y + 9}`;
+}
+
 function createRootCrownPath(shape) {
   const x = shape.centerX;
-  const y = shape.groundY + 3;
+  const y = shape.groundY;
 
-  return `M ${x - 11} ${y - 12} C ${x - 16} ${y - 3}, ${x - 24} ${y + 7}, ${x - 34} ${y + 15} C ${x - 18} ${y + 12}, ${x - 8} ${y + 12}, ${x} ${y + 16} C ${x + 8} ${y + 12}, ${x + 18} ${y + 12}, ${x + 34} ${y + 15} C ${x + 24} ${y + 7}, ${x + 16} ${y - 3}, ${x + 11} ${y - 12} Z`;
+  return `M ${x - 10} ${y - 8}
+    C ${x - 16} ${y - 1}, ${x - 26} ${y + 12}, ${x - 54} ${y + 24}
+    C ${x - 34} ${y + 23}, ${x - 16} ${y + 20}, ${x} ${y + 32}
+    C ${x + 16} ${y + 20}, ${x + 34} ${y + 23}, ${x + 54} ${y + 24}
+    C ${x + 26} ${y + 12}, ${x + 16} ${y - 1}, ${x + 10} ${y - 8}
+    C ${x + 7} ${y + 10}, ${x - 7} ${y + 10}, ${x - 10} ${y - 8}
+    Z`;
 }
 
 function createRootEdgePath(parent, child, shape) {
@@ -210,6 +234,22 @@ function createRootEdgePath(parent, child, shape) {
 
   const parentEdgeX = parent.x + sideFactor * 54;
   const childEdgeX = child.x - sideFactor * 54;
+  const middleX = (parentEdgeX + childEdgeX) / 2;
+  return `M ${parentEdgeX} ${parent.y} L ${middleX} ${parent.y} L ${middleX} ${child.y} L ${childEdgeX} ${child.y}`;
+}
+
+function createOutputEdgePath(parent, child, shape) {
+  const sideFactor = child.x < shape.centerX ? -1 : 1;
+  const childEdgeX = child.x - sideFactor * (nodeWidth / 2);
+
+  if (parent.kind === 'main_trunk') {
+    const parentEdgeX = shape.centerX;
+    const parentEdgeY = child.y + 42;
+
+    return `M ${parentEdgeX} ${parentEdgeY} L ${childEdgeX} ${child.y}`;
+  }
+
+  const parentEdgeX = parent.x + sideFactor * (nodeWidth / 2);
   const middleX = (parentEdgeX + childEdgeX) / 2;
   return `M ${parentEdgeX} ${parent.y} L ${middleX} ${parent.y} L ${middleX} ${child.y} L ${childEdgeX} ${child.y}`;
 }
@@ -278,6 +318,36 @@ function countRootCrossings(document, shape) {
   return count;
 }
 
+function getTrunkTopY(document, shape) {
+  const mainTrunk = document.nodes.find((node) => node.kind === 'main_trunk');
+  if (!mainTrunk) return shape.trunkTopY;
+
+  const byId = new Map(document.nodes.map((node) => [node.id, node]));
+  const trunkOutputItems = document.tree_edges
+    .filter((edge) => edge.parent_id === mainTrunk.id)
+    .map((edge) => byId.get(edge.child_id))
+    .filter((node) => node?.kind === 'branch' || node?.kind === 'leaf');
+
+  if (trunkOutputItems.length === 0) return shape.trunkTopY;
+
+  const highestConnectionY = Math.min(...trunkOutputItems.map((node) => node.y + 42));
+  return highestConnectionY - 34;
+}
+
+function getDetachedTrunkBranches(document, shape) {
+  const mainTrunk = document.nodes.find((node) => node.kind === 'main_trunk');
+  if (!mainTrunk) return [];
+
+  const byId = new Map(document.nodes.map((node) => [node.id, node]));
+  const trunkTopY = getTrunkTopY(document, shape);
+
+  return document.tree_edges
+    .filter((edge) => edge.parent_id === mainTrunk.id)
+    .map((edge) => byId.get(edge.child_id))
+    .filter((node) => (node?.kind === 'branch' || node?.kind === 'leaf') && node.y + 42 < trunkTopY)
+    .map((node) => ({ title: node.title, connectionY: round(node.y + 42), trunkTopY: round(trunkTopY) }));
+}
+
 function analyze(document) {
   const normalized = normalizeTreeLayout(document);
   const shape = getTreeShape(normalized);
@@ -293,6 +363,7 @@ function analyze(document) {
   const highBandRoots = mainRoots.filter((node) => node.y <= shape.groundY + 120).length;
   const overlaps = countOverlaps(normalized.nodes);
   const crossingRisk = countRootCrossings(normalized, shape);
+  const detachedTrunkBranches = getDetachedTrunkBranches(normalized, shape);
   const bounds = normalized.nodes.reduce((box, node) => ({
     minX: Math.min(box.minX, node.x - nodeWidth / 2),
     maxX: Math.max(box.maxX, node.x + nodeWidth / 2),
@@ -309,11 +380,13 @@ function analyze(document) {
     highBandRoots,
     overlaps,
     crossingRisk,
+    detachedTrunkBranches,
     bounds: Object.fromEntries(Object.entries(bounds).map(([key, value]) => [key, round(value)])),
     warnings: [
       highBandRoots > Math.max(2, Math.ceil(mainRoots.length * 0.35)) ? `高位主根偏多：${highBandRoots}/${mainRoots.length}` : null,
       overlaps.count > 0 ? `根节点重叠：${overlaps.count}` : null,
       crossingRisk > 0 ? `左右主根可能交叉：${crossingRisk}` : null,
+      detachedTrunkBranches.length > 0 ? `树枝脱离树干：${detachedTrunkBranches.length}` : null,
     ].filter(Boolean),
   };
 }
@@ -328,6 +401,7 @@ function escapeXml(value) {
 
 function renderSvg(name, analysis) {
   const { document, shape, bounds } = analysis;
+  const trunkTopY = getTrunkTopY(document, shape);
   const padding = 120;
   const minX = Math.min(bounds.minX, shape.centerX - 500) - padding;
   const minY = Math.min(bounds.minY, 0) - padding;
@@ -341,12 +415,15 @@ function renderSvg(name, analysis) {
     if (child.kind === 'root_branch') {
       return `<path d="${createRootEdgePath(parent, child, shape)}" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>`;
     }
+    if (child.kind === 'branch' || child.kind === 'leaf') {
+      return `<path d="${createOutputEdgePath(parent, child, shape)}" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>`;
+    }
     return '';
   }).join('\n');
 
   const nodes = document.nodes.filter((node) => node.kind !== 'seed_root').map((node) => {
     if (node.kind === 'main_trunk') {
-      return `<rect x="${shape.centerX - 12}" y="${shape.trunkTopY}" width="24" height="${shape.groundY + 12 - shape.trunkTopY}" rx="12" fill="#826f62"/><path d="${createRootCrownPath(shape)}" fill="#826f62" stroke="rgba(47, 36, 27, 0.24)" stroke-width="0.9"/>`;
+      return `<path d="${createTrunkSpinePath(shape, trunkTopY)}" fill="none" stroke="#705e51" stroke-width="8" stroke-linecap="round" opacity="0.84"/><path d="${createTrunkRootFusePath(shape, -1)}" fill="none" stroke="#705e51" stroke-width="5.2" stroke-linecap="round" opacity="0.62"/><path d="${createTrunkRootFusePath(shape, 1)}" fill="none" stroke="#705e51" stroke-width="5.2" stroke-linecap="round" opacity="0.62"/><path d="${createTrunkSpineFootPath(shape)}" fill="rgba(112, 94, 81, 0.28)" stroke="none"/>`;
     }
 
     const fill = node.fillColor ?? '#ffffff';

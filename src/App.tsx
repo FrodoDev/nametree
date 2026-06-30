@@ -900,21 +900,16 @@ function App() {
                 setSelectedNodeId(mainTrunk.id);
               }}
             >
-              <rect
-                className="trunk-shape"
-                x={shape.centerX - 10}
-                y={getTrunkTopY(shape, document.nodes, suggestions)}
-                width="20"
-                height={shape.groundY + 12 - getTrunkTopY(shape, document.nodes, suggestions)}
-                rx="10"
-              />
-              <path className="root-crown-shape" d={createRootCrownPath(shape)} />
+              <path className="trunk-spine-base" d={createTrunkSpinePath(shape, getTrunkTopY(shape, document, suggestions))} />
+              <path className="trunk-spine-root-left" d={createTrunkRootFusePath(shape, 'left')} />
+              <path className="trunk-spine-root-right" d={createTrunkRootFusePath(shape, 'right')} />
+              <path className="trunk-spine-foot" d={createTrunkSpineFootPath(shape)} />
               <rect
                 className="structure-hitbox"
                 x={shape.centerX - 18}
-                y={getTrunkTopY(shape, document.nodes, suggestions)}
+                y={getTrunkTopY(shape, document, suggestions)}
                 width="36"
-                height={shape.groundY + 12 - getTrunkTopY(shape, document.nodes, suggestions)}
+                height={shape.groundY + 12 - getTrunkTopY(shape, document, suggestions)}
                 rx="12"
               />
             </g>
@@ -1712,18 +1707,59 @@ function getConnectionPoint(node: TreeNode, child: Pick<TreeNode, 'x' | 'y' | 'k
   return node;
 }
 
-function getTrunkTopY(shape: TreeShape, nodes: TreeNode[], suggestions: Suggestion[]): number {
-  const outputItems = [...nodes, ...suggestions].filter((node) => node.kind === 'branch' || node.kind === 'leaf');
-  if (outputItems.length === 0) return shape.trunkTopY;
+function getTrunkTopY(shape: TreeShape, document: NametreeDocument, suggestions: Suggestion[]): number {
+  const mainTrunk = document.nodes.find((node) => node.kind === 'main_trunk');
+  if (!mainTrunk) return shape.trunkTopY;
 
-  return Math.min(...outputItems.map((node) => node.y)) - 36;
+  const trunkChildIds = new Set(
+    document.tree_edges
+      .filter((edge) => edge.parent_id === mainTrunk.id)
+      .map((edge) => edge.child_id),
+  );
+  const trunkOutputItems = [
+    ...document.nodes.filter((node) => trunkChildIds.has(node.id) && (node.kind === 'branch' || node.kind === 'leaf')),
+    ...suggestions.filter((node) => node.parentId === mainTrunk.id && (node.kind === 'branch' || node.kind === 'leaf')),
+  ];
+
+  if (trunkOutputItems.length === 0) return shape.trunkTopY;
+
+  const highestConnectionY = Math.min(...trunkOutputItems.map((node) => node.y + 42));
+  return highestConnectionY - 34;
+}
+
+function createTrunkSpinePath(shape: TreeShape, top: number): string {
+  const x = shape.centerX;
+  const y = shape.groundY;
+
+  return `M ${x} ${top + 6} C ${x - 1} ${top + 80}, ${x + 2} ${y - 98}, ${x} ${y + 30}`;
+}
+
+function createTrunkRootFusePath(shape: TreeShape, side: GrowthSide): string {
+  const sideFactor = side === 'left' ? -1 : 1;
+  const x = shape.centerX;
+  const y = shape.groundY;
+
+  return `M ${x} ${y + 20} C ${x + sideFactor * 18} ${y + 27}, ${x + sideFactor * 42} ${y + 30}, ${x + sideFactor * 76} ${y + 34}`;
+}
+
+function createTrunkSpineFootPath(shape: TreeShape): string {
+  const x = shape.centerX;
+  const y = shape.groundY;
+
+  return `M ${x} ${y + 9} C ${x - 6} ${y + 18}, ${x - 8} ${y + 25}, ${x} ${y + 34} C ${x + 8} ${y + 25}, ${x + 6} ${y + 18}, ${x} ${y + 9}`;
 }
 
 function createRootCrownPath(shape: TreeShape): string {
   const x = shape.centerX;
-  const y = shape.groundY + 3;
+  const y = shape.groundY;
 
-  return `M ${x - 11} ${y - 12} C ${x - 16} ${y - 3}, ${x - 24} ${y + 7}, ${x - 34} ${y + 15} C ${x - 18} ${y + 12}, ${x - 8} ${y + 12}, ${x} ${y + 16} C ${x + 8} ${y + 12}, ${x + 18} ${y + 12}, ${x + 34} ${y + 15} C ${x + 24} ${y + 7}, ${x + 16} ${y - 3}, ${x + 11} ${y - 12} Z`;
+  return `M ${x - 10} ${y - 8}
+    C ${x - 16} ${y - 1}, ${x - 26} ${y + 12}, ${x - 54} ${y + 24}
+    C ${x - 34} ${y + 23}, ${x - 16} ${y + 20}, ${x} ${y + 32}
+    C ${x + 16} ${y + 20}, ${x + 34} ${y + 23}, ${x + 54} ${y + 24}
+    C ${x + 26} ${y + 12}, ${x + 16} ${y - 1}, ${x + 10} ${y - 8}
+    C ${x + 7} ${y + 10}, ${x - 7} ${y + 10}, ${x - 10} ${y - 8}
+    Z`;
 }
 
 function createLeafShapePath(): string {
@@ -1746,7 +1782,7 @@ function createOutputEdgePath(parent: Pick<TreeNode, 'kind' | 'x' | 'y'>, child:
   const childEdgeX = child.x - sideFactor * (nodeLabelWidth / 2);
 
   if (parent.kind === 'main_trunk') {
-    const parentEdgeX = shape.centerX + sideFactor * 10;
+    const parentEdgeX = shape.centerX;
     const parentEdgeY = child.y + 42;
 
     return `M ${parentEdgeX} ${parentEdgeY} L ${childEdgeX} ${child.y}`;
@@ -1767,11 +1803,11 @@ function getRootCrownAttachPoint(child: Pick<TreeNode, 'x' | 'y'>, shape: TreeSh
   const angle = Math.atan2(dy, dx) * 180 / Math.PI;
   const fanIndex = angle > 72 ? 0 : angle > 56 ? 1 : angle > 36 ? 2 : angle > 16 ? 3 : 4;
   const crownSlots = [
-    { x: 8, y: 12 },
-    { x: 12, y: 8 },
-    { x: 14, y: 4 },
-    { x: 11, y: 1 },
-    { x: 7, y: -2 },
+    { x: 0, y: 22 },
+    { x: 4, y: 17 },
+    { x: 8, y: 11 },
+    { x: 8, y: 5 },
+    { x: 5, y: 0 },
   ];
   const slot = crownSlots[Math.min(fanIndex, crownSlots.length - 1)];
 
