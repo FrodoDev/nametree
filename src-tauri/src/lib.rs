@@ -16,6 +16,8 @@ struct NtFile {
 struct NametreeDocument {
     id: String,
     title: String,
+    #[serde(default, rename = "titleTag")]
+    title_tag: Option<String>,
     slogan: String,
     nodes: Vec<TreeNode>,
     tree_edges: Vec<TreeEdge>,
@@ -90,18 +92,32 @@ fn load_sample_tree() -> NametreeDocument {
     NametreeDocument {
         id: "default-tree".into(),
         title: "未保存".into(),
+        title_tag: None,
         slogan: "Name it to own it".into(),
-        nodes: vec![TreeNode {
-            id: "seed-root".into(),
-            title: "根节点".into(),
-            note: "从这里开始。选择这个节点后，可以生长出主干或主根。".into(),
-            kind: NodeKind::SeedRoot,
-            color: "#7b6b55".into(),
-            fill_color: Some("#ffffff".into()),
-            x: 450.0,
-            y: 350.0,
-            side: None,
-        }],
+        nodes: vec![
+            TreeNode {
+                id: "seed-root".into(),
+                title: "根节点".into(),
+                note: "初始生长点。".into(),
+                kind: NodeKind::SeedRoot,
+                color: "#7b6b55".into(),
+                fill_color: Some("#ffffff".into()),
+                x: 450.0,
+                y: 390.0,
+                side: None,
+            },
+            TreeNode {
+                id: "main-trunk".into(),
+                title: "主干".into(),
+                note: "这棵树的主要表达方向。".into(),
+                kind: NodeKind::MainTrunk,
+                color: "#5f7f45".into(),
+                fill_color: Some("#ffffff".into()),
+                x: 450.0,
+                y: 335.0,
+                side: None,
+            },
+        ],
         tree_edges: vec![],
         reference_links: vec![],
     }

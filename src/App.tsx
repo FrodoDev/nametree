@@ -185,7 +185,7 @@ function App() {
       const normalizedTree = normalizeTreeLayout(tree);
       setDocument(normalizedTree);
       setUndoStack([]);
-      setSelectedNodeId(normalizedTree.nodes[0]?.id ?? null);
+      setSelectedNodeId(getInitialSelectedNodeId(normalizedTree));
       setCanvasOffset({ x: 0, y: 0 });
       setZoom(1);
     });
@@ -369,7 +369,7 @@ function App() {
     setDocument(normalizedTree);
     setUndoStack([]);
     setDocumentPath(null);
-    setSelectedNodeId(normalizedTree.nodes[0]?.id ?? null);
+    setSelectedNodeId(getInitialSelectedNodeId(normalizedTree));
     setEditingNodeId(null);
     setIsEditingDocumentTitle(false);
     setCanvasOffset({ x: 0, y: 0 });
@@ -460,7 +460,7 @@ function App() {
     const parentEdge = document.tree_edges.find((edge) => edge.child_id === selectedNode.id);
     const nextSelectedNodeId = parentEdge && !idsToDelete.has(parentEdge.parent_id)
       ? parentEdge.parent_id
-      : nextDocument.nodes[0]?.id ?? null;
+      : getInitialSelectedNodeId(nextDocument);
 
     setEditingNodeId(null);
     commitDocument(nextDocument, nextSelectedNodeId);
@@ -799,7 +799,7 @@ function App() {
               onDoubleClick={() => {
                 setSelectedNodeId(null);
                 setEditingNodeId(null);
-                setDocumentTitleDraft(document.title || '未命名作品');
+                setDocumentTitleDraft(document.titleTag ?? '');
                 setIsEditingDocumentTitle(true);
               }}
             >
@@ -1288,6 +1288,10 @@ function getDocumentFileName(document: NametreeDocument, documentPath?: string |
   return title.endsWith('.nt') ? title : `${title}.nt`;
 }
 
+function getInitialSelectedNodeId(document: NametreeDocument): string | null {
+  return document.nodes.find((node) => node.kind === 'main_trunk')?.id ?? document.nodes[0]?.id ?? null;
+}
+
 function getDocumentTitleTagText(document: NametreeDocument, documentPath?: string | null): { text: string; isPlaceholder: boolean } {
   const titleTag = document.titleTag?.trim();
   if (titleTag) {
@@ -1460,14 +1464,40 @@ function findFreeRootSuggestionY(nodes: TreeNode[], x: number, preferredY: numbe
   return y;
 }
 
-function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
-  const shape = getTreeShape(document);
-  const seed = document.nodes.find((node) => node.kind === 'seed_root');
-  const mainTrunk = document.nodes.find((node) => node.kind === 'main_trunk');
-  const mainRoot = document.nodes.find((node) => node.kind === 'main_root');
-  const nodeById = new Map(document.nodes.map((node) => [node.id, node]));
+function ensureInitialMainTrunk(document: NametreeDocument): NametreeDocument {
+  if (document.nodes.some((node) => node.kind === 'main_trunk')) return document;
 
-  const laidOutNodes = document.nodes.map((node) => ({ ...node }));
+  const seed = document.nodes.find((node) => node.kind === 'seed_root');
+  const baseX = seed?.x ?? 450;
+  const baseY = seed?.y ?? 390;
+
+  return {
+    ...document,
+    nodes: [
+      ...document.nodes,
+      {
+        id: 'main-trunk',
+        title: '主干',
+        note: '这棵树的主要表达方向。',
+        kind: 'main_trunk',
+        color: defaultColorByKind.main_trunk,
+        fillColor: defaultNodeFillColor,
+        x: baseX,
+        y: baseY - 55,
+      },
+    ],
+  };
+}
+
+function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
+  const documentWithTrunk = ensureInitialMainTrunk(document);
+  const shape = getTreeShape(documentWithTrunk);
+  const seed = documentWithTrunk.nodes.find((node) => node.kind === 'seed_root');
+  const mainTrunk = documentWithTrunk.nodes.find((node) => node.kind === 'main_trunk');
+  const mainRoot = documentWithTrunk.nodes.find((node) => node.kind === 'main_root');
+  const nodeById = new Map(documentWithTrunk.nodes.map((node) => [node.id, node]));
+
+  const laidOutNodes = documentWithTrunk.nodes.map((node) => ({ ...node }));
   const laidOutById = new Map(laidOutNodes.map((node) => [node.id, node]));
   const update = (id: string | undefined, x: number, y: number) => {
     const node = id ? laidOutById.get(id) : undefined;
@@ -1484,7 +1514,7 @@ function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
   const outputChildrenByParent = new Map<string, TreeNode[]>();
   const rootChildrenByParent = new Map<string, TreeNode[]>();
 
-  document.tree_edges.forEach((edge) => {
+  documentWithTrunk.tree_edges.forEach((edge) => {
     const parent = nodeById.get(edge.parent_id);
     const child = laidOutById.get(edge.child_id);
     if (!parent || !child) return;
@@ -1572,7 +1602,7 @@ function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
   layoutRootSide('left', -1);
   layoutRootSide('right', 1);
 
-  return { ...document, nodes: laidOutNodes };
+  return { ...documentWithTrunk, nodes: laidOutNodes };
 }
 
 function layoutOutputTree(

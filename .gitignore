@@ -49,3 +49,4 @@ src-tauri/.cargo/
 # Generated bundles
 src-tauri/gen/
 src-tauri/binaries/
+sxfdl.nt
