@@ -445,22 +445,19 @@ h3 {
   transition: stroke 120ms ease, stroke-width 120ms ease;
 }
 
-.tree-node:hover rect,
-.tree-node:hover .leaf-node-shape {
+.tree-node:not(.selected):hover rect,
+.tree-node:not(.selected):hover .leaf-node-shape {
   stroke: #78946e;
   stroke-width: 1.7;
 }
 
 .tree-node.selected rect:not(.node-selection-ring),
 .tree-node.selected .leaf-node-shape {
-  fill: #fcfff0;
-  stroke: #6f8f18;
   stroke-width: 2.4;
 }
 
 .node-selection-ring {
-  fill: rgba(181, 214, 60, 0.14);
-  stroke: rgba(132, 166, 22, 0.72);
+  fill: transparent;
   stroke-width: 2.6;
   pointer-events: none;
   transform-box: fill-box;
@@ -468,23 +465,21 @@ h3 {
 }
 
 .tree-node.selected .node-selection-ring {
-  animation: selected-node-breathe 2.6s ease-in-out infinite;
+  animation: selected-node-breathe 4.8s ease-in-out infinite;
 }
 
 @keyframes selected-node-breathe {
   0%,
   100% {
-    fill-opacity: 0.08;
-    stroke-opacity: 0.48;
-    stroke-width: 2.2;
+    stroke-opacity: 0.42;
+    stroke-width: 2.1;
     transform: scale(1);
   }
 
   50% {
-    fill-opacity: 0.2;
-    stroke-opacity: 0.92;
-    stroke-width: 3.2;
-    transform: scale(1.035);
+    stroke-opacity: 0.86;
+    stroke-width: 3;
+    transform: scale(1.028);
   }
 }
 

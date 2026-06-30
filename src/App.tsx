@@ -880,15 +880,16 @@ function App() {
             >
               {selectedNodeId === node.id && (
                 node.kind === 'leaf' ? (
-                  <path className="node-selection-ring" d={createLeafShapePath()} transform="scale(1.16)" />
+                  <path className="node-selection-ring" d={createLeafShapePath()} transform="scale(1.16)" stroke={node.color} />
                 ) : (
                   <rect
                     className="node-selection-ring"
-                    x={-nodeLabelWidth / 2 - 8}
-                    y={-labelHeight / 2 - 8}
-                    width={nodeLabelWidth + 16}
-                    height={labelHeight + 16}
+                    x={-nodeLabelWidth / 2 - 4}
+                    y={-labelHeight / 2 - 4}
+                    width={nodeLabelWidth + 8}
+                    height={labelHeight + 8}
                     rx="12"
+                    stroke={node.color}
                   />
                 )
               )}
