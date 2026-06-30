@@ -98,8 +98,8 @@ function normalizeTreeLayout(document) {
     }
   });
 
-  const rootNodeHeight = 44;
-  const rootSiblingGap = 26;
+  const rootNodeHeight = 34;
+  const rootSiblingGap = 20;
   const rootLevelDistance = 250;
   const rootTopY = shape.groundY + 56;
 
@@ -261,11 +261,12 @@ function angleFromHorizontal(shape, node) {
 }
 
 function rectFor(node) {
+  const visualPadding = 8;
   return {
-    left: node.x - nodeWidth / 2,
-    right: node.x + nodeWidth / 2,
-    top: node.y - nodeHeight / 2,
-    bottom: node.y + nodeHeight / 2,
+    left: node.x - nodeWidth / 2 - visualPadding,
+    right: node.x + nodeWidth / 2 + visualPadding,
+    top: node.y - nodeHeight / 2 - visualPadding,
+    bottom: node.y + nodeHeight / 2 + visualPadding,
   };
 }
 

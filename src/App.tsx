@@ -86,8 +86,8 @@ type OutlineItem = {
 };
 
 const outputSiblingGapY = 8;
-const rootSiblingGapY = 16;
-const rootChildSuggestionGapY = singleLineNodeLabelHeight + outputSiblingGapY;
+const rootSiblingGapY = 20;
+const rootChildSuggestionGapY = singleLineNodeLabelHeight + rootSiblingGapY;
 
 const defaultNodeBorderColor = '#7a9a6d';
 const defaultNodeFillColor = '#f8fbf4';
@@ -1549,7 +1549,7 @@ function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
     shape.trunkTopY = Math.min(shape.trunkTopY, Math.max(16, highestOutputY - 72));
   }
 
-  const rootSiblingGap = outputSiblingGapY;
+  const rootSiblingGap = rootSiblingGapY;
   const rootLevelDistance = 178;
   const rootTopY = shape.groundY + 56;
 

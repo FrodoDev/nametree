@@ -58,7 +58,7 @@
       "minX": -868.6,
       "maxX": 2371,
       "minY": -3906,
-      "maxY": 1675
+      "maxY": 1398
     },
     "warnings": []
   },
@@ -121,7 +121,7 @@
       "minX": -868.6,
       "maxX": 2371,
       "minY": -3906,
-      "maxY": 1675
+      "maxY": 1398
     },
     "warnings": []
   },
@@ -336,16 +336,16 @@
       {
         "title": "左主根",
         "side": "left",
-        "angle": 65.4,
-        "x": 180.5,
-        "y": 977.4
+        "angle": 65.3,
+        "x": 215.4,
+        "y": 898.8
       },
       {
         "title": "左主根",
         "side": "left",
-        "angle": 47.7,
-        "x": -308.8,
-        "y": 1223.8
+        "angle": 47.6,
+        "x": -193.7,
+        "y": 1096
       },
       {
         "title": "左主根",
@@ -426,10 +426,10 @@
     "crossingRisk": 0,
     "detachedTrunkBranches": [],
     "bounds": {
-      "minX": -623.5,
+      "minX": -620.4,
       "maxX": 1698,
       "minY": 318,
-      "maxY": 1240.8
+      "maxY": 1113
     },
     "warnings": []
   },
@@ -492,7 +492,7 @@
       "minX": -618.6,
       "maxX": 1358.8,
       "minY": -622,
-      "maxY": 940.5
+      "maxY": 916.5
     },
     "warnings": [
       "高位主根偏多：3/5"
@@ -536,7 +536,7 @@
       "minX": -356.5,
       "maxX": 1006.5,
       "minY": 269,
-      "maxY": 555
+      "maxY": 534
     },
     "warnings": []
   }
