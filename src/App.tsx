@@ -379,6 +379,12 @@ function App() {
 
       if (!(event.metaKey || event.ctrlKey)) return;
 
+      if (!isTextInput && event.key.toLowerCase() === 'a') {
+        event.preventDefault();
+        setSelectedNodes(visibleKnowledgeNodes.map((node) => node.id));
+        return;
+      }
+
       if (event.key.toLowerCase() === 'n') {
         event.preventDefault();
         void createNewDocument();
@@ -443,7 +449,7 @@ function App() {
       void unlistenUndo.then((unlisten) => unlisten());
       void unlistenDelete.then((unlisten) => unlisten());
     };
-  }, [document, documentPath, selectedNodeId, suggestions]);
+  }, [document, documentPath, selectedNodeId, suggestions, visibleKnowledgeNodes]);
 
   async function createNewDocument() {
     const tree = await invoke<NametreeDocument>('load_sample_tree');
