@@ -76,6 +76,7 @@ type NodeReparentDropTarget = {
 };
 
 type NodeReparentDrag = {
+  nodeIds: string[];
   nodeId: string;
   startClientX: number;
   startClientY: number;
@@ -83,6 +84,11 @@ type NodeReparentDrag = {
   currentY: number;
   isDragging: boolean;
   dropTarget: NodeReparentDropTarget | null;
+};
+
+type MarqueeSelection = {
+  start: { x: number; y: number };
+  current: { x: number; y: number };
 };
 
 type TreeShape = {
@@ -98,6 +104,13 @@ type OutlineItem = {
   title: string;
   level: number;
   parent: OutlineItem | null;
+};
+
+type SelectionBox = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 };
 
 const outputSiblingGapY = 8;
@@ -163,17 +176,18 @@ function App() {
   const [undoStack, setUndoStack] = useState<NametreeDocument[]>([]);
   const [documentPath, setDocumentPath] = useState<string | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [selectedNodeIds, setSelectedNodeIds] = useState<string[]>([]);
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
   const [isEditingDocumentTitle, setIsEditingDocumentTitle] = useState(false);
   const [documentTitleDraft, setDocumentTitleDraft] = useState('');
   const [zoom, setZoom] = useState(1);
   const [canvasOffset, setCanvasOffset] = useState({ x: 0, y: 0 });
-  const [panStart, setPanStart] = useState<{ pointerX: number; pointerY: number; offsetX: number; offsetY: number } | null>(null);
   const [isPanning, setIsPanning] = useState(false);
   const [detailPanelWidth, setDetailPanelWidth] = useState(238);
   const [panelResizeStart, setPanelResizeStart] = useState<{ pointerX: number; width: number } | null>(null);
   const [titlebarDragStart, setTitlebarDragStart] = useState<{ pointerX: number; pointerY: number } | null>(null);
   const [nodeReparentDrag, setNodeReparentDrag] = useState<NodeReparentDrag | null>(null);
+  const [marqueeSelection, setMarqueeSelection] = useState<MarqueeSelection | null>(null);
   const [outlineDraft, setOutlineDraft] = useState('');
   const canvasPanelRef = useRef<HTMLElement | null>(null);
   const treeSvgRef = useRef<SVGSVGElement | null>(null);
@@ -205,7 +219,7 @@ function App() {
       const normalizedTree = normalizeTreeLayout(tree);
       setDocument(normalizedTree);
       setUndoStack([]);
-      setSelectedNodeId(getInitialSelectedNodeId(normalizedTree));
+      setSelectedNodes([getInitialSelectedNodeId(normalizedTree)].filter((id): id is string => Boolean(id)));
       setCanvasOffset({ x: 0, y: 0 });
       setZoom(1);
     });
@@ -263,7 +277,7 @@ function App() {
         const isDragging = current.isDragging
           || Math.abs(event.clientX - current.startClientX) > 5
           || Math.abs(event.clientY - current.startClientY) > 5;
-        const dropTarget = isDragging ? findReparentDropTarget(document, current.nodeId, pointer, shape) : null;
+        const dropTarget = isDragging ? findReparentDropTarget(document, current.nodeIds, pointer, shape) : null;
 
         const nextDrag = {
           ...current,
@@ -283,7 +297,7 @@ function App() {
       setNodeReparentDrag(null);
 
       if (current?.isDragging && current.dropTarget) {
-        reparentNode(current.nodeId, current.dropTarget.parentId, { x: current.currentX, y: current.currentY }, current.dropTarget.side);
+        reparentNodes(current.nodeIds, current.dropTarget.parentId, { x: current.currentX, y: current.currentY }, current.dropTarget.side);
       }
     };
 
@@ -441,7 +455,7 @@ function App() {
     setDocument(normalizedTree);
     setUndoStack([]);
     setDocumentPath(null);
-    setSelectedNodeId(getInitialSelectedNodeId(normalizedTree));
+    setSelectedNodes([getInitialSelectedNodeId(normalizedTree)].filter((id): id is string => Boolean(id)));
     setEditingNodeId(null);
     setIsEditingDocumentTitle(false);
     setCanvasOffset({ x: 0, y: 0 });
@@ -477,7 +491,7 @@ function App() {
     setDocument(normalizedTree);
     setUndoStack([]);
     setDocumentPath(openedFile.path);
-    setSelectedNodeId(normalizedTree.nodes[0]?.id ?? null);
+    setSelectedNodes([normalizedTree.nodes[0]?.id].filter((id): id is string => Boolean(id)));
     setEditingNodeId(null);
     setIsEditingDocumentTitle(false);
     setCanvasOffset({ x: 0, y: 0 });
@@ -507,9 +521,16 @@ function App() {
   function commitDocument(nextDocument: NametreeDocument, nextSelectedNodeId = selectedNodeId) {
     if (!document) return;
 
+    const normalizedDocument = normalizeTreeLayout(nextDocument);
+    const existingIds = new Set(normalizedDocument.nodes.map((node) => node.id));
+    const nextSelectedIds = selectedNodeIds.filter((id) => existingIds.has(id));
+    if (nextSelectedNodeId && existingIds.has(nextSelectedNodeId) && !nextSelectedIds.includes(nextSelectedNodeId)) {
+      nextSelectedIds.push(nextSelectedNodeId);
+    }
+
     setUndoStack((stack) => [...stack.slice(-49), document]);
-    setDocument(normalizeTreeLayout(nextDocument));
-    setSelectedNodeId(nextSelectedNodeId ?? null);
+    setDocument(normalizedDocument);
+    setSelectedNodes(nextSelectedNodeId ? nextSelectedIds : []);
   }
 
   function updateDocumentTitleTag(titleTag: string) {
@@ -532,7 +553,7 @@ function App() {
       if (!previousDocument) return stack;
 
       setDocument(previousDocument);
-      setSelectedNodeId((currentId) => previousDocument.nodes.some((node) => node.id === currentId) ? currentId : previousDocument.nodes[0]?.id ?? null);
+      setSelectedNodes(selectedNodeIds.filter((id) => previousDocument.nodes.some((node) => node.id === id)));
       setEditingNodeId(null);
       setIsEditingDocumentTitle(false);
       return stack.slice(0, -1);
@@ -588,6 +609,41 @@ function App() {
     updateNode(selectedNodeId, patch);
   }
 
+  function updateSelectedNodeStyles(patch: Pick<Partial<TreeNode>, 'color' | 'fillColor'>) {
+    if (!document || selectedNodeIds.length === 0) return;
+
+    const styleTargetIds = new Set(selectedNodeIds.filter((nodeId) => {
+      const node = document.nodes.find((candidate) => candidate.id === nodeId);
+      return node && isKnowledgeNode(node);
+    }));
+    if (styleTargetIds.size === 0) return;
+
+    commitDocument({
+      ...document,
+      nodes: document.nodes.map((node) => styleTargetIds.has(node.id) ? { ...node, ...patch } : node),
+    }, selectedNodeId);
+  }
+
+  function selectSingleNode(nodeId: string | null) {
+    setSelectedNodeId(nodeId);
+    setSelectedNodeIds(nodeId ? [nodeId] : []);
+  }
+
+  function toggleSelectedNode(nodeId: string) {
+    setSelectedNodeIds((current) => {
+      const exists = current.includes(nodeId);
+      const next = exists ? current.filter((id) => id !== nodeId) : [...current, nodeId];
+      setSelectedNodeId(next[next.length - 1] ?? null);
+      return next;
+    });
+  }
+
+  function setSelectedNodes(nodeIds: string[]) {
+    const uniqueIds = Array.from(new Set(nodeIds));
+    setSelectedNodeIds(uniqueIds);
+    setSelectedNodeId(uniqueIds[uniqueIds.length - 1] ?? null);
+  }
+
   function updateNode(nodeId: string, patch: Partial<TreeNode>) {
     if (!document) return;
 
@@ -599,19 +655,38 @@ function App() {
     });
   }
 
-  function reparentNode(nodeId: string, nextParentId: string, dropPoint?: { x: number; y: number }, targetSide?: GrowthSide) {
+  function reparentNodes(nodeIds: string[], nextParentId: string, dropPoint?: { x: number; y: number }, targetSide?: GrowthSide) {
     if (!document) return;
 
-    const child = document.nodes.find((node) => node.id === nodeId);
-    const nextParent = document.nodes.find((node) => node.id === nextParentId);
-    if (!child || !nextParent || !canReparentNode(document, child, nextParent, targetSide, true)) return;
+    const orderedNodeIds = getTopLevelSelectedNodeIds(document, nodeIds);
+    let nextDocument = document;
+    const movedNodeIds: string[] = [];
+
+    orderedNodeIds.forEach((nodeId, index) => {
+      const adjustedDropPoint = dropPoint ? { ...dropPoint, y: dropPoint.y + index * (singleLineNodeLabelHeight + outputSiblingGapY) } : undefined;
+      const result = getReparentedDocument(nextDocument, nodeId, nextParentId, adjustedDropPoint, targetSide);
+      if (!result) return;
+
+      nextDocument = result;
+      movedNodeIds.push(nodeId);
+    });
+
+    if (movedNodeIds.length === 0) return;
+    commitDocument(nextDocument, movedNodeIds[movedNodeIds.length - 1]);
+    setSelectedNodes(movedNodeIds);
+  }
+
+  function getReparentedDocument(baseDocument: NametreeDocument, nodeId: string, nextParentId: string, dropPoint?: { x: number; y: number }, targetSide?: GrowthSide): NametreeDocument | null {
+    const child = baseDocument.nodes.find((node) => node.id === nodeId);
+    const nextParent = baseDocument.nodes.find((node) => node.id === nextParentId);
+    if (!child || !nextParent || !canReparentNode(baseDocument, child, nextParent, targetSide, true)) return null;
 
     const nextSide = getReparentedNodeSide(child, nextParent, shape, dropPoint, targetSide);
     const nextKind = getReparentedNodeKind(child, nextParent, shape, dropPoint);
-    const subtreeNodeIds = collectDescendantNodeIds(document, nodeId);
-    const nextDocument = {
-      ...document,
-      nodes: document.nodes.map((node) => {
+    const subtreeNodeIds = collectDescendantNodeIds(baseDocument, nodeId);
+    return {
+      ...baseDocument,
+      nodes: baseDocument.nodes.map((node) => {
         if (!subtreeNodeIds.has(node.id)) return node;
 
         const convertedKind = getConvertedSubtreeNodeKind(node, nextKind);
@@ -622,10 +697,8 @@ function App() {
           side: nextSide,
         };
       }),
-      tree_edges: reorderTreeEdgesForDrop(document, nodeId, nextParentId, nextSide, dropPoint ?? { x: child.x, y: child.y }, nextKind),
+      tree_edges: reorderTreeEdgesForDrop(baseDocument, nodeId, nextParentId, nextSide, dropPoint ?? { x: child.x, y: child.y }, nextKind),
     };
-
-    commitDocument(nextDocument, nodeId);
   }
 
   function pasteOutlineIntoSelectedNode(outlineItems: OutlineItem[]) {
@@ -927,41 +1000,49 @@ function App() {
           onPointerDown={(event) => {
             if (event.button !== 0) return;
 
-            setPanStart({
-              pointerX: event.clientX,
-              pointerY: event.clientY,
-              offsetX: canvasOffset.x,
-              offsetY: canvasOffset.y,
-            });
+            const point = getTreePointFromClientPoint(event.clientX, event.clientY, treeSvgRef.current, canvasSize, canvasOffset, zoom);
+            setMarqueeSelection({ start: point, current: point });
             event.currentTarget.setPointerCapture(event.pointerId);
           }}
           onPointerMove={(event) => {
-            if (!panStart) return;
+            if (!marqueeSelection) return;
 
-            const nextX = panStart.offsetX + event.clientX - panStart.pointerX;
-            const nextY = panStart.offsetY + event.clientY - panStart.pointerY;
-            setIsPanning(Math.abs(nextX - panStart.offsetX) > 3 || Math.abs(nextY - panStart.offsetY) > 3);
-            setCanvasOffset({ x: nextX, y: nextY });
+            const point = getTreePointFromClientPoint(event.clientX, event.clientY, treeSvgRef.current, canvasSize, canvasOffset, zoom);
+            setMarqueeSelection((current) => current ? { ...current, current: point } : current);
           }}
-          onPointerUp={() => {
+          onPointerUp={(event) => {
+            if (marqueeSelection && document) {
+              const selectionBox = getSelectionBox(marqueeSelection.start, marqueeSelection.current);
+              if (selectionBox.width > 4 || selectionBox.height > 4) {
+                const selectedIds = visibleKnowledgeNodes
+                  .filter((node) => isNodeInSelectionBox(node, selectionBox))
+                  .map((node) => node.id);
+                setSelectedNodes(event.metaKey || event.ctrlKey ? [...selectedNodeIds, ...selectedIds] : selectedIds);
+              }
+            }
+
             window.setTimeout(() => setIsPanning(false), 0);
-            setPanStart(null);
+            setMarqueeSelection(null);
           }}
           onPointerLeave={() => {
             window.setTimeout(() => setIsPanning(false), 0);
-            setPanStart(null);
+            setMarqueeSelection(null);
           }}
         >
           <g transform={`translate(${canvasSize.width / 2 + canvasOffset.x} ${canvasSize.height / 2 + canvasOffset.y}) scale(${zoom}) translate(-450 -350)`}>
             <rect className="canvas-branch-ground" x="-50000" y="-50000" width="100000" height={50000 + shape.groundY} />
             <rect className="canvas-root-ground" x="-50000" y={shape.groundY} width="100000" height="100000" />
+            {marqueeSelection && (() => {
+              const box = getSelectionBox(marqueeSelection.start, marqueeSelection.current);
+              return <rect className="selection-marquee" x={box.x} y={box.y} width={box.width} height={box.height} />;
+            })()}
 
             <g
               className={`document-title-tag ${isTitleTagPlaceholder ? 'placeholder' : ''}`}
               transform={`translate(${shape.centerX + 28}, ${shape.groundY - 8})`}
               onPointerDown={(event) => event.stopPropagation()}
               onDoubleClick={() => {
-                setSelectedNodeId(null);
+                selectSingleNode(null);
                 setEditingNodeId(null);
                 setDocumentTitleDraft(document.titleTag ?? '');
                 setIsEditingDocumentTitle(true);
@@ -993,7 +1074,7 @@ function App() {
               transform={`translate(${seed.x}, ${seed.y})`}
               onPointerDown={(event) => event.stopPropagation()}
               onClick={() => {
-                setSelectedNodeId(seed.id);
+                selectSingleNode(seed.id);
               }}
             >
               <circle r="42" />
@@ -1007,7 +1088,7 @@ function App() {
             const child = nodeById.get(edge.child_id);
             if (!parent || !child || !isKnowledgeNode(child)) return null;
             const isDropTargetEdge = nodeReparentDrag?.dropTarget?.parentId === parent.id && parent.kind !== 'main_trunk';
-            const isSelectedIncomingEdge = child.id === selectedNodeId;
+            const isSelectedIncomingEdge = selectedNodeIds.includes(child.id);
             return (
               <path
                 key={`${edge.parent_id}-${edge.child_id}`}
@@ -1062,7 +1143,7 @@ function App() {
               className={`tree-structure ${selectedNodeId === mainTrunk.id ? 'selected' : ''} ${nodeReparentDrag?.dropTarget?.parentId === mainTrunk.id ? 'drop-target' : ''}`}
               onPointerDown={(event) => event.stopPropagation()}
               onClick={() => {
-                setSelectedNodeId(mainTrunk.id);
+                selectSingleNode(mainTrunk.id);
               }}
             >
               <path className="trunk-spine-base" d={createTrunkSpinePath(shape, getTrunkTopY(shape, document, suggestions))} />
@@ -1110,20 +1191,27 @@ function App() {
             const titlePreviewLines = getNodeTitlePreviewLines(node.title);
             const labelHeight = getNodeVisualHeight(node);
             const isMultiLine = titlePreviewLines.length > 1;
-            const isDragSource = nodeReparentDrag?.nodeId === node.id;
+            const isSelected = selectedNodeIds.includes(node.id);
+            const isDragSource = nodeReparentDrag?.nodeIds.includes(node.id);
             const isDropTarget = nodeReparentDrag?.dropTarget?.parentId === node.id;
 
             return (
             <g
               key={node.id}
-              className={`tree-node ${selectedNodeId === node.id ? 'selected' : ''} ${isDragSource ? 'dragging' : ''} ${isDropTarget ? 'drop-target' : ''}`}
+              className={`tree-node ${isSelected ? 'selected' : ''} ${isDragSource ? 'dragging' : ''} ${isDropTarget ? 'drop-target' : ''}`}
               transform={`translate(${node.x}, ${node.y})`}
               onPointerDown={(event) => {
                 event.stopPropagation();
                 if (event.button !== 0 || editingNodeId === node.id) return;
+                event.preventDefault();
 
                 const pointer = getTreePointFromClientPoint(event.clientX, event.clientY, treeSvgRef.current, canvasSize, canvasOffset, zoom);
+                if (!(event.metaKey || event.ctrlKey) && !selectedNodeIds.includes(node.id)) {
+                  setSelectedNodes([node.id]);
+                }
+                const dragNodeIds = selectedNodeIds.includes(node.id) ? selectedNodeIds : [node.id];
                 const nextDrag = {
+                  nodeIds: getTopLevelSelectedNodeIds(document, dragNodeIds),
                   nodeId: node.id,
                   startClientX: event.clientX,
                   startClientY: event.clientY,
@@ -1135,16 +1223,21 @@ function App() {
                 nodeReparentDragRef.current = nextDrag;
                 setNodeReparentDrag(nextDrag);
               }}
-              onClick={() => {
+              onClick={(event) => {
                 if (isPanning || nodeReparentDrag?.isDragging) return;
-                setSelectedNodeId(node.id);
+                if (event.metaKey || event.ctrlKey) {
+                  toggleSelectedNode(node.id);
+                  return;
+                }
+
+                selectSingleNode(node.id);
               }}
               onDoubleClick={() => {
-                setSelectedNodeId(node.id);
+                selectSingleNode(node.id);
                 setEditingNodeId(node.id);
               }}
             >
-              {selectedNodeId === node.id && (
+              {isSelected && (
                 node.kind === 'leaf' ? (
                   <path className="node-selection-ring" d={createLeafShapePath()} transform="scale(1.09)" stroke={node.color} />
                 ) : (
@@ -1241,6 +1334,7 @@ function App() {
                   />
                 )}
                 <text textAnchor="middle" y={titlePreviewLines.length === 1 ? 5 : -5}>{titlePreviewLines[0]}</text>
+                {nodeReparentDrag.nodeIds.length > 1 && <text className="drag-count" textAnchor="middle" y={labelHeight / 2 + 18}>{nodeReparentDrag.nodeIds.length} 个节点</text>}
               </g>
             );
           })()}
@@ -1270,12 +1364,13 @@ function App() {
                   onChange={(event) => updateSelectedNode({ title: event.target.value })}
                 />
                 <div className="panel-color-grid">
+                  {selectedNodeIds.length > 1 && <p className="multi-select-note">已选 {selectedNodeIds.length} 个节点，颜色会批量应用。</p>}
                   <label className="color-swatch-control" style={{ backgroundColor: selectedNode.color }}>
                     <span>边框</span>
                     <input
                       type="color"
                       value={selectedNode.color}
-                      onChange={(event) => updateSelectedNode({ color: event.target.value })}
+                      onChange={(event) => updateSelectedNodeStyles({ color: event.target.value })}
                     />
                   </label>
                   <label className="color-swatch-control" style={{ backgroundColor: selectedNode.fillColor ?? defaultNodeFillColor }}>
@@ -1283,7 +1378,7 @@ function App() {
                     <input
                       type="color"
                       value={selectedNode.fillColor ?? defaultNodeFillColor}
-                      onChange={(event) => updateSelectedNode({ fillColor: event.target.value })}
+                      onChange={(event) => updateSelectedNodeStyles({ fillColor: event.target.value })}
                     />
                   </label>
                 </div>
@@ -1339,6 +1434,44 @@ function App() {
   );
 }
 
+function getSelectionBox(start: { x: number; y: number }, current: { x: number; y: number }): SelectionBox {
+  const x = Math.min(start.x, current.x);
+  const y = Math.min(start.y, current.y);
+  return {
+    x,
+    y,
+    width: Math.abs(current.x - start.x),
+    height: Math.abs(current.y - start.y),
+  };
+}
+
+function isNodeInSelectionBox(node: TreeNode, box: SelectionBox): boolean {
+  const nodeWidth = nodeLabelWidth;
+  const nodeHeight = getNodeVisualHeight(node);
+  const nodeLeft = node.x - nodeWidth / 2;
+  const nodeRight = node.x + nodeWidth / 2;
+  const nodeTop = node.y - nodeHeight / 2;
+  const nodeBottom = node.y + nodeHeight / 2;
+
+  return nodeRight >= box.x
+    && nodeLeft <= box.x + box.width
+    && nodeBottom >= box.y
+    && nodeTop <= box.y + box.height;
+}
+
+function getTopLevelSelectedNodeIds(document: NametreeDocument, nodeIds: string[]): string[] {
+  const selectedIds = new Set(nodeIds);
+  return nodeIds.filter((nodeId) => {
+    let parentId = document.tree_edges.find((edge) => edge.child_id === nodeId)?.parent_id;
+    while (parentId) {
+      if (selectedIds.has(parentId)) return false;
+      parentId = document.tree_edges.find((edge) => edge.child_id === parentId)?.parent_id;
+    }
+
+    return true;
+  });
+}
+
 function collectDescendantNodeIds(document: NametreeDocument, nodeId: string): Set<string> {
   const ids = new Set([nodeId]);
   let changed = true;
@@ -1376,12 +1509,13 @@ function getTreePointFromClientPoint(
   };
 }
 
-function findReparentDropTarget(document: NametreeDocument, draggedNodeId: string, point: { x: number; y: number }, shape: TreeShape): NodeReparentDropTarget | null {
-  const draggedNode = document.nodes.find((node) => node.id === draggedNodeId);
+function findReparentDropTarget(document: NametreeDocument, draggedNodeIds: string[], point: { x: number; y: number }, shape: TreeShape): NodeReparentDropTarget | null {
+  const draggedNode = document.nodes.find((node) => node.id === draggedNodeIds[0]);
   if (!draggedNode) return null;
 
+  const draggedIdSet = new Set(draggedNodeIds);
   const candidates = document.nodes
-    .filter((node) => canReparentNode(document, draggedNode, node, node.kind === 'main_trunk' ? getDropSide(point, shape) : undefined, true))
+    .filter((node) => !draggedIdSet.has(node.id) && canReparentNode(document, draggedNode, node, node.kind === 'main_trunk' ? getDropSide(point, shape) : undefined, true))
     .map((node) => ({
       node,
       side: node.kind === 'main_trunk' ? getDropSide(point, shape) : undefined,

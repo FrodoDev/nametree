@@ -284,6 +284,8 @@ h3 {
   border-radius: 0;
   background: transparent;
   box-shadow: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .canvas-branch-ground {
@@ -520,6 +522,14 @@ h3 {
   font-weight: 750;
 }
 
+.selection-marquee {
+  fill: rgba(68, 122, 52, 0.1);
+  stroke: rgba(68, 122, 52, 0.64);
+  stroke-width: 1.4;
+  stroke-dasharray: 6 5;
+  pointer-events: none;
+}
+
 .node-drag-preview {
   pointer-events: none;
   opacity: 0.72;
@@ -536,6 +546,12 @@ h3 {
   font-size: 13px;
   font-weight: 700;
   pointer-events: none;
+}
+
+.node-drag-preview .drag-count {
+  fill: rgba(34, 34, 34, 0.72);
+  font-size: 11px;
+  font-weight: 750;
 }
 
 .tree-node rect,
@@ -646,8 +662,17 @@ h3 {
 
 .node-title-view {
   pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
+.node-title-view div,
+.node-title-view span,
+.node-drag-preview text,
+.tree-node text {
+  user-select: none;
+  -webkit-user-select: none;
+}
 .node-title-view div,
 .node-title-input {
   width: 100%;
@@ -734,6 +759,14 @@ h3 {
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   margin-top: 14px;
+}
+
+.multi-select-note {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: rgba(23, 32, 51, 0.56);
+  font-size: 12px;
+  font-weight: 650;
 }
 
 .color-swatch-control {
