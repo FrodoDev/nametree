@@ -156,6 +156,7 @@ function App() {
   const [isPanning, setIsPanning] = useState(false);
   const [detailPanelWidth, setDetailPanelWidth] = useState(238);
   const [panelResizeStart, setPanelResizeStart] = useState<{ pointerX: number; width: number } | null>(null);
+  const [titlebarDragStart, setTitlebarDragStart] = useState<{ pointerX: number; pointerY: number } | null>(null);
   const [outlineDraft, setOutlineDraft] = useState('');
   const canvasPanelRef = useRef<HTMLElement | null>(null);
   const treeSvgRef = useRef<SVGSVGElement | null>(null);
@@ -758,10 +759,52 @@ function App() {
   const titleTagText = getDocumentTitleTagText(document, documentPath);
   const isTitleTagPlaceholder = titleTagText.isPlaceholder;
 
+  function handleWindowTitlebarPointerDown(event: React.PointerEvent<HTMLElement>) {
+    if (event.button !== 0 || event.detail > 1) return;
+
+    setTitlebarDragStart({ pointerX: event.clientX, pointerY: event.clientY });
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function handleWindowTitlebarPointerMove(event: React.PointerEvent<HTMLElement>) {
+    if (!titlebarDragStart) return;
+
+    const deltaX = event.clientX - titlebarDragStart.pointerX;
+    const deltaY = event.clientY - titlebarDragStart.pointerY;
+    const moved = Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3;
+    if (!moved) return;
+
+    setTitlebarDragStart(null);
+    void getCurrentWindow().startDragging().catch((error) => {
+      console.error('Failed to start Nametree window drag', error);
+    });
+  }
+
+  function handleWindowTitlebarPointerUp() {
+    setTitlebarDragStart(null);
+  }
+
+  function handleWindowTitlebarDoubleClick() {
+    const appWindow = getCurrentWindow();
+    void appWindow.isFullscreen()
+      .then((isFullscreen) => appWindow.setFullscreen(!isFullscreen))
+      .catch((error) => {
+        console.error('Failed to toggle Nametree window fullscreen state', error);
+      });
+  }
+
   return (
-    <main className="app-shell" style={{ gridTemplateColumns: `minmax(360px, 1fr) 6px ${detailPanelWidth}px` }}>
-      <header className="window-titlebar" data-tauri-drag-region>
-        <span data-tauri-drag-region>{windowTitle}</span>
+    <main className="app-shell" style={{ gridTemplateColumns: `minmax(360px, 1fr) 6px minmax(238px, ${detailPanelWidth}px)` }}>
+      <header
+        className="window-titlebar"
+        onPointerDown={handleWindowTitlebarPointerDown}
+        onPointerMove={handleWindowTitlebarPointerMove}
+        onPointerUp={handleWindowTitlebarPointerUp}
+        onPointerCancel={handleWindowTitlebarPointerUp}
+        onLostPointerCapture={handleWindowTitlebarPointerUp}
+        onDoubleClick={handleWindowTitlebarDoubleClick}
+      >
+        <span>{windowTitle}</span>
       </header>
       <section
         className="canvas-panel"
