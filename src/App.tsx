@@ -607,12 +607,22 @@ function App() {
     if (!child || !nextParent || !canReparentNode(document, child, nextParent, targetSide, true)) return;
 
     const nextSide = getReparentedNodeSide(child, nextParent, shape, dropPoint, targetSide);
+    const nextKind = getReparentedNodeKind(child, nextParent, shape, dropPoint);
+    const subtreeNodeIds = collectDescendantNodeIds(document, nodeId);
     const nextDocument = {
       ...document,
-      nodes: document.nodes.map((node) => (
-        node.id === nodeId ? { ...node, side: nextSide } : node
-      )),
-      tree_edges: reorderTreeEdgesForDrop(document, nodeId, nextParentId, nextSide, dropPoint ?? { x: child.x, y: child.y }),
+      nodes: document.nodes.map((node) => {
+        if (!subtreeNodeIds.has(node.id)) return node;
+
+        const convertedKind = getConvertedSubtreeNodeKind(node, nextKind);
+        return {
+          ...node,
+          kind: convertedKind,
+          color: getConvertedNodeColor(node, convertedKind),
+          side: nextSide,
+        };
+      }),
+      tree_edges: reorderTreeEdgesForDrop(document, nodeId, nextParentId, nextSide, dropPoint ?? { x: child.x, y: child.y }, nextKind),
     };
 
     commitDocument(nextDocument, nodeId);
@@ -1078,7 +1088,10 @@ function App() {
             </g>
           )}
 
-          {mainTrunk && nodeReparentDrag?.isDragging && nodeReparentDrag.dropTarget?.parentId === mainTrunk.id && nodeById.get(nodeReparentDrag.nodeId)?.kind === 'root_branch' && (() => {
+          {mainTrunk && nodeReparentDrag?.isDragging && nodeReparentDrag.dropTarget?.parentId === mainTrunk.id && (() => {
+            const draggedNode = nodeById.get(nodeReparentDrag.nodeId);
+            return draggedNode && isKnowledgeNode(draggedNode) && getReparentedNodeKind(draggedNode, mainTrunk, shape, { x: nodeReparentDrag.currentX, y: nodeReparentDrag.currentY }) === 'root_branch';
+          })() && (() => {
             const preview = getPointerGhostRootPreview(document, nodeReparentDrag.nodeId, mainTrunk, nodeReparentDrag.dropTarget.side ?? 'right', { x: nodeReparentDrag.currentX, y: nodeReparentDrag.currentY }, shape);
             if (!preview) return null;
 
@@ -1385,7 +1398,7 @@ function findReparentDropTarget(document: NametreeDocument, draggedNodeId: strin
   }
 
   const mainTrunk = document.nodes.find((node) => node.kind === 'main_trunk');
-  if (draggedNode.kind === 'root_branch' && mainTrunk && isPointInRootReorderZone(point, shape)) {
+  if (isKnowledgeNode(draggedNode) && mainTrunk && isPointInRootReorderZone(point, shape)) {
     const side = getDropSide(point, shape);
     return {
       parentId: mainTrunk.id,
@@ -1429,11 +1442,13 @@ function reorderTreeEdgesForDrop(
   nextParentId: string,
   nextSide: GrowthSide | undefined,
   dropPoint: { x: number; y: number },
+  nextKind?: NodeKind,
 ): TreeEdge[] {
   const nodeById = new Map(document.nodes.map((node) => [node.id, node]));
   const movingEdge: TreeEdge = { parent_id: nextParentId, child_id: nodeId };
   const remainingEdges = document.tree_edges.filter((edge) => edge.child_id !== nodeId);
-  const movingNode = nodeById.get(nodeId);
+  const originalMovingNode = nodeById.get(nodeId);
+  const movingNode = originalMovingNode && nextKind ? { ...originalMovingNode, kind: nextKind, side: nextSide ?? originalMovingNode.side } : originalMovingNode;
   const parent = nodeById.get(nextParentId);
   if (parent?.kind === 'main_trunk' && movingNode?.kind === 'root_branch') {
     return reorderTrunkRootEdgesBySlot(remainingEdges, movingEdge, nodeById, nextParentId, nextSide, dropPoint);
@@ -1614,11 +1629,30 @@ function canReparentNode(document: NametreeDocument, child: TreeNode, nextParent
     return nextParent.kind === 'main_trunk' && Boolean(targetSide) && child.side !== targetSide;
   }
 
-  if (child.kind === 'root_branch') {
-    return nextParent.kind === 'main_trunk' || nextParent.kind === 'main_root' || nextParent.kind === 'root_branch';
+  return nextParent.kind === 'main_trunk' || nextParent.kind === 'main_root' || nextParent.kind === 'branch' || nextParent.kind === 'root_branch';
+}
+
+function getReparentedNodeKind(child: TreeNode, nextParent: TreeNode, shape: TreeShape, dropPoint?: { x: number; y: number }): NodeKind {
+  if (nextParent.kind === 'branch') return child.kind === 'leaf' ? 'leaf' : 'branch';
+  if (nextParent.kind === 'root_branch' || nextParent.kind === 'main_root') return 'root_branch';
+
+  if (nextParent.kind === 'main_trunk') {
+    return (dropPoint?.y ?? child.y) >= shape.groundY - 78 ? 'root_branch' : child.kind === 'leaf' ? 'leaf' : 'branch';
   }
 
-  return nextParent.kind === 'main_trunk' || nextParent.kind === 'branch';
+  return child.kind;
+}
+
+function getConvertedSubtreeNodeKind(node: TreeNode, targetRootKind: NodeKind): NodeKind {
+  if (targetRootKind === 'root_branch') return 'root_branch';
+  if (node.kind === 'leaf') return 'leaf';
+  return 'branch';
+}
+
+function getConvertedNodeColor(node: TreeNode, nextKind: NodeKind): string {
+  if (node.kind === nextKind) return node.color;
+  if (node.color === defaultColorByKind[node.kind]) return defaultColorByKind[nextKind];
+  return node.color;
 }
 
 function getReparentedNodeSide(child: TreeNode, nextParent: TreeNode, shape: TreeShape, dropPoint?: { x: number; y: number }, targetSide?: GrowthSide): GrowthSide | undefined {
