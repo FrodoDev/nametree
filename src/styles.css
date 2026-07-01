@@ -317,7 +317,7 @@ h3 {
 
 .root-edge {
   fill: none;
-  stroke: #666;
+  stroke: #333333;
   stroke-width: 1.4;
   stroke-linecap: round;
 }
@@ -476,6 +476,12 @@ h3 {
   filter: drop-shadow(0 0 10px rgba(63, 138, 42, 0.34));
 }
 
+.selected-incoming-edge {
+  stroke: #252525;
+  stroke-linecap: round;
+  animation: selected-edge-breathe 4.8s ease-in-out infinite;
+}
+
 .drop-target-edge {
   stroke: #3f8a2a;
   stroke-width: 3;
@@ -573,6 +579,21 @@ h3 {
     stroke-opacity: 0.86;
     stroke-width: 3;
     transform: scale(1.028);
+  }
+}
+
+@keyframes selected-edge-breathe {
+  0%,
+  100% {
+    stroke-opacity: 0.54;
+    stroke-width: 2.1;
+    filter: drop-shadow(0 0 2px rgba(35, 35, 35, 0.12));
+  }
+
+  50% {
+    stroke-opacity: 0.9;
+    stroke-width: 3.1;
+    filter: drop-shadow(0 0 6px rgba(35, 35, 35, 0.24));
   }
 }
 

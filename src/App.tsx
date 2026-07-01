@@ -101,10 +101,11 @@ type OutlineItem = {
 };
 
 const outputSiblingGapY = 8;
-const rootSiblingGapY = 20;
+const rootSiblingGapY = outputSiblingGapY;
 const rootChildSuggestionGapY = singleLineNodeLabelHeight + rootSiblingGapY;
 
 const defaultNodeBorderColor = '#7a9a6d';
+const defaultRootBorderColor = '#333333';
 const defaultNodeFillColor = '#f8fbf4';
 
 const defaultColorByKind: Record<NodeKind, string> = {
@@ -113,7 +114,7 @@ const defaultColorByKind: Record<NodeKind, string> = {
   main_root: '#8b6f47',
   branch: defaultNodeBorderColor,
   leaf: defaultNodeBorderColor,
-  root_branch: defaultNodeBorderColor,
+  root_branch: defaultRootBorderColor,
 };
 
 function getRootAngleSlots(count: number): number[] {
@@ -996,11 +997,11 @@ function App() {
             const child = nodeById.get(edge.child_id);
             if (!parent || !child || !isKnowledgeNode(child)) return null;
             const isDropTargetEdge = nodeReparentDrag?.dropTarget?.parentId === parent.id && parent.kind !== 'main_trunk';
-
+            const isSelectedIncomingEdge = child.id === selectedNodeId;
             return (
               <path
                 key={`${edge.parent_id}-${edge.child_id}`}
-                className={`${child.kind === 'root_branch' ? 'root-edge' : parent.kind === 'main_trunk' ? 'trunk-edge' : 'tree-edge'} ${isDropTargetEdge ? 'drop-target-edge' : ''}`}
+                className={`${child.kind === 'root_branch' ? 'root-edge' : parent.kind === 'main_trunk' ? 'trunk-edge' : 'tree-edge'} ${isDropTargetEdge ? 'drop-target-edge' : ''} ${isSelectedIncomingEdge ? 'selected-incoming-edge' : ''}`}
                 d={isOutputEdge(parent, child) ? createOutputEdgePath(parent, child, shape) : isRootEdge(parent, child) ? createRootEdgePath(parent, child, shape) : createCurve(getConnectionPoint(parent, child, shape), child)}
               />
             );
