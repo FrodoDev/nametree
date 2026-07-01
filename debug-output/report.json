@@ -120,8 +120,78 @@
     "bounds": {
       "minX": -868.6,
       "maxX": 2371,
-      "minY": -3906,
+      "minY": -4122,
       "maxY": 1398
+    },
+    "warnings": []
+  },
+  {
+    "file": "debug-drop-branch.nt",
+    "mainTrunk": {
+      "x": 450,
+      "y": 335
+    },
+    "rootCount": {
+      "left": 1,
+      "right": 5,
+      "total": 6
+    },
+    "angles": [
+      {
+        "title": "右主根",
+        "side": "right",
+        "angle": 68.7,
+        "x": 546,
+        "y": 636.2
+      },
+      {
+        "title": "右主根",
+        "side": "right",
+        "angle": 64.9,
+        "x": 614.6,
+        "y": 741.7
+      },
+      {
+        "title": "左主根",
+        "side": "left",
+        "angle": 12.5,
+        "x": 197.5,
+        "y": 446
+      },
+      {
+        "title": "右主根",
+        "side": "right",
+        "angle": 47.4,
+        "x": 863.5,
+        "y": 840.3
+      },
+      {
+        "title": "右主根",
+        "side": "right",
+        "angle": 27.7,
+        "x": 1112.3,
+        "y": 737.9
+      },
+      {
+        "title": "右主根",
+        "side": "right",
+        "angle": 11.9,
+        "x": 1271.8,
+        "y": 563
+      }
+    ],
+    "highBandRoots": 1,
+    "overlaps": {
+      "count": 0,
+      "pairs": []
+    },
+    "crossingRisk": 0,
+    "detachedTrunkBranches": [],
+    "bounds": {
+      "minX": 8,
+      "maxX": 1325.8,
+      "minY": 126,
+      "maxY": 857.3
     },
     "warnings": []
   },
@@ -432,6 +502,71 @@
       "maxY": 1113
     },
     "warnings": []
+  },
+  {
+    "file": "sxfdl copy.nt",
+    "mainTrunk": {
+      "x": 450,
+      "y": 335
+    },
+    "rootCount": {
+      "left": 2,
+      "right": 3,
+      "total": 5
+    },
+    "angles": [
+      {
+        "title": "游戏缘起",
+        "side": "right",
+        "angle": 66.3,
+        "x": 551.7,
+        "y": 621.8
+      },
+      {
+        "title": "她的样子",
+        "side": "left",
+        "angle": 23.3,
+        "x": 213.6,
+        "y": 491.7
+      },
+      {
+        "title": "我的感受",
+        "side": "right",
+        "angle": 35.6,
+        "x": 1047.8,
+        "y": 818.5
+      },
+      {
+        "title": "我们的象征",
+        "side": "left",
+        "angle": 7.9,
+        "x": -314.6,
+        "y": 496.3
+      },
+      {
+        "title": "冲突与确认",
+        "side": "right",
+        "angle": 9.9,
+        "x": 1054.8,
+        "y": 495.2
+      }
+    ],
+    "highBandRoots": 3,
+    "overlaps": {
+      "count": 0,
+      "pairs": []
+    },
+    "crossingRisk": 0,
+    "detachedTrunkBranches": [],
+    "bounds": {
+      "minX": -618.6,
+      "maxX": 1358.8,
+      "minY": -622,
+      "maxY": 916.5
+    },
+    "warnings": [
+      "高位主根偏多：3/5"
+    ]
   },
   {
     "file": "sxfdl.nt",

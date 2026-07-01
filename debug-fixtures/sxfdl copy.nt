@@ -1,0 +1,1222 @@
+{
+  "format": "nametree.document",
+  "version": 1,
+  "document": {
+    "id": "default-tree",
+    "title": "未保存",
+    "titleTag": "盛夏和芬德拉",
+    "slogan": "Name it to own it",
+    "nodes": [
+      {
+        "id": "seed-root",
+        "title": "根节点",
+        "note": "初始生长点。",
+        "kind": "seed_root",
+        "color": "#7b6b55",
+        "fillColor": "#ffffff",
+        "x": 450.0,
+        "y": 390.0,
+        "side": null
+      },
+      {
+        "id": "main-trunk",
+        "title": "主干",
+        "note": "这棵树的主要表达方向。",
+        "kind": "main_trunk",
+        "color": "#5f7f45",
+        "fillColor": "#ffffff",
+        "x": 450.0,
+        "y": 335.0,
+        "side": null
+      },
+      {
+        "id": "609ed06a-33e9-4253-b6a6-3f13eb41643c",
+        "title": "相遇",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 665.0,
+        "y": 185.0,
+        "side": "right"
+      },
+      {
+        "id": "f5e7e557-4bf1-45cb-90af-6eb02634451a",
+        "title": "派派",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 843.0,
+        "y": 101.0,
+        "side": "right"
+      },
+      {
+        "id": "8e00d028-86ae-44a8-92f0-f4fad411ea31",
+        "title": "友谊之舟",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 843.0,
+        "y": 143.0,
+        "side": "right"
+      },
+      {
+        "id": "3f74cadb-fc78-4591-b425-bd4e5e3f4670",
+        "title": "神秘人",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 843.0,
+        "y": 185.0,
+        "side": "right"
+      },
+      {
+        "id": "93a31284-94ca-4819-896b-57264ac63e6a",
+        "title": "加好友声讨",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 843.0,
+        "y": 227.0,
+        "side": "right"
+      },
+      {
+        "id": "9e811016-dc05-4eae-a4b1-a8e7f2d2aca7",
+        "title": "没有争吵的开场",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 843.0,
+        "y": 269.0,
+        "side": "right"
+      },
+      {
+        "id": "43591a84-e21b-4b1d-989e-c77142953276",
+        "title": "靠近",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 237.0,
+        "y": 186.0,
+        "side": "left"
+      },
+      {
+        "id": "c21e1d1f-0612-483d-8227-bb2ab9828913",
+        "title": "讲清规则",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 59.0,
+        "y": 81.0,
+        "side": "left"
+      },
+      {
+        "id": "adcb09da-dcba-44c0-9fb5-d022a4ae24f1",
+        "title": "越聊越多",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 59.0,
+        "y": 123.0,
+        "side": "left"
+      },
+      {
+        "id": "41c2e6ef-8285-4f16-80f7-87e3083bffa1",
+        "title": "加微信",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 59.0,
+        "y": 165.0,
+        "side": "left"
+      },
+      {
+        "id": "92583374-2d08-41bc-b4ec-7b7b4d5ee0c0",
+        "title": "吵吵闹闹",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 59.0,
+        "y": 207.0,
+        "side": "left"
+      },
+      {
+        "id": "a91c696c-70ff-43eb-9bd8-50fd9e2ddba9",
+        "title": "像百灵鸟",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 59.0,
+        "y": 249.0,
+        "side": "left"
+      },
+      {
+        "id": "13444b89-55f9-4804-9903-a60084196f95",
+        "title": "分享越来越多",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 59.0,
+        "y": 291.0,
+        "side": "left"
+      },
+      {
+        "id": "17043ab0-adbe-4b15-acdb-d1c060446809",
+        "title": "心动",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 727.0,
+        "y": -4.0,
+        "side": "right"
+      },
+      {
+        "id": "63adef52-ff15-42c1-bfde-8e810b945dce",
+        "title": "慢慢喜欢",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 905.0,
+        "y": -67.0,
+        "side": "right"
+      },
+      {
+        "id": "c73455b7-248f-40d3-8b2a-6f92d9f64b24",
+        "title": "想一起玩",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 905.0,
+        "y": -25.0,
+        "side": "right"
+      },
+      {
+        "id": "a98f7b8a-bc7b-42d3-b21e-a56dec3e5960",
+        "title": "东盟与西盟",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 905.0,
+        "y": 17.0,
+        "side": "right"
+      },
+      {
+        "id": "4a7bc004-1911-46f3-bad6-3cebf4e7d9b7",
+        "title": "期待她来到身边",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 905.0,
+        "y": 59.0,
+        "side": "right"
+      },
+      {
+        "id": "0202d177-204f-49e9-9df9-6a3f9c682fd0",
+        "title": "命名",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 163.0,
+        "y": -45.0,
+        "side": "left"
+      },
+      {
+        "id": "eed85c49-5579-43e4-834d-73e0c9a03f92",
+        "title": "盛夏",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -15.0,
+        "y": -129.0,
+        "side": "left"
+      },
+      {
+        "id": "e5e9e8b1-3814-4d0d-aa8b-16b8baf7f8bf",
+        "title": "芬德拉",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -15.0,
+        "y": -87.0,
+        "side": "left"
+      },
+      {
+        "id": "9f7719fa-3550-422f-966f-7aaab1b1780f",
+        "title": "短剧里的名字",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -15.0,
+        "y": -45.0,
+        "side": "left"
+      },
+      {
+        "id": "395a345e-4b66-4d84-a99f-b3422b47001a",
+        "title": "真诚相爱",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -15.0,
+        "y": -3.0,
+        "side": "left"
+      },
+      {
+        "id": "5fcdb4e9-8c0a-4918-9bd9-893399408b28",
+        "title": "彼此独立",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -15.0,
+        "y": 39.0,
+        "side": "left"
+      },
+      {
+        "id": "c6a63bc5-8b6d-49af-8d2e-85a9a08ef333",
+        "title": "思念",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 753.0,
+        "y": -172.0,
+        "side": "right"
+      },
+      {
+        "id": "6a6461c1-ce00-4e56-bc7a-eddd71745cb5",
+        "title": "春节旅行",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 931.0,
+        "y": -235.0,
+        "side": "right"
+      },
+      {
+        "id": "b108d1c5-1d54-4c0e-9597-81e809d81a4c",
+        "title": "旅游间歇",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 931.0,
+        "y": -193.0,
+        "side": "right"
+      },
+      {
+        "id": "a1ae1d5c-54c6-40f3-a4b8-c5a0b17fc5c6",
+        "title": "豆蔻年华",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 931.0,
+        "y": -151.0,
+        "side": "right"
+      },
+      {
+        "id": "720f2179-ea95-464a-99c8-efd92abd9a1f",
+        "title": "三百多遍",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 931.0,
+        "y": -109.0,
+        "side": "right"
+      },
+      {
+        "id": "ae27fb54-a653-4597-ad55-b3e300cb8825",
+        "title": "告白",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 163.0,
+        "y": -262.0,
+        "side": "left"
+      },
+      {
+        "id": "4d84d8fa-fba9-4512-8d94-3bf96bdab4eb",
+        "title": "因前 CP 争吵",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -15.0,
+        "y": -353.0,
+        "side": "left"
+      },
+      {
+        "id": "f3967bb3-7a1b-45de-8af7-e5b21b8743c6",
+        "title": "说出想法",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -15.0,
+        "y": -311.0,
+        "side": "left"
+      },
+      {
+        "id": "acaf59af-adc6-410d-9d84-0d944cc3b352",
+        "title": "计划让她成为芬德拉",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -15.0,
+        "y": -262.0,
+        "side": "left"
+      },
+      {
+        "id": "efb8d319-30be-4116-a4dd-bbeb0543d09a",
+        "title": "和好",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -15.0,
+        "y": -213.0,
+        "side": "left"
+      },
+      {
+        "id": "bc7b03d5-90b0-43df-bd72-a07fd926bb92",
+        "title": "唱豆蔻年华",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -15.0,
+        "y": -171.0,
+        "side": "left"
+      },
+      {
+        "id": "ae85618d-9baf-49f7-8d7e-ae2a9fa01ca4",
+        "title": "赠予",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 727.0,
+        "y": -389.0,
+        "side": "right"
+      },
+      {
+        "id": "cd7e2f4f-56ff-4965-bc88-eb7e307aebf0",
+        "title": "海风中失落的血色馈赠",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 905.0,
+        "y": -494.0,
+        "side": "right"
+      },
+      {
+        "id": "291b90f0-5981-4c31-97c7-56479ccd09be",
+        "title": "秋",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 905.0,
+        "y": -445.0,
+        "side": "right"
+      },
+      {
+        "id": "e5ae0b80-f61b-41e9-a80d-33a7171b6bb7",
+        "title": "来自我心",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 905.0,
+        "y": -403.0,
+        "side": "right"
+      },
+      {
+        "id": "fc52349a-f36d-4fbd-b9ce-41c611c6221a",
+        "title": "一首首歌",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 905.0,
+        "y": -361.0,
+        "side": "right"
+      },
+      {
+        "id": "20367aa4-6615-49a5-9e93-7db9411ba46c",
+        "title": "一段段朗读",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 905.0,
+        "y": -319.0,
+        "side": "right"
+      },
+      {
+        "id": "1b7ec029-43ba-4867-b96b-fbe3536d1cea",
+        "title": "现在",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 237.0,
+        "y": -500.0,
+        "side": "left"
+      },
+      {
+        "id": "d5fc93b8-e172-410c-b3ad-a26a06eb9d94",
+        "title": "吵过很多架",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 59.0,
+        "y": -605.0,
+        "side": "left"
+      },
+      {
+        "id": "7b7d1b98-0c95-4753-a4c8-7789b4c7c081",
+        "title": "依然特别爱她",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 59.0,
+        "y": -521.0,
+        "side": "left"
+      },
+      {
+        "id": "8c82ac9f-46a9-4ee8-9101-a761c6885824",
+        "title": "她满心都是我",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 59.0,
+        "y": -437.0,
+        "side": "left"
+      },
+      {
+        "id": "82cf10ba-f6d9-4675-bf07-470a474789c3",
+        "title": "我们还在一起生长",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 59.0,
+        "y": -395.0,
+        "side": "left"
+      },
+      {
+        "id": "aad468a9-4118-4ec3-8b87-29e7e9960b69",
+        "title": "游戏缘起",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 563.6545654351748,
+        "y": 616.5769467591625,
+        "side": "right"
+      },
+      {
+        "id": "ee6874ea-c032-49de-a4e5-9126d468e8eb",
+        "title": "派派",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 741.6545654351748,
+        "y": 535.5769467591625,
+        "side": "right"
+      },
+      {
+        "id": "dbbad53d-242c-4cb5-acae-51a36e7170d3",
+        "title": "友谊之舟机制",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 741.6545654351748,
+        "y": 589.5769467591625,
+        "side": "right"
+      },
+      {
+        "id": "67c6aa4e-7dee-4f53-accc-f0f03e7b1b84",
+        "title": "神秘人事件",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 741.6545654351748,
+        "y": 643.5769467591625,
+        "side": "right"
+      },
+      {
+        "id": "ec3ff43c-b55f-4a46-8929-d21fa4c75a86",
+        "title": "不同联盟",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 741.6545654351748,
+        "y": 697.5769467591625,
+        "side": "right"
+      },
+      {
+        "id": "0066d688-e577-489c-9ad9-3a63030c838e",
+        "title": "她的样子",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 223.34507321515107,
+        "y": 511.2024050615843,
+        "side": "left"
+      },
+      {
+        "id": "03e3f45e-d6ef-4585-aa77-cfcbb6a756d6",
+        "title": "活泼",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 45.345073215151075,
+        "y": 463.0,
+        "side": "left"
+      },
+      {
+        "id": "8a0c3321-5bd0-48bf-9d97-965119d73840",
+        "title": "吵吵闹闹",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 45.345073215151075,
+        "y": 517.0,
+        "side": "left"
+      },
+      {
+        "id": "b974e5bb-2fc0-4f65-8f46-fa39e666715e",
+        "title": "像百灵鸟",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 45.345073215151075,
+        "y": 571.0,
+        "side": "left"
+      },
+      {
+        "id": "1c6b0dcb-4188-42cd-8138-02e2180eba5f",
+        "title": "愿意分享",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 45.345073215151075,
+        "y": 625.0,
+        "side": "left"
+      },
+      {
+        "id": "5b45d79f-29b8-41d2-89ac-cd25742e7ffd",
+        "title": "我的感受",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 987.2011283735626,
+        "y": 733.6672310944821,
+        "side": "right"
+      },
+      {
+        "id": "c71e3476-6bec-42f0-a928-1e0dc7aca5a9",
+        "title": "耐心解释",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1165.2011283735626,
+        "y": 652.6672310944821,
+        "side": "right"
+      },
+      {
+        "id": "3c93bd48-1919-4504-8ffd-cfb5025436dd",
+        "title": "慢慢喜欢",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1165.2011283735626,
+        "y": 706.6672310944821,
+        "side": "right"
+      },
+      {
+        "id": "cd63e217-0072-49b0-9d90-c9c838af5d5b",
+        "title": "旅游途中想她",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1165.2011283735626,
+        "y": 760.6672310944821,
+        "side": "right"
+      },
+      {
+        "id": "0f15bcb7-7fe5-43ee-865a-ee81a6a9e4a6",
+        "title": "想和她一起玩",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1165.2011283735626,
+        "y": 814.6672310944821,
+        "side": "right"
+      },
+      {
+        "id": "a8b8c230-1dfb-45df-911b-8d19e51a8822",
+        "title": "我们的象征",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -240.05904534966476,
+        "y": 547.4657380407054,
+        "side": "left"
+      },
+      {
+        "id": "a0af2a53-0c5c-448b-ad06-bc7abf91de49",
+        "title": "盛夏",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -418.0590453496648,
+        "y": 463.0,
+        "side": "left"
+      },
+      {
+        "id": "fe8832f3-8515-4479-a515-56d713c26df3",
+        "title": "芬德拉",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -418.0590453496648,
+        "y": 517.0,
+        "side": "left"
+      },
+      {
+        "id": "62affd08-ef62-43d2-bb54-22a8e70e0e8d",
+        "title": "豆蔻年华",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -418.0590453496648,
+        "y": 571.0,
+        "side": "left"
+      },
+      {
+        "id": "96c4682e-b5c7-4796-aad4-0fcb8d297e7a",
+        "title": "来自我心",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -418.0590453496648,
+        "y": 625.0,
+        "side": "left"
+      },
+      {
+        "id": "c530fa96-995b-4ce5-808c-a97e871c2db2",
+        "title": "冲突与确认",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1035.6618602552494,
+        "y": 460.92795786179585,
+        "side": "right"
+      },
+      {
+        "id": "392ef6ce-8da9-48e2-b533-72b9e6287475",
+        "title": "前 CP",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1213.6618602552494,
+        "y": 463.0,
+        "side": "right"
+      },
+      {
+        "id": "0eb29a9b-58ee-49ac-848a-f02d2b9b642a",
+        "title": "争吵",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1213.6618602552494,
+        "y": 517.0,
+        "side": "right"
+      },
+      {
+        "id": "8c4ecfa9-ccb5-4c60-b2c7-2dcfd1293272",
+        "title": "和好",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1213.6618602552494,
+        "y": 571.0,
+        "side": "right"
+      },
+      {
+        "id": "886f84c1-f9d6-4f04-9bd1-570e44117173",
+        "title": "说出计划",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1213.6618602552494,
+        "y": 625.0,
+        "side": "right"
+      },
+      {
+        "id": "aa4f65ea-00c5-408d-9c17-135802c6887e",
+        "title": "更确定彼此",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1213.6618602552494,
+        "y": 679.0,
+        "side": "right"
+      },
+      {
+        "id": "337acc76-70cf-46e7-89c8-ccbefa87f826",
+        "title": "神秘嘉宾",
+        "note": "这是一个子根系节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": null,
+        "x": -418.0590453496648,
+        "y": 679.0,
+        "side": "left"
+      },
+      {
+        "id": "7045ae84-c25f-46f2-ab93-59ee61074eab",
+        "title": "分享照片",
+        "note": "这是一个子分支节点，可以继续编辑名称、颜色和备注。",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": null,
+        "x": 905.0,
+        "y": -277.0,
+        "side": "right"
+      },
+      {
+        "id": "3262fb70-2fed-4a23-9c97-fe6249e39730",
+        "title": "盛夏",
+        "note": "这是一个子分支节点，可以继续编辑名称、颜色和备注。",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#94e3fe",
+        "x": -119.0,
+        "y": -563.0,
+        "side": "left"
+      },
+      {
+        "id": "9807824c-772f-48ab-884f-e4fea934c12d",
+        "title": "❤️",
+        "note": "这是一个子分支节点，可以继续编辑名称、颜色和备注。",
+        "kind": "branch",
+        "color": "#ffa57d",
+        "fillColor": "#e392fe",
+        "x": -119.0,
+        "y": -521.0,
+        "side": "left"
+      },
+      {
+        "id": "f65665ff-f3ad-4fa2-849b-8cb48bb139ba",
+        "title": "芬德拉",
+        "note": "这是一个子分支节点，可以继续编辑名称、颜色和备注。",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#94e3fe",
+        "x": -119.0,
+        "y": -479.0,
+        "side": "left"
+      },
+      {
+        "id": "8aaf71d5-f278-4cb1-b833-a35a6e398997",
+        "title": "右树枝",
+        "note": "这是一个右树枝节点，可以继续编辑名称、颜色和备注。",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": null,
+        "x": 665.0,
+        "y": -550.0,
+        "side": "right"
+      },
+      {
+        "id": "54d1a978-0956-4aa6-9fce-98e47c97b48c",
+        "title": "2026-06-30\ngame over",
+        "note": "这是一个子分支节点，可以继续编辑名称、颜色和备注。",
+        "kind": "branch",
+        "color": "#b92d5d",
+        "fillColor": "#b18cfe",
+        "x": 843.0,
+        "y": -550.0,
+        "side": "right"
+      }
+    ],
+    "tree_edges": [
+      {
+        "parent_id": "main-trunk",
+        "child_id": "609ed06a-33e9-4253-b6a6-3f13eb41643c"
+      },
+      {
+        "parent_id": "609ed06a-33e9-4253-b6a6-3f13eb41643c",
+        "child_id": "f5e7e557-4bf1-45cb-90af-6eb02634451a"
+      },
+      {
+        "parent_id": "609ed06a-33e9-4253-b6a6-3f13eb41643c",
+        "child_id": "8e00d028-86ae-44a8-92f0-f4fad411ea31"
+      },
+      {
+        "parent_id": "609ed06a-33e9-4253-b6a6-3f13eb41643c",
+        "child_id": "3f74cadb-fc78-4591-b425-bd4e5e3f4670"
+      },
+      {
+        "parent_id": "609ed06a-33e9-4253-b6a6-3f13eb41643c",
+        "child_id": "93a31284-94ca-4819-896b-57264ac63e6a"
+      },
+      {
+        "parent_id": "609ed06a-33e9-4253-b6a6-3f13eb41643c",
+        "child_id": "9e811016-dc05-4eae-a4b1-a8e7f2d2aca7"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "43591a84-e21b-4b1d-989e-c77142953276"
+      },
+      {
+        "parent_id": "43591a84-e21b-4b1d-989e-c77142953276",
+        "child_id": "c21e1d1f-0612-483d-8227-bb2ab9828913"
+      },
+      {
+        "parent_id": "43591a84-e21b-4b1d-989e-c77142953276",
+        "child_id": "adcb09da-dcba-44c0-9fb5-d022a4ae24f1"
+      },
+      {
+        "parent_id": "43591a84-e21b-4b1d-989e-c77142953276",
+        "child_id": "41c2e6ef-8285-4f16-80f7-87e3083bffa1"
+      },
+      {
+        "parent_id": "43591a84-e21b-4b1d-989e-c77142953276",
+        "child_id": "92583374-2d08-41bc-b4ec-7b7b4d5ee0c0"
+      },
+      {
+        "parent_id": "43591a84-e21b-4b1d-989e-c77142953276",
+        "child_id": "a91c696c-70ff-43eb-9bd8-50fd9e2ddba9"
+      },
+      {
+        "parent_id": "43591a84-e21b-4b1d-989e-c77142953276",
+        "child_id": "13444b89-55f9-4804-9903-a60084196f95"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "17043ab0-adbe-4b15-acdb-d1c060446809"
+      },
+      {
+        "parent_id": "17043ab0-adbe-4b15-acdb-d1c060446809",
+        "child_id": "63adef52-ff15-42c1-bfde-8e810b945dce"
+      },
+      {
+        "parent_id": "17043ab0-adbe-4b15-acdb-d1c060446809",
+        "child_id": "c73455b7-248f-40d3-8b2a-6f92d9f64b24"
+      },
+      {
+        "parent_id": "17043ab0-adbe-4b15-acdb-d1c060446809",
+        "child_id": "a98f7b8a-bc7b-42d3-b21e-a56dec3e5960"
+      },
+      {
+        "parent_id": "17043ab0-adbe-4b15-acdb-d1c060446809",
+        "child_id": "4a7bc004-1911-46f3-bad6-3cebf4e7d9b7"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "0202d177-204f-49e9-9df9-6a3f9c682fd0"
+      },
+      {
+        "parent_id": "0202d177-204f-49e9-9df9-6a3f9c682fd0",
+        "child_id": "eed85c49-5579-43e4-834d-73e0c9a03f92"
+      },
+      {
+        "parent_id": "0202d177-204f-49e9-9df9-6a3f9c682fd0",
+        "child_id": "e5e9e8b1-3814-4d0d-aa8b-16b8baf7f8bf"
+      },
+      {
+        "parent_id": "0202d177-204f-49e9-9df9-6a3f9c682fd0",
+        "child_id": "9f7719fa-3550-422f-966f-7aaab1b1780f"
+      },
+      {
+        "parent_id": "0202d177-204f-49e9-9df9-6a3f9c682fd0",
+        "child_id": "395a345e-4b66-4d84-a99f-b3422b47001a"
+      },
+      {
+        "parent_id": "0202d177-204f-49e9-9df9-6a3f9c682fd0",
+        "child_id": "5fcdb4e9-8c0a-4918-9bd9-893399408b28"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "c6a63bc5-8b6d-49af-8d2e-85a9a08ef333"
+      },
+      {
+        "parent_id": "c6a63bc5-8b6d-49af-8d2e-85a9a08ef333",
+        "child_id": "6a6461c1-ce00-4e56-bc7a-eddd71745cb5"
+      },
+      {
+        "parent_id": "c6a63bc5-8b6d-49af-8d2e-85a9a08ef333",
+        "child_id": "b108d1c5-1d54-4c0e-9597-81e809d81a4c"
+      },
+      {
+        "parent_id": "c6a63bc5-8b6d-49af-8d2e-85a9a08ef333",
+        "child_id": "a1ae1d5c-54c6-40f3-a4b8-c5a0b17fc5c6"
+      },
+      {
+        "parent_id": "c6a63bc5-8b6d-49af-8d2e-85a9a08ef333",
+        "child_id": "720f2179-ea95-464a-99c8-efd92abd9a1f"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "ae27fb54-a653-4597-ad55-b3e300cb8825"
+      },
+      {
+        "parent_id": "ae27fb54-a653-4597-ad55-b3e300cb8825",
+        "child_id": "4d84d8fa-fba9-4512-8d94-3bf96bdab4eb"
+      },
+      {
+        "parent_id": "ae27fb54-a653-4597-ad55-b3e300cb8825",
+        "child_id": "f3967bb3-7a1b-45de-8af7-e5b21b8743c6"
+      },
+      {
+        "parent_id": "ae27fb54-a653-4597-ad55-b3e300cb8825",
+        "child_id": "acaf59af-adc6-410d-9d84-0d944cc3b352"
+      },
+      {
+        "parent_id": "ae27fb54-a653-4597-ad55-b3e300cb8825",
+        "child_id": "efb8d319-30be-4116-a4dd-bbeb0543d09a"
+      },
+      {
+        "parent_id": "ae27fb54-a653-4597-ad55-b3e300cb8825",
+        "child_id": "bc7b03d5-90b0-43df-bd72-a07fd926bb92"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "ae85618d-9baf-49f7-8d7e-ae2a9fa01ca4"
+      },
+      {
+        "parent_id": "ae85618d-9baf-49f7-8d7e-ae2a9fa01ca4",
+        "child_id": "cd7e2f4f-56ff-4965-bc88-eb7e307aebf0"
+      },
+      {
+        "parent_id": "ae85618d-9baf-49f7-8d7e-ae2a9fa01ca4",
+        "child_id": "291b90f0-5981-4c31-97c7-56479ccd09be"
+      },
+      {
+        "parent_id": "ae85618d-9baf-49f7-8d7e-ae2a9fa01ca4",
+        "child_id": "e5ae0b80-f61b-41e9-a80d-33a7171b6bb7"
+      },
+      {
+        "parent_id": "ae85618d-9baf-49f7-8d7e-ae2a9fa01ca4",
+        "child_id": "fc52349a-f36d-4fbd-b9ce-41c611c6221a"
+      },
+      {
+        "parent_id": "ae85618d-9baf-49f7-8d7e-ae2a9fa01ca4",
+        "child_id": "20367aa4-6615-49a5-9e93-7db9411ba46c"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "1b7ec029-43ba-4867-b96b-fbe3536d1cea"
+      },
+      {
+        "parent_id": "1b7ec029-43ba-4867-b96b-fbe3536d1cea",
+        "child_id": "d5fc93b8-e172-410c-b3ad-a26a06eb9d94"
+      },
+      {
+        "parent_id": "1b7ec029-43ba-4867-b96b-fbe3536d1cea",
+        "child_id": "7b7d1b98-0c95-4753-a4c8-7789b4c7c081"
+      },
+      {
+        "parent_id": "1b7ec029-43ba-4867-b96b-fbe3536d1cea",
+        "child_id": "8c82ac9f-46a9-4ee8-9101-a761c6885824"
+      },
+      {
+        "parent_id": "1b7ec029-43ba-4867-b96b-fbe3536d1cea",
+        "child_id": "82cf10ba-f6d9-4675-bf07-470a474789c3"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "aad468a9-4118-4ec3-8b87-29e7e9960b69"
+      },
+      {
+        "parent_id": "aad468a9-4118-4ec3-8b87-29e7e9960b69",
+        "child_id": "ee6874ea-c032-49de-a4e5-9126d468e8eb"
+      },
+      {
+        "parent_id": "aad468a9-4118-4ec3-8b87-29e7e9960b69",
+        "child_id": "dbbad53d-242c-4cb5-acae-51a36e7170d3"
+      },
+      {
+        "parent_id": "aad468a9-4118-4ec3-8b87-29e7e9960b69",
+        "child_id": "67c6aa4e-7dee-4f53-accc-f0f03e7b1b84"
+      },
+      {
+        "parent_id": "aad468a9-4118-4ec3-8b87-29e7e9960b69",
+        "child_id": "ec3ff43c-b55f-4a46-8929-d21fa4c75a86"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "0066d688-e577-489c-9ad9-3a63030c838e"
+      },
+      {
+        "parent_id": "0066d688-e577-489c-9ad9-3a63030c838e",
+        "child_id": "03e3f45e-d6ef-4585-aa77-cfcbb6a756d6"
+      },
+      {
+        "parent_id": "0066d688-e577-489c-9ad9-3a63030c838e",
+        "child_id": "8a0c3321-5bd0-48bf-9d97-965119d73840"
+      },
+      {
+        "parent_id": "0066d688-e577-489c-9ad9-3a63030c838e",
+        "child_id": "b974e5bb-2fc0-4f65-8f46-fa39e666715e"
+      },
+      {
+        "parent_id": "0066d688-e577-489c-9ad9-3a63030c838e",
+        "child_id": "1c6b0dcb-4188-42cd-8138-02e2180eba5f"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "5b45d79f-29b8-41d2-89ac-cd25742e7ffd"
+      },
+      {
+        "parent_id": "5b45d79f-29b8-41d2-89ac-cd25742e7ffd",
+        "child_id": "c71e3476-6bec-42f0-a928-1e0dc7aca5a9"
+      },
+      {
+        "parent_id": "5b45d79f-29b8-41d2-89ac-cd25742e7ffd",
+        "child_id": "3c93bd48-1919-4504-8ffd-cfb5025436dd"
+      },
+      {
+        "parent_id": "5b45d79f-29b8-41d2-89ac-cd25742e7ffd",
+        "child_id": "cd63e217-0072-49b0-9d90-c9c838af5d5b"
+      },
+      {
+        "parent_id": "5b45d79f-29b8-41d2-89ac-cd25742e7ffd",
+        "child_id": "0f15bcb7-7fe5-43ee-865a-ee81a6a9e4a6"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "a8b8c230-1dfb-45df-911b-8d19e51a8822"
+      },
+      {
+        "parent_id": "a8b8c230-1dfb-45df-911b-8d19e51a8822",
+        "child_id": "a0af2a53-0c5c-448b-ad06-bc7abf91de49"
+      },
+      {
+        "parent_id": "a8b8c230-1dfb-45df-911b-8d19e51a8822",
+        "child_id": "fe8832f3-8515-4479-a515-56d713c26df3"
+      },
+      {
+        "parent_id": "a8b8c230-1dfb-45df-911b-8d19e51a8822",
+        "child_id": "62affd08-ef62-43d2-bb54-22a8e70e0e8d"
+      },
+      {
+        "parent_id": "a8b8c230-1dfb-45df-911b-8d19e51a8822",
+        "child_id": "96c4682e-b5c7-4796-aad4-0fcb8d297e7a"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "c530fa96-995b-4ce5-808c-a97e871c2db2"
+      },
+      {
+        "parent_id": "c530fa96-995b-4ce5-808c-a97e871c2db2",
+        "child_id": "392ef6ce-8da9-48e2-b533-72b9e6287475"
+      },
+      {
+        "parent_id": "c530fa96-995b-4ce5-808c-a97e871c2db2",
+        "child_id": "0eb29a9b-58ee-49ac-848a-f02d2b9b642a"
+      },
+      {
+        "parent_id": "c530fa96-995b-4ce5-808c-a97e871c2db2",
+        "child_id": "8c4ecfa9-ccb5-4c60-b2c7-2dcfd1293272"
+      },
+      {
+        "parent_id": "c530fa96-995b-4ce5-808c-a97e871c2db2",
+        "child_id": "886f84c1-f9d6-4f04-9bd1-570e44117173"
+      },
+      {
+        "parent_id": "c530fa96-995b-4ce5-808c-a97e871c2db2",
+        "child_id": "aa4f65ea-00c5-408d-9c17-135802c6887e"
+      },
+      {
+        "parent_id": "a8b8c230-1dfb-45df-911b-8d19e51a8822",
+        "child_id": "337acc76-70cf-46e7-89c8-ccbefa87f826"
+      },
+      {
+        "parent_id": "ae85618d-9baf-49f7-8d7e-ae2a9fa01ca4",
+        "child_id": "7045ae84-c25f-46f2-ab93-59ee61074eab"
+      },
+      {
+        "parent_id": "7b7d1b98-0c95-4753-a4c8-7789b4c7c081",
+        "child_id": "3262fb70-2fed-4a23-9c97-fe6249e39730"
+      },
+      {
+        "parent_id": "7b7d1b98-0c95-4753-a4c8-7789b4c7c081",
+        "child_id": "9807824c-772f-48ab-884f-e4fea934c12d"
+      },
+      {
+        "parent_id": "7b7d1b98-0c95-4753-a4c8-7789b4c7c081",
+        "child_id": "f65665ff-f3ad-4fa2-849b-8cb48bb139ba"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "8aaf71d5-f278-4cb1-b833-a35a6e398997"
+      },
+      {
+        "parent_id": "8aaf71d5-f278-4cb1-b833-a35a6e398997",
+        "child_id": "54d1a978-0956-4aa6-9fce-98e47c97b48c"
+      }
+    ],
+    "reference_links": []
+  }
+}

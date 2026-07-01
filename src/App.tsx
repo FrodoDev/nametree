@@ -70,6 +70,21 @@ type Suggestion = {
   side?: GrowthSide;
 };
 
+type NodeReparentDropTarget = {
+  parentId: string;
+  side?: GrowthSide;
+};
+
+type NodeReparentDrag = {
+  nodeId: string;
+  startClientX: number;
+  startClientY: number;
+  currentX: number;
+  currentY: number;
+  isDragging: boolean;
+  dropTarget: NodeReparentDropTarget | null;
+};
+
 type TreeShape = {
   centerX: number;
   groundY: number;
@@ -157,11 +172,13 @@ function App() {
   const [detailPanelWidth, setDetailPanelWidth] = useState(238);
   const [panelResizeStart, setPanelResizeStart] = useState<{ pointerX: number; width: number } | null>(null);
   const [titlebarDragStart, setTitlebarDragStart] = useState<{ pointerX: number; pointerY: number } | null>(null);
+  const [nodeReparentDrag, setNodeReparentDrag] = useState<NodeReparentDrag | null>(null);
   const [outlineDraft, setOutlineDraft] = useState('');
   const canvasPanelRef = useRef<HTMLElement | null>(null);
   const treeSvgRef = useRef<SVGSVGElement | null>(null);
   const nodeTitleInputRef = useRef<HTMLTextAreaElement | null>(null);
   const documentTitleInputRef = useRef<HTMLInputElement | null>(null);
+  const nodeReparentDragRef = useRef<NodeReparentDrag | null>(null);
   const [canvasSize, setCanvasSize] = useState({ width: 900, height: 700 });
 
   useEffect(() => {
@@ -233,6 +250,51 @@ function App() {
       window.removeEventListener('pointerup', handlePointerUp);
     };
   }, [panelResizeStart]);
+
+  useEffect(() => {
+    if (!document || !nodeReparentDrag) return;
+
+    const handlePointerMove = (event: PointerEvent) => {
+      setNodeReparentDrag((current) => {
+        if (!current) return current;
+
+        const pointer = getTreePointFromClientPoint(event.clientX, event.clientY, treeSvgRef.current, canvasSize, canvasOffset, zoom);
+        const isDragging = current.isDragging
+          || Math.abs(event.clientX - current.startClientX) > 5
+          || Math.abs(event.clientY - current.startClientY) > 5;
+        const dropTarget = isDragging ? findReparentDropTarget(document, current.nodeId, pointer, shape) : null;
+
+        const nextDrag = {
+          ...current,
+          currentX: pointer.x,
+          currentY: pointer.y,
+          isDragging,
+          dropTarget,
+        };
+        nodeReparentDragRef.current = nextDrag;
+        return nextDrag;
+      });
+    };
+
+    const handlePointerUp = () => {
+      const current = nodeReparentDragRef.current;
+      nodeReparentDragRef.current = null;
+      setNodeReparentDrag(null);
+
+      if (current?.isDragging && current.dropTarget) {
+        reparentNode(current.nodeId, current.dropTarget.parentId, { x: current.currentX, y: current.currentY }, current.dropTarget.side);
+      }
+    };
+
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', handlePointerUp);
+    window.addEventListener('pointercancel', handlePointerUp);
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', handlePointerUp);
+      window.removeEventListener('pointercancel', handlePointerUp);
+    };
+  }, [document, nodeReparentDrag, canvasSize, canvasOffset, zoom]);
 
   useEffect(() => {
     if (!document) return;
@@ -534,6 +596,25 @@ function App() {
         node.id === nodeId ? { ...node, ...patch } : node
       )),
     });
+  }
+
+  function reparentNode(nodeId: string, nextParentId: string, dropPoint?: { x: number; y: number }, targetSide?: GrowthSide) {
+    if (!document) return;
+
+    const child = document.nodes.find((node) => node.id === nodeId);
+    const nextParent = document.nodes.find((node) => node.id === nextParentId);
+    if (!child || !nextParent || !canReparentNode(document, child, nextParent, targetSide, true)) return;
+
+    const nextSide = getReparentedNodeSide(child, nextParent, shape, dropPoint, targetSide);
+    const nextDocument = {
+      ...document,
+      nodes: document.nodes.map((node) => (
+        node.id === nodeId ? { ...node, side: nextSide } : node
+      )),
+      tree_edges: reorderTreeEdgesForDrop(document, nodeId, nextParentId, nextSide, dropPoint ?? { x: child.x, y: child.y }),
+    };
+
+    commitDocument(nextDocument, nodeId);
   }
 
   function pasteOutlineIntoSelectedNode(outlineItems: OutlineItem[]) {
@@ -914,11 +995,12 @@ function App() {
             const parent = nodeById.get(edge.parent_id);
             const child = nodeById.get(edge.child_id);
             if (!parent || !child || !isKnowledgeNode(child)) return null;
+            const isDropTargetEdge = nodeReparentDrag?.dropTarget?.parentId === parent.id && parent.kind !== 'main_trunk';
 
             return (
               <path
                 key={`${edge.parent_id}-${edge.child_id}`}
-                className={child.kind === 'root_branch' ? 'root-edge' : parent.kind === 'main_trunk' ? 'trunk-edge' : 'tree-edge'}
+                className={`${child.kind === 'root_branch' ? 'root-edge' : parent.kind === 'main_trunk' ? 'trunk-edge' : 'tree-edge'} ${isDropTargetEdge ? 'drop-target-edge' : ''}`}
                 d={isOutputEdge(parent, child) ? createOutputEdgePath(parent, child, shape) : isRootEdge(parent, child) ? createRootEdgePath(parent, child, shape) : createCurve(getConnectionPoint(parent, child, shape), child)}
               />
             );
@@ -966,7 +1048,7 @@ function App() {
 
           {mainTrunk && (
             <g
-              className={`tree-structure ${selectedNodeId === mainTrunk.id ? 'selected' : ''}`}
+              className={`tree-structure ${selectedNodeId === mainTrunk.id ? 'selected' : ''} ${nodeReparentDrag?.dropTarget?.parentId === mainTrunk.id ? 'drop-target' : ''}`}
               onPointerDown={(event) => event.stopPropagation()}
               onClick={() => {
                 setSelectedNodeId(mainTrunk.id);
@@ -976,6 +1058,14 @@ function App() {
               <path className="trunk-spine-root-left" d={createTrunkRootFusePath(shape, 'left')} />
               <path className="trunk-spine-root-right" d={createTrunkRootFusePath(shape, 'right')} />
               <path className="trunk-spine-foot" d={createTrunkSpineFootPath(shape)} />
+              {nodeReparentDrag?.dropTarget?.parentId === mainTrunk.id && (
+                <circle
+                  className="trunk-drop-target"
+                  cx={shape.centerX + (nodeReparentDrag.dropTarget.side === 'left' ? -34 : 34)}
+                  cy={Math.min(shape.groundY + 24, Math.max(getTrunkTopY(shape, document, suggestions), nodeReparentDrag.currentY))}
+                  r="22"
+                />
+              )}
               <rect
                 className="structure-hitbox"
                 x={shape.centerX - 18}
@@ -987,19 +1077,52 @@ function App() {
             </g>
           )}
 
+          {mainTrunk && nodeReparentDrag?.isDragging && nodeReparentDrag.dropTarget?.parentId === mainTrunk.id && nodeById.get(nodeReparentDrag.nodeId)?.kind === 'root_branch' && (() => {
+            const preview = getPointerGhostRootPreview(document, nodeReparentDrag.nodeId, mainTrunk, nodeReparentDrag.dropTarget.side ?? 'right', { x: nodeReparentDrag.currentX, y: nodeReparentDrag.currentY }, shape);
+            if (!preview) return null;
+
+            return (
+              <g className="ghost-root-preview">
+                <path d={createRootEdgePath(preview.parent, preview.node, shape)} />
+                <g transform={`translate(${preview.node.x}, ${preview.node.y})`}>
+                  <rect x={-nodeLabelWidth / 2} y={-singleLineNodeLabelHeight / 2} width={nodeLabelWidth} height={singleLineNodeLabelHeight} rx="6" />
+                  <text textAnchor="middle" y="5">{preview.node.title}</text>
+                </g>
+              </g>
+            );
+          })()}
+
           {visibleKnowledgeNodes.map((node) => {
             const titlePreviewLines = getNodeTitlePreviewLines(node.title);
             const labelHeight = getNodeVisualHeight(node);
             const isMultiLine = titlePreviewLines.length > 1;
+            const isDragSource = nodeReparentDrag?.nodeId === node.id;
+            const isDropTarget = nodeReparentDrag?.dropTarget?.parentId === node.id;
 
             return (
             <g
               key={node.id}
-              className={`tree-node ${selectedNodeId === node.id ? 'selected' : ''}`}
+              className={`tree-node ${selectedNodeId === node.id ? 'selected' : ''} ${isDragSource ? 'dragging' : ''} ${isDropTarget ? 'drop-target' : ''}`}
               transform={`translate(${node.x}, ${node.y})`}
-              onPointerDown={(event) => event.stopPropagation()}
+              onPointerDown={(event) => {
+                event.stopPropagation();
+                if (event.button !== 0 || editingNodeId === node.id) return;
+
+                const pointer = getTreePointFromClientPoint(event.clientX, event.clientY, treeSvgRef.current, canvasSize, canvasOffset, zoom);
+                const nextDrag = {
+                  nodeId: node.id,
+                  startClientX: event.clientX,
+                  startClientY: event.clientY,
+                  currentX: pointer.x,
+                  currentY: pointer.y,
+                  isDragging: false,
+                  dropTarget: null,
+                };
+                nodeReparentDragRef.current = nextDrag;
+                setNodeReparentDrag(nextDrag);
+              }}
               onClick={() => {
-                if (isPanning) return;
+                if (isPanning || nodeReparentDrag?.isDragging) return;
                 setSelectedNodeId(node.id);
               }}
               onDoubleClick={() => {
@@ -1081,6 +1204,32 @@ function App() {
             </g>
             );
           })}
+
+          {nodeReparentDrag?.isDragging && (() => {
+            const draggedNode = nodeById.get(nodeReparentDrag.nodeId);
+            if (!draggedNode) return null;
+
+            const titlePreviewLines = getNodeTitlePreviewLines(draggedNode.title);
+            const labelHeight = getNodeVisualHeight(draggedNode);
+            return (
+              <g className="node-drag-preview" transform={`translate(${nodeReparentDrag.currentX}, ${nodeReparentDrag.currentY})`}>
+                {draggedNode.kind === 'leaf' ? (
+                  <path className="leaf-node-shape" d={createLeafShapePath()} fill={draggedNode.fillColor ?? defaultNodeFillColor} stroke={draggedNode.color} />
+                ) : (
+                  <rect
+                    x={-nodeLabelWidth / 2}
+                    y={-labelHeight / 2}
+                    width={nodeLabelWidth}
+                    height={labelHeight}
+                    rx="6"
+                    fill={draggedNode.fillColor ?? defaultNodeFillColor}
+                    stroke={draggedNode.color}
+                  />
+                )}
+                <text textAnchor="middle" y={titlePreviewLines.length === 1 ? 5 : -5}>{titlePreviewLines[0]}</text>
+              </g>
+            );
+          })()}
           </g>
         </svg>
       </section>
@@ -1191,6 +1340,298 @@ function collectDescendantNodeIds(document: NametreeDocument, nodeId: string): S
   }
 
   return ids;
+}
+
+function getTreePointFromClientPoint(
+  clientX: number,
+  clientY: number,
+  svg: SVGSVGElement | null,
+  canvasSize: { width: number; height: number },
+  canvasOffset: { x: number; y: number },
+  zoom: number,
+): { x: number; y: number } {
+  const rect = svg?.getBoundingClientRect();
+  if (!rect) return { x: 450, y: 350 };
+
+  const svgX = (clientX - rect.left) * (canvasSize.width / Math.max(1, rect.width));
+  const svgY = (clientY - rect.top) * (canvasSize.height / Math.max(1, rect.height));
+
+  return {
+    x: (svgX - canvasSize.width / 2 - canvasOffset.x) / zoom + 450,
+    y: (svgY - canvasSize.height / 2 - canvasOffset.y) / zoom + 350,
+  };
+}
+
+function findReparentDropTarget(document: NametreeDocument, draggedNodeId: string, point: { x: number; y: number }, shape: TreeShape): NodeReparentDropTarget | null {
+  const draggedNode = document.nodes.find((node) => node.id === draggedNodeId);
+  if (!draggedNode) return null;
+
+  const candidates = document.nodes
+    .filter((node) => canReparentNode(document, draggedNode, node, node.kind === 'main_trunk' ? getDropSide(point, shape) : undefined, true))
+    .map((node) => ({
+      node,
+      side: node.kind === 'main_trunk' ? getDropSide(point, shape) : undefined,
+      distance: getDropTargetDistance(node, point, shape),
+      hitRadius: getDropTargetRadius(node),
+    }))
+    .filter((candidate) => candidate.distance <= candidate.hitRadius)
+    .sort((a, b) => a.distance - b.distance);
+
+  const currentParentId = document.tree_edges.find((edge) => edge.child_id === draggedNode.id)?.parent_id;
+  const nodeCandidate = candidates.find((candidate) => candidate.node.kind !== 'main_trunk' && candidate.node.id !== currentParentId);
+  if (nodeCandidate) {
+    return { parentId: nodeCandidate.node.id, side: nodeCandidate.side };
+  }
+
+  const mainTrunk = document.nodes.find((node) => node.kind === 'main_trunk');
+  if (draggedNode.kind === 'root_branch' && mainTrunk && isPointInRootReorderZone(point, shape)) {
+    const side = getDropSide(point, shape);
+    return {
+      parentId: mainTrunk.id,
+      side,
+    };
+  }
+
+  const candidate = candidates[0];
+  if (!candidate) return null;
+
+  return { parentId: candidate.node.id, side: candidate.side };
+}
+
+function getDropSide(point: { x: number; y: number }, shape: TreeShape): GrowthSide {
+  return point.x < shape.centerX ? 'left' : 'right';
+}
+
+function isPointInRootReorderZone(point: { x: number; y: number }, shape: TreeShape): boolean {
+  return point.y >= shape.groundY - 78 && point.y <= shape.rootEndY + 180;
+}
+
+function getDropTargetDistance(node: TreeNode, point: { x: number; y: number }, shape: TreeShape): number {
+  if (node.kind === 'main_trunk') {
+    const sideX = shape.centerX + (getDropSide(point, shape) === 'left' ? -34 : 34);
+    const clampedY = Math.min(shape.groundY + 24, Math.max(shape.trunkTopY, point.y));
+    return Math.hypot(sideX - point.x, clampedY - point.y);
+  }
+
+  return Math.hypot(node.x - point.x, node.y - point.y);
+}
+
+function getDropTargetRadius(node: TreeNode): number {
+  if (node.kind === 'main_trunk') return 92;
+  if (node.kind === 'branch' || node.kind === 'root_branch') return nodeLabelWidth / 2 + 56;
+  return Math.max(nodeLabelWidth / 2 + 28, getNodeVisualHeight(node) / 2 + 28);
+}
+
+function reorderTreeEdgesForDrop(
+  document: NametreeDocument,
+  nodeId: string,
+  nextParentId: string,
+  nextSide: GrowthSide | undefined,
+  dropPoint: { x: number; y: number },
+): TreeEdge[] {
+  const nodeById = new Map(document.nodes.map((node) => [node.id, node]));
+  const movingEdge: TreeEdge = { parent_id: nextParentId, child_id: nodeId };
+  const remainingEdges = document.tree_edges.filter((edge) => edge.child_id !== nodeId);
+  const movingNode = nodeById.get(nodeId);
+  const parent = nodeById.get(nextParentId);
+  if (parent?.kind === 'main_trunk' && movingNode?.kind === 'root_branch') {
+    return reorderTrunkRootEdgesBySlot(remainingEdges, movingEdge, nodeById, nextParentId, nextSide, dropPoint);
+  }
+
+  const siblingEdges = remainingEdges.filter((edge) => isSameDropLane(nodeById.get(edge.child_id), movingNode, nextParentId, nextSide, edge.parent_id));
+  const orderedSiblingEdges = [...siblingEdges].sort((a, b) => {
+    const aNode = nodeById.get(a.child_id);
+    const bNode = nodeById.get(b.child_id);
+    return getSiblingSortY(aNode, parent, movingNode) - getSiblingSortY(bNode, parent, movingNode);
+  });
+  const dropSortY = getDropSortY(dropPoint.y, parent, movingNode);
+  const insertBeforeSibling = orderedSiblingEdges.find((edge) => dropSortY < getSiblingSortY(nodeById.get(edge.child_id), parent, movingNode));
+  const anchorIndex = insertBeforeSibling
+    ? remainingEdges.findIndex((edge) => edge.parent_id === insertBeforeSibling.parent_id && edge.child_id === insertBeforeSibling.child_id)
+    : findLastSiblingEdgeIndex(remainingEdges, nextParentId, nextSide, nodeById, movingNode) + 1;
+
+  if (anchorIndex < 0) {
+    return [...remainingEdges, movingEdge];
+  }
+
+  return [
+    ...remainingEdges.slice(0, anchorIndex),
+    movingEdge,
+    ...remainingEdges.slice(anchorIndex),
+  ];
+}
+
+function reorderTrunkRootEdgesBySlot(
+  edges: TreeEdge[],
+  movingEdge: TreeEdge,
+  nodeById: Map<string, TreeNode>,
+  parentId: string,
+  side: GrowthSide | undefined,
+  dropPoint: { x: number; y: number },
+): TreeEdge[] {
+  const legacyMainRootId = [...nodeById.values()].find((node) => node.kind === 'main_root')?.id;
+  const isMainRootPoolParent = (id: string) => id === parentId || (legacyMainRootId ? id === legacyMainRootId : false);
+  const isSameSideRootEdge = (edge: TreeEdge) => {
+    const node = nodeById.get(edge.child_id);
+    return isMainRootPoolParent(edge.parent_id) && node?.kind === 'root_branch' && isSameLayoutSide(node, side);
+  };
+
+  const sameSideEdges = edges.filter(isSameSideRootEdge);
+  const orderedPool = [...sameSideEdges].sort((a, b) => {
+    const aNode = nodeById.get(a.child_id);
+    const bNode = nodeById.get(b.child_id);
+    return getMainRootVisualSlotIndex(aNode, side, sameSideEdges.length) - getMainRootVisualSlotIndex(bNode, side, sameSideEdges.length);
+  });
+  const insertIndex = getMainRootDropSlotIndex(dropPoint, side ?? 'right', orderedPool.length + 1);
+  const nextPool = [...orderedPool];
+  nextPool.splice(insertIndex, 0, movingEdge);
+
+  const result: TreeEdge[] = [];
+  let poolInserted = false;
+  edges.forEach((edge) => {
+    if (!isSameSideRootEdge(edge)) {
+      result.push(edge);
+      return;
+    }
+
+    if (!poolInserted) {
+      result.push(...nextPool);
+      poolInserted = true;
+    }
+  });
+
+  return poolInserted ? result : [...edges, ...nextPool];
+}
+
+function getMainRootVisualSlotIndex(node: TreeNode | undefined, side: GrowthSide | undefined, slotCount: number): number {
+  if (!node) return Number.POSITIVE_INFINITY;
+  return getMainRootDropSlotIndex({ x: node.x, y: node.y }, side ?? node.side ?? 'right', slotCount);
+}
+
+function getMainRootDropSlotIndex(point: { x: number; y: number }, side: GrowthSide, slotCount: number): number {
+  if (slotCount <= 1) return 0;
+
+  const sideFactor = side === 'left' ? -1 : 1;
+  const originX = 450;
+  const originY = 350;
+  const scoredSlots = Array.from({ length: slotCount }, (_, index) => {
+    const offset = getDynamicRootOffset(index, slotCount, side);
+    const slotX = originX + sideFactor * (offset.x + 8);
+    const slotY = originY + offset.y;
+    const dx = Math.abs(point.x - slotX);
+    const dy = Math.abs(point.y - slotY);
+    return { index, score: dy + dx * 0.25 };
+  });
+
+  return scoredSlots.reduce((best, slot) => slot.score < best.score ? slot : best).index;
+}
+
+function getPointerGhostRootPreview(
+  document: NametreeDocument,
+  movingNodeId: string,
+  parent: TreeNode,
+  side: GrowthSide,
+  point: { x: number; y: number },
+  shape: TreeShape,
+): { parent: TreeNode; node: TreeNode } | null {
+  const movingNode = document.nodes.find((node) => node.id === movingNodeId);
+  if (!movingNode) return null;
+
+  const sideFactor = side === 'left' ? -1 : 1;
+  const minX = parent.x + sideFactor * 118;
+  const x = side === 'left' ? Math.min(point.x, minX) : Math.max(point.x, minX);
+  const y = Math.max(shape.groundY + 42, point.y);
+
+  return {
+    parent,
+    node: {
+      ...movingNode,
+      id: '__ghost-root-preview__',
+      title: movingNode.title.trim() || '主根',
+      kind: 'root_branch',
+      side,
+      x,
+      y,
+    },
+  };
+}
+
+function isSameDropLane(
+  node: TreeNode | undefined,
+  movingNode: TreeNode | undefined,
+  nextParentId: string,
+  side: GrowthSide | undefined,
+  edgeParentId: string,
+): boolean {
+  if (!node || edgeParentId !== nextParentId) return false;
+  if (!isSameLayoutSide(node, side)) return false;
+
+  if (movingNode?.kind === 'root_branch') {
+    return node.kind === 'root_branch';
+  }
+
+  return node.kind === 'branch' || node.kind === 'leaf';
+}
+
+function isSameLayoutSide(node: TreeNode | undefined, side: GrowthSide | undefined): boolean {
+  if (!node) return false;
+  if (!side) return true;
+  return (node.side ?? 'right') === side;
+}
+
+function getDropSortY(dropY: number, parent: TreeNode | undefined, movingNode: TreeNode | undefined): number {
+  return shouldSortDownToUp(parent, movingNode) ? -dropY : dropY;
+}
+
+function getSiblingSortY(node: TreeNode | undefined, parent: TreeNode | undefined, movingNode: TreeNode | undefined): number {
+  const y = node?.y ?? Number.POSITIVE_INFINITY;
+  return shouldSortDownToUp(parent, movingNode) ? -y : y;
+}
+
+function shouldSortDownToUp(parent: TreeNode | undefined, movingNode: TreeNode | undefined): boolean {
+  return parent?.kind === 'main_trunk' && movingNode?.kind !== 'root_branch';
+}
+
+function findLastSiblingEdgeIndex(edges: TreeEdge[], parentId: string, side: GrowthSide | undefined, nodeById: Map<string, TreeNode>, movingNode: TreeNode | undefined): number {
+  let index = -1;
+  edges.forEach((edge, edgeIndex) => {
+    if (isSameDropLane(nodeById.get(edge.child_id), movingNode, parentId, side, edge.parent_id)) {
+      index = edgeIndex;
+    }
+  });
+  return index;
+}
+
+function canReparentNode(document: NametreeDocument, child: TreeNode, nextParent: TreeNode, targetSide?: GrowthSide, allowSameParent = false): boolean {
+  if (!isKnowledgeNode(child)) return false;
+  if (child.id === nextParent.id) return false;
+  if (collectDescendantNodeIds(document, child.id).has(nextParent.id)) return false;
+
+  const currentParentId = document.tree_edges.find((edge) => edge.child_id === child.id)?.parent_id;
+  if (currentParentId === nextParent.id) {
+    if (allowSameParent) return true;
+    return nextParent.kind === 'main_trunk' && Boolean(targetSide) && child.side !== targetSide;
+  }
+
+  if (child.kind === 'root_branch') {
+    return nextParent.kind === 'main_trunk' || nextParent.kind === 'main_root' || nextParent.kind === 'root_branch';
+  }
+
+  return nextParent.kind === 'main_trunk' || nextParent.kind === 'branch';
+}
+
+function getReparentedNodeSide(child: TreeNode, nextParent: TreeNode, shape: TreeShape, dropPoint?: { x: number; y: number }, targetSide?: GrowthSide): GrowthSide | undefined {
+  if (targetSide) return targetSide;
+
+  if (nextParent.kind === 'main_trunk') {
+    return (dropPoint?.x ?? child.x) < shape.centerX ? 'left' : 'right';
+  }
+
+  if (nextParent.kind === 'branch' || nextParent.kind === 'root_branch') {
+    return nextParent.side ?? (nextParent.x < shape.centerX ? 'left' : 'right');
+  }
+
+  return child.side;
 }
 
 function isKnowledgeNode(node: TreeNode): boolean {
@@ -1818,9 +2259,10 @@ function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
   };
 
   const layoutRootSide = (side: GrowthSide, sideFactor: -1 | 1) => {
-    const trunkRoots = (rootChildrenByParent.get(mainTrunk?.id ?? '') ?? []).filter((node) => (node.side ?? 'right') === side);
-    const legacyRoots = (rootChildrenByParent.get(mainRoot?.id ?? '') ?? []).filter((node) => (node.side ?? 'right') === side);
-    const children = [...trunkRoots, ...legacyRoots];
+    const children = documentWithTrunk.tree_edges
+      .filter((edge) => edge.parent_id === mainTrunk?.id || edge.parent_id === mainRoot?.id)
+      .map((edge) => laidOutById.get(edge.child_id))
+      .filter((node): node is TreeNode => node?.kind === 'root_branch' && (node.side ?? 'right') === side);
     if (children.length === 0) return;
 
     const occupied: Array<{ x: number; y: number; span: number }> = [];

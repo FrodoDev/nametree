@@ -1,0 +1,352 @@
+{
+  "format": "nametree.document",
+  "version": 1,
+  "document": {
+    "id": "default-tree",
+    "title": "未保存",
+    "titleTag": "调试拖动树枝树根",
+    "slogan": "Name it to own it",
+    "nodes": [
+      {
+        "id": "seed-root",
+        "title": "根节点",
+        "note": "初始生长点。",
+        "kind": "seed_root",
+        "color": "#7b6b55",
+        "fillColor": "#ffffff",
+        "x": 450.0,
+        "y": 390.0,
+        "side": null
+      },
+      {
+        "id": "main-trunk",
+        "title": "主干",
+        "note": "这棵树的主要表达方向。",
+        "kind": "main_trunk",
+        "color": "#5f7f45",
+        "fillColor": "#ffffff",
+        "x": 450.0,
+        "y": 335.0,
+        "side": null
+      },
+      {
+        "id": "61cd63bc-28ea-4e43-a622-c548779bbf7e",
+        "title": "右树枝",
+        "note": "这是一个右树枝节点，可以继续编辑名称、颜色和备注。",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": null,
+        "x": 688.0,
+        "y": 206.0,
+        "side": "right"
+      },
+      {
+        "id": "de1791e1-54f6-4f4d-bdc7-654a5e4e64a8",
+        "title": "子分支",
+        "note": "这是一个子分支节点，可以继续编辑名称、颜色和备注。",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": null,
+        "x": 866.0,
+        "y": 143.0,
+        "side": "right"
+      },
+      {
+        "id": "0e23990d-35d6-43e2-9fce-144ee13d8dc4",
+        "title": "子分支",
+        "note": "这是一个子分支节点，可以继续编辑名称、颜色和备注。",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": null,
+        "x": 1044.0,
+        "y": 143.0,
+        "side": "right"
+      },
+      {
+        "id": "b67f10b9-c59d-4d32-8475-23ba7925166b",
+        "title": "子分支",
+        "note": "这是一个子分支节点，可以继续编辑名称、颜色和备注。",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": null,
+        "x": 866.0,
+        "y": 206.0,
+        "side": "right"
+      },
+      {
+        "id": "b28e699b-1549-45c2-9163-3c5bf41cd828",
+        "title": "子分支",
+        "note": "这是一个子分支节点，可以继续编辑名称、颜色和备注。",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": null,
+        "x": 866.0,
+        "y": 269.0,
+        "side": "right"
+      },
+      {
+        "id": "59069ba6-cd4e-4890-b3b5-13094636eb65",
+        "title": "子分支",
+        "note": "这是一个子分支节点，可以继续编辑名称、颜色和备注。",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": null,
+        "x": 1044.0,
+        "y": 185.0,
+        "side": "right"
+      },
+      {
+        "id": "c8f9a6f1-2a30-444f-bd99-8c10f738d187",
+        "title": "叶子",
+        "note": "这是一个叶子节点，可以继续编辑名称、颜色和备注。",
+        "kind": "leaf",
+        "color": "#7a9a6d",
+        "fillColor": null,
+        "x": 1044.0,
+        "y": 269.0,
+        "side": "right"
+      },
+      {
+        "id": "072c61e3-4380-4ad8-94c9-182eb92e463a",
+        "title": "子分支",
+        "note": "这是一个子分支节点，可以继续编辑名称、颜色和备注。",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": null,
+        "x": 1044.0,
+        "y": 227.0,
+        "side": "right"
+      },
+      {
+        "id": "9440e607-25c9-492c-a5e3-adc1713c8b8b",
+        "title": "左树枝",
+        "note": "这是一个左树枝节点，可以继续编辑名称、颜色和备注。",
+        "kind": "branch",
+        "color": "#53d5fd",
+        "fillColor": null,
+        "x": 240.0,
+        "y": 270.0,
+        "side": "left"
+      },
+      {
+        "id": "7cfd9e00-4487-4b4d-bc76-c0abef03cf2b",
+        "title": "子分支",
+        "note": "这是一个子分支节点，可以继续编辑名称、颜色和备注。",
+        "kind": "branch",
+        "color": "#53d5fd",
+        "fillColor": null,
+        "x": 62.0,
+        "y": 249.0,
+        "side": "left"
+      },
+      {
+        "id": "9b9520d0-9d40-4223-82f6-6ed0cc4aeb67",
+        "title": "子分支",
+        "note": "这是一个子分支节点，可以继续编辑名称、颜色和备注。",
+        "kind": "branch",
+        "color": "#53d5fd",
+        "fillColor": null,
+        "x": 62.0,
+        "y": 291.0,
+        "side": "left"
+      },
+      {
+        "id": "9b3d1826-a392-48e6-af6c-3fc9ab8f599c",
+        "title": "右树枝",
+        "note": "这是一个右树枝节点，可以继续编辑名称、颜色和备注。",
+        "kind": "branch",
+        "color": "#e63b7a",
+        "fillColor": null,
+        "x": 240.0,
+        "y": 207.0,
+        "side": "left"
+      },
+      {
+        "id": "43d969bc-b462-410e-9c10-d56fd5c40229",
+        "title": "右主根",
+        "note": "这是一个右主根节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": null,
+        "x": 666.381639380452,
+        "y": 798.9719946024609,
+        "side": "right"
+      },
+      {
+        "id": "f7aaab36-a3e6-4183-8a70-0c433a91cb5c",
+        "title": "左主根",
+        "note": "这是一个左主根节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": null,
+        "x": 202.92381100924115,
+        "y": 463.0929261806842,
+        "side": "left"
+      },
+      {
+        "id": "a7a40c54-237e-4d1b-a830-96104abf9e92",
+        "title": "子根系",
+        "note": "这是一个子根系节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": null,
+        "x": 844.381639380452,
+        "y": 771.9719946024609,
+        "side": "right"
+      },
+      {
+        "id": "529f097d-a208-4c20-b57e-cf1dceca9db0",
+        "title": "子根系",
+        "note": "这是一个子根系节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": null,
+        "x": 844.381639380452,
+        "y": 825.9719946024609,
+        "side": "right"
+      },
+      {
+        "id": "e0a6a59e-2900-431d-bc64-70e317e33e71",
+        "title": "右主根",
+        "note": "这是一个右主根节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#ff4013",
+        "fillColor": null,
+        "x": 546.0,
+        "y": 633.5925161963088,
+        "side": "right"
+      },
+      {
+        "id": "51e9fb0f-c777-4c0e-a92d-9b8c93ffd9a6",
+        "title": "子根系",
+        "note": "这是一个子根系节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": null,
+        "x": 724.0,
+        "y": 633.5925161963088,
+        "side": "right"
+      },
+      {
+        "id": "67290261-a595-46f7-b966-08944ccbb308",
+        "title": "右主根",
+        "note": "这是一个右主根节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": null,
+        "x": 991.1585130146568,
+        "y": 923.1585130146568,
+        "side": "right"
+      },
+      {
+        "id": "a4b17db6-da9f-4ea3-92c9-0875971b15df",
+        "title": "右主根",
+        "note": "这是一个右主根节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": null,
+        "x": 1019.0045201756864,
+        "y": 651.600704017493,
+        "side": "right"
+      },
+      {
+        "id": "aab52bd9-2277-41fa-8982-fc0f648d8905",
+        "title": "右主根",
+        "note": "这是一个右主根节点，可以继续编辑名称、颜色和备注。",
+        "kind": "root_branch",
+        "color": "#7a9a6d",
+        "fillColor": null,
+        "x": 1232.347659026588,
+        "y": 512.644620591541,
+        "side": "right"
+      }
+    ],
+    "tree_edges": [
+      {
+        "parent_id": "61cd63bc-28ea-4e43-a622-c548779bbf7e",
+        "child_id": "de1791e1-54f6-4f4d-bdc7-654a5e4e64a8"
+      },
+      {
+        "parent_id": "de1791e1-54f6-4f4d-bdc7-654a5e4e64a8",
+        "child_id": "0e23990d-35d6-43e2-9fce-144ee13d8dc4"
+      },
+      {
+        "parent_id": "61cd63bc-28ea-4e43-a622-c548779bbf7e",
+        "child_id": "b67f10b9-c59d-4d32-8475-23ba7925166b"
+      },
+      {
+        "parent_id": "61cd63bc-28ea-4e43-a622-c548779bbf7e",
+        "child_id": "b28e699b-1549-45c2-9163-3c5bf41cd828"
+      },
+      {
+        "parent_id": "b67f10b9-c59d-4d32-8475-23ba7925166b",
+        "child_id": "59069ba6-cd4e-4890-b3b5-13094636eb65"
+      },
+      {
+        "parent_id": "b28e699b-1549-45c2-9163-3c5bf41cd828",
+        "child_id": "c8f9a6f1-2a30-444f-bd99-8c10f738d187"
+      },
+      {
+        "parent_id": "b67f10b9-c59d-4d32-8475-23ba7925166b",
+        "child_id": "072c61e3-4380-4ad8-94c9-182eb92e463a"
+      },
+      {
+        "parent_id": "9440e607-25c9-492c-a5e3-adc1713c8b8b",
+        "child_id": "7cfd9e00-4487-4b4d-bc76-c0abef03cf2b"
+      },
+      {
+        "parent_id": "9440e607-25c9-492c-a5e3-adc1713c8b8b",
+        "child_id": "9b9520d0-9d40-4223-82f6-6ed0cc4aeb67"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "61cd63bc-28ea-4e43-a622-c548779bbf7e"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "e0a6a59e-2900-431d-bc64-70e317e33e71"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "43d969bc-b462-410e-9c10-d56fd5c40229"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "f7aaab36-a3e6-4183-8a70-0c433a91cb5c"
+      },
+      {
+        "parent_id": "43d969bc-b462-410e-9c10-d56fd5c40229",
+        "child_id": "a7a40c54-237e-4d1b-a830-96104abf9e92"
+      },
+      {
+        "parent_id": "43d969bc-b462-410e-9c10-d56fd5c40229",
+        "child_id": "529f097d-a208-4c20-b57e-cf1dceca9db0"
+      },
+      {
+        "parent_id": "e0a6a59e-2900-431d-bc64-70e317e33e71",
+        "child_id": "51e9fb0f-c777-4c0e-a92d-9b8c93ffd9a6"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "9440e607-25c9-492c-a5e3-adc1713c8b8b"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "9b3d1826-a392-48e6-af6c-3fc9ab8f599c"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "67290261-a595-46f7-b966-08944ccbb308"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "a4b17db6-da9f-4ea3-92c9-0875971b15df"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "aab52bd9-2277-41fa-8982-fc0f648d8905"
+      }
+    ],
+    "reference_links": []
+  }
+}

@@ -461,7 +461,75 @@ h3 {
 }
 
 .tree-node {
-  cursor: pointer;
+  cursor: grab;
+}
+
+.tree-node.dragging {
+  opacity: 0.42;
+  cursor: grabbing;
+}
+
+.tree-node.drop-target rect,
+.tree-node.drop-target .leaf-node-shape {
+  stroke: #3f8a2a;
+  stroke-width: 3;
+  filter: drop-shadow(0 0 10px rgba(63, 138, 42, 0.34));
+}
+
+.drop-target-edge {
+  stroke: #3f8a2a;
+  stroke-width: 3;
+  filter: drop-shadow(0 0 7px rgba(63, 138, 42, 0.34));
+}
+
+.trunk-drop-target {
+  fill: rgba(63, 138, 42, 0.14);
+  stroke: #3f8a2a;
+  stroke-width: 2.2;
+  pointer-events: none;
+}
+
+.ghost-root-preview {
+  pointer-events: none;
+}
+
+.ghost-root-preview path {
+  fill: none;
+  stroke: rgba(63, 138, 42, 0.72);
+  stroke-width: 2.2;
+  stroke-dasharray: 7 6;
+  filter: drop-shadow(0 0 8px rgba(63, 138, 42, 0.26));
+}
+
+.ghost-root-preview rect {
+  fill: rgba(248, 251, 244, 0.62);
+  stroke: #3f8a2a;
+  stroke-width: 2;
+  stroke-dasharray: 7 5;
+}
+
+.ghost-root-preview text {
+  fill: #426235;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.node-drag-preview {
+  pointer-events: none;
+  opacity: 0.72;
+}
+
+.node-drag-preview rect,
+.node-drag-preview .leaf-node-shape {
+  stroke-width: 2.2;
+  filter: drop-shadow(0 8px 18px rgba(52, 64, 47, 0.22));
+}
+
+.node-drag-preview text {
+  fill: #333;
+  font-size: 13px;
+  font-weight: 700;
+  pointer-events: none;
 }
 
 .tree-node rect,

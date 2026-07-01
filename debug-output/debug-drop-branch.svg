@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-170 -120 1615.8 1097.3" width="1615.8" height="1097.3">
+  <rect x="-170" y="-120" width="1615.8" height="1097.3" fill="#fffcf6"/>
+  <text x="-146" y="-84" font-size="18" font-weight="700" fill="#2f241b">debug-drop-branch.nt</text>
+  <line x1="-170" y1="390" x2="1445.8" y2="390" stroke="#d8cab7" stroke-dasharray="6 6"/>
+  <path d="M 742 206 L 777 206 L 777 143 L 812 143" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 920 143 L 955 143 L 955 143 L 990 143" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 742 206 L 777 206 L 777 206 L 812 206" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 742 206 L 777 206 L 777 269 L 812 269" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 920 206 L 955 206 L 955 185 L 990 185" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 920 269 L 955 269 L 955 269 L 990 269" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 920 206 L 955 206 L 955 227 L 990 227" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 186 270 L 151 270 L 151 249 L 116 249" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 186 270 L 151 270 L 151 291 L 116 291" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 450 248 L 634 206" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 454 407 C 456.72 535.3530854217091, 416 558.2732792470143, 488 636.201938253052" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 454 407 C 462.2074886067346 594.4404006677448, 484.593607584183 627.9119007869849, 556.593607584183 741.7150011924014" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 445 390 C 429.83704798532386 421.36, 335.06859789359817 426.96, 255.46309981654858 446" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 668.593607584183 741.7150011924014 L 739.593607584183 741.7150011924014 L 739.593607584183 714.7150011924014 L 810.593607584183 714.7150011924014" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 668.593607584183 741.7150011924014 L 739.593607584183 741.7150011924014 L 739.593607584183 768.7150011924014 L 810.593607584183 768.7150011924014" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 600 636.201938253052 L 671 636.201938253052 L 671 636.201938253052 L 742 636.201938253052" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 450 312 L 294 270" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 450 249 L 294 207" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 458 401 C 478 647.0336279740086, 659.5460255230115 690.9682043979386, 805.493147453468 840.3457642393009" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 458 395 C 478 587.0119196936332, 874.2641663084648 621.2997624960677, 1054.2641663084648 737.8784280243451" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 455 390 C 475 486.87021498581043, 1033.8188038105263 504.168467661848, 1213.8188038105263 562.9825267603758" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+  <path d="M 450 220 C 449 294, 452 292, 450 420" fill="none" stroke="#705e51" stroke-width="8" stroke-linecap="round" opacity="0.84"/><path d="M 450 410 C 432 417, 408 420, 374 424" fill="none" stroke="#705e51" stroke-width="5.2" stroke-linecap="round" opacity="0.62"/><path d="M 450 410 C 468 417, 492 420, 526 424" fill="none" stroke="#705e51" stroke-width="5.2" stroke-linecap="round" opacity="0.62"/><path d="M 450 399 C 444 408, 442 415, 450 424 C 458 415, 456 408, 450 399" fill="rgba(112, 94, 81, 0.28)" stroke="none"/>
+<g transform="translate(688 206)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">右树枝</text></g>
+<g transform="translate(866 143)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">子分支</text></g>
+<g transform="translate(1044 143)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">子分支</text></g>
+<g transform="translate(866 206)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">子分支</text></g>
+<g transform="translate(866 269)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">子分支</text></g>
+<g transform="translate(1044 185)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">子分支</text></g>
+<g transform="translate(1044 269)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">叶子</text></g>
+<g transform="translate(1044 227)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">子分支</text></g>
+<g transform="translate(240 270)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#53d5fd" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">左树枝</text></g>
+<g transform="translate(62 249)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#53d5fd" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">子分支</text></g>
+<g transform="translate(62 291)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#53d5fd" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">子分支</text></g>
+<g transform="translate(240 207)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#e63b7a" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">右树枝</text></g>
+<g transform="translate(614.593607584183 741.7150011924014)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">右主根</text></g>
+<g transform="translate(197.46309981654858 446)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">左主根</text></g>
+<g transform="translate(864.593607584183 714.7150011924014)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">子根系</text></g>
+<g transform="translate(864.593607584183 768.7150011924014)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">子根系</text></g>
+<g transform="translate(546 636.201938253052)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#ff4013" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">右主根</text></g>
+<g transform="translate(796 636.201938253052)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">子根系</text></g>
+<g transform="translate(863.493147453468 840.3457642393009)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">右主根</text></g>
+<g transform="translate(1112.2641663084648 737.8784280243451)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">右主根</text></g>
+<g transform="translate(1271.8188038105263 562.9825267603758)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">右主根</text></g>
+</svg>
