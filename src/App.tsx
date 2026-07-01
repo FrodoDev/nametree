@@ -8,7 +8,7 @@ const treeReferenceImage = new URL('../images/tree1.jpg', import.meta.url).href;
 const nametreeLogo = treeReferenceImage;
 const nodeLabelWidth = 108;
 const singleLineNodeLabelHeight = 34;
-const multiLineNodeLabelHeight = 48;
+const multiLineNodeLabelHeight = 54;
 const nodeLabelPaddingX = 6;
 const nodeLabelPaddingY = 4;
 
@@ -120,6 +120,7 @@ const rootChildSuggestionGapY = singleLineNodeLabelHeight + rootSiblingGapY;
 const defaultNodeBorderColor = '#7a9a6d';
 const defaultRootBorderColor = '#333333';
 const defaultNodeFillColor = '#f8fbf4';
+const colorHistoryLimit = 9;
 
 const defaultColorByKind: Record<NodeKind, string> = {
   seed_root: '#7b6b55',
@@ -188,6 +189,10 @@ function App() {
   const [titlebarDragStart, setTitlebarDragStart] = useState<{ pointerX: number; pointerY: number } | null>(null);
   const [nodeReparentDrag, setNodeReparentDrag] = useState<NodeReparentDrag | null>(null);
   const [marqueeSelection, setMarqueeSelection] = useState<MarqueeSelection | null>(null);
+  const [borderColorHistory, setBorderColorHistory] = useState<string[]>([]);
+  const [fillColorHistory, setFillColorHistory] = useState<string[]>([]);
+  const [combinedColorHistory, setCombinedColorHistory] = useState<string[]>([]);
+  const [hoveredColorPreview, setHoveredColorPreview] = useState<{ kind: 'border' | 'fill' | 'combined'; color: string } | null>(null);
   const [outlineDraft, setOutlineDraft] = useState('');
   const canvasPanelRef = useRef<HTMLElement | null>(null);
   const treeSvgRef = useRef<SVGSVGElement | null>(null);
@@ -628,6 +633,61 @@ function App() {
       ...document,
       nodes: document.nodes.map((node) => styleTargetIds.has(node.id) ? { ...node, ...patch } : node),
     }, selectedNodeId);
+  }
+
+  function rememberRecentColor(kind: 'border' | 'fill' | 'combined', color: string) {
+    const normalizedColor = color.toLowerCase();
+    const updateHistory = (current: string[]) => [normalizedColor, ...current.filter((item) => item.toLowerCase() !== normalizedColor)].slice(0, colorHistoryLimit);
+
+    if (kind === 'border') {
+      setBorderColorHistory(updateHistory);
+      return;
+    }
+
+    if (kind === 'fill') {
+      setFillColorHistory(updateHistory);
+      return;
+    }
+
+    setBorderColorHistory(updateHistory);
+    setFillColorHistory(updateHistory);
+    setCombinedColorHistory(updateHistory);
+  }
+
+  function applySelectedNodeColor(kind: 'border' | 'fill' | 'combined', color: string) {
+    rememberRecentColor(kind, color);
+    if (kind === 'combined') {
+      updateSelectedNodeStyles({ color, fillColor: color });
+      return;
+    }
+
+    updateSelectedNodeStyles(kind === 'border' ? { color } : { fillColor: color });
+  }
+
+  function renderRecentColorGrid(kind: 'border' | 'fill' | 'combined', history: string[], label: string) {
+    return (
+      <div className="recent-color-grid" aria-label={label}>
+        {Array.from({ length: colorHistoryLimit }).map((_, index) => {
+          const color = history[index];
+          return color ? (
+            <button
+              key={`${kind}-${color}`}
+              className="recent-color-button"
+              type="button"
+              style={{ backgroundColor: color }}
+              aria-label={`${label} ${color}`}
+              onMouseEnter={() => setHoveredColorPreview({ kind, color })}
+              onMouseLeave={() => setHoveredColorPreview(null)}
+              onFocus={() => setHoveredColorPreview({ kind, color })}
+              onBlur={() => setHoveredColorPreview(null)}
+              onClick={() => applySelectedNodeColor(kind, color)}
+            />
+          ) : (
+            <span key={`${kind}-empty-${index}`} className="recent-color-placeholder" />
+          );
+        })}
+      </div>
+    );
   }
 
   function selectSingleNode(nodeId: string | null) {
@@ -1357,9 +1417,6 @@ function App() {
       />
 
       <aside className="detail-panel">
-        <button className="export-image-button" type="button" onClick={() => void exportCanvasAsPng()}>
-          导出 PNG
-        </button>
         {selectedNode ? (
           <div className="panel-editor">
             {isKnowledgeNode(selectedNode) ? (
@@ -1369,26 +1426,7 @@ function App() {
                   value={selectedNode.title}
                   onChange={(event) => updateSelectedNode({ title: event.target.value })}
                 />
-                <div className="panel-color-grid">
-                  {selectedNodeIds.length > 1 && <p className="multi-select-note">已选 {selectedNodeIds.length} 个节点，颜色会批量应用。</p>}
-                  <label className="color-swatch-control" style={{ backgroundColor: selectedNode.color }}>
-                    <span>边框</span>
-                    <input
-                      type="color"
-                      value={selectedNode.color}
-                      onChange={(event) => updateSelectedNodeStyles({ color: event.target.value })}
-                    />
-                  </label>
-                  <label className="color-swatch-control" style={{ backgroundColor: selectedNode.fillColor ?? defaultNodeFillColor }}>
-                    <span>填充</span>
-                    <input
-                      type="color"
-                      value={selectedNode.fillColor ?? defaultNodeFillColor}
-                      onChange={(event) => updateSelectedNodeStyles({ fillColor: event.target.value })}
-                    />
-                  </label>
-                </div>
-                <details className="note-section">
+                <details className="note-section" open={selectedNode.note.trim().length > 0}>
                   <summary>备注</summary>
                   <textarea
                     className="node-note-editor"
@@ -1396,14 +1434,65 @@ function App() {
                     onChange={(event) => updateSelectedNode({ note: event.target.value })}
                   />
                 </details>
+                <section className="panel-section">
+                  <h3>填充颜色</h3>
+                  <div className="panel-color-grid">
+                    {selectedNodeIds.length > 1 && <p className="multi-select-note">已选 {selectedNodeIds.length} 个节点，颜色会批量应用。</p>}
+                    <div className="color-control-group">
+                      <span className="color-control-label">边框</span>
+                      <label
+                        className="color-swatch-control"
+                        style={{ backgroundColor: hoveredColorPreview?.kind === 'border' ? hoveredColorPreview.color : selectedNode.color }}
+                      >
+                        <input
+                          type="color"
+                          value={selectedNode.color}
+                          onChange={(event) => applySelectedNodeColor('border', event.target.value)}
+                        />
+                      </label>
+                      {renderRecentColorGrid('border', borderColorHistory, '最近使用的边框颜色')}
+                    </div>
+                    <div className="color-control-group">
+                      <span className="color-control-label">填充</span>
+                      <label
+                        className="color-swatch-control"
+                        style={{ backgroundColor: hoveredColorPreview?.kind === 'fill' ? hoveredColorPreview.color : selectedNode.fillColor ?? defaultNodeFillColor }}
+                      >
+                        <input
+                          type="color"
+                          value={selectedNode.fillColor ?? defaultNodeFillColor}
+                          onChange={(event) => applySelectedNodeColor('fill', event.target.value)}
+                        />
+                      </label>
+                      {renderRecentColorGrid('fill', fillColorHistory, '最近使用的填充颜色')}
+                    </div>
+                    <div className="color-control-group color-control-group-combined">
+                      <span className="color-control-label color-control-label-help" tabIndex={0}>
+                        同步
+                        <span className="color-label-tooltip">同时设置边框颜色和填充颜色</span>
+                      </span>
+                      <label
+                        className="color-swatch-control"
+                        style={{ backgroundColor: hoveredColorPreview?.kind === 'combined' ? hoveredColorPreview.color : selectedNode.color }}
+                      >
+                        <input
+                          type="color"
+                          value={selectedNode.color}
+                          onChange={(event) => applySelectedNodeColor('combined', event.target.value)}
+                        />
+                      </label>
+                      {renderRecentColorGrid('combined', combinedColorHistory, '最近使用的边框和填充颜色')}
+                    </div>
+                  </div>
+                </section>
                 <div className="outline-editor-header">
                   <h3>大纲</h3>
-                  <button type="button" onClick={applyOutlineDraft}>应用</button>
+                  <button type="button" onClick={applyOutlineDraft}>应用大纲</button>
                 </div>
                 <textarea
                   className="node-outline-editor"
                   value={outlineDraft}
-                  placeholder={`编辑当前节点的子树大纲\n每行一个节点，用两个空格缩进表示层级`}
+                  placeholder={`可在此处编辑节点和对应所有子节点的大纲\n每行表示一个节点\n两个空格缩进表示层级`}
                   onChange={(event) => setOutlineDraft(event.target.value)}
                 />
               </>
@@ -1411,7 +1500,7 @@ function App() {
               <>
                 <div className="outline-editor-header">
                   <h3>大纲</h3>
-                  <button type="button" onClick={applyOutlineDraft}>应用</button>
+                  <button type="button" onClick={applyOutlineDraft}>应用大纲</button>
                 </div>
                 <textarea
                   className="node-outline-editor"
@@ -1823,7 +1912,7 @@ function getTitleCharWidth(char: string): number {
 
 function getNodeTitlePreviewLines(title: string): string[] {
   const maxLines = 2;
-  const maxLineWidth = 8.2;
+  const maxLineWidth = 6.8;
   const source = title.replace(/\r\n?/g, '\n').trimStart();
   const lines: string[] = [];
   let current = '';
@@ -2264,7 +2353,7 @@ function createSuggestion(parent: TreeNode, kind: NodeKind, title: string, offse
   return {
     id: `${parent.id}-${kind}-${title}-${offsetX}-${offsetY}-${side ?? 'center'}`,
     title,
-    note: `这是一个${title}节点，可以继续编辑名称、颜色和备注。`,
+    note: '',
     kind,
     color: defaultColorByKind[kind],
     fillColor: defaultNodeFillColor,
@@ -2279,7 +2368,7 @@ function createSuggestionAt(parent: TreeNode, kind: NodeKind, title: string, x: 
   return {
     id: `${parent.id}-${kind}-${title}-${x}-${y}-${side ?? 'center'}`,
     title,
-    note: `这是一个${title}节点，可以继续编辑名称、颜色和备注。`,
+    note: '',
     kind,
     color: defaultColorByKind[kind],
     fillColor: defaultNodeFillColor,
@@ -2351,6 +2440,10 @@ function ensureInitialMainTrunk(document: NametreeDocument): NametreeDocument {
   };
 }
 
+function isDefaultGeneratedNote(note: string): boolean {
+  return /^这是一个.+节点，可以继续编辑名称、颜色和备注。$/.test(note.trim());
+}
+
 function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
   const documentWithTrunk = ensureInitialMainTrunk(document);
   const shape = getTreeShape(documentWithTrunk);
@@ -2359,7 +2452,10 @@ function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
   const mainRoot = documentWithTrunk.nodes.find((node) => node.kind === 'main_root');
   const nodeById = new Map(documentWithTrunk.nodes.map((node) => [node.id, node]));
 
-  const laidOutNodes = documentWithTrunk.nodes.map((node) => ({ ...node }));
+  const laidOutNodes = documentWithTrunk.nodes.map((node) => ({
+    ...node,
+    note: isDefaultGeneratedNote(node.note) ? '' : node.note,
+  }));
   const laidOutById = new Map(laidOutNodes.map((node) => [node.id, node]));
   const update = (id: string | undefined, x: number, y: number) => {
     const node = id ? laidOutById.get(id) : undefined;

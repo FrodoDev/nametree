@@ -152,6 +152,8 @@ Use these decisions as baseline constraints unless the user explicitly changes d
 - Add `fillColor` for node fill/background color, defaulting to white for older `.nt` files.
 - Color pickers should be comfortably clickable; tiny 18px color inputs are too small.
 - Use larger color controls, around `44px × 32px`, with visible rounded swatches.
+- Color preview controls and history swatches must show the real selected color. Do not add white overlays, tint masks, glass effects, or button-like shading that changes perceived color.
+- Treat color controls as flat color previews, not decorative buttons. Prefer simple borders and minimal hover feedback so users can accurately judge colors.
 
 ### Tree growth interaction gotchas
 
