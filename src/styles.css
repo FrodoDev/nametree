@@ -607,6 +607,17 @@ h3 {
   animation: selected-node-breathe 4.8s ease-in-out infinite;
 }
 
+.tree-node.multi-selected .node-selection-ring {
+  animation: multi-selected-node-breathe 3.8s ease-in-out infinite;
+}
+
+.node-fill-breathe {
+  fill: #ffffff;
+  stroke: transparent;
+  pointer-events: none;
+  animation: multi-selected-fill-breathe 3.8s ease-in-out infinite;
+}
+
 @keyframes selected-node-breathe {
   0%,
   100% {
@@ -619,6 +630,32 @@ h3 {
     stroke-opacity: 0.86;
     stroke-width: 3;
     transform: scale(1.028);
+  }
+}
+
+@keyframes multi-selected-node-breathe {
+  0%,
+  100% {
+    stroke-opacity: 0.5;
+    stroke-width: 2.4;
+    transform: scale(1.006);
+  }
+
+  50% {
+    stroke-opacity: 0.95;
+    stroke-width: 3.4;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes multi-selected-fill-breathe {
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0.34;
   }
 }
 

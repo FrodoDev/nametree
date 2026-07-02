@@ -1305,6 +1305,7 @@ function App() {
             const labelHeight = getNodeVisualHeight(node);
             const isMultiLine = titlePreviewLines.length > 1;
             const isSelected = selectedNodeIds.includes(node.id);
+            const isMultiSelected = isSelected && selectedNodeIds.length > 1;
             const isDragSource = nodeReparentDrag?.nodeIds.includes(node.id);
             const isDropTarget = nodeReparentDrag?.dropTarget?.parentId === node.id;
             const notePreview = node.note.trim();
@@ -1313,7 +1314,7 @@ function App() {
             return (
             <g
               key={node.id}
-              className={`tree-node ${isSelected ? 'selected' : ''} ${isDragSource ? 'dragging' : ''} ${isDropTarget ? 'drop-target' : ''}`}
+              className={`tree-node ${isSelected ? 'selected' : ''} ${isMultiSelected ? 'multi-selected' : ''} ${isDragSource ? 'dragging' : ''} ${isDropTarget ? 'drop-target' : ''}`}
               transform={`translate(${node.x}, ${node.y})`}
               onPointerDown={(event) => {
                 event.stopPropagation();
@@ -1381,6 +1382,20 @@ function App() {
                   fill={node.fillColor ?? defaultNodeFillColor}
                   stroke={node.color}
                 />
+              )}
+              {isMultiSelected && (
+                node.kind === 'leaf' ? (
+                  <path className="node-fill-breathe" d={createLeafShapePath()} />
+                ) : (
+                  <rect
+                    className="node-fill-breathe"
+                    x={-nodeLabelWidth / 2}
+                    y={-labelHeight / 2}
+                    width={nodeLabelWidth}
+                    height={labelHeight}
+                    rx="6"
+                  />
+                )
               )}
               {hasNote && (
                 <path
