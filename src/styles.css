@@ -565,6 +565,44 @@ h3 {
   transform-origin: center;
 }
 
+.node-note-indicator {
+  fill: rgba(13, 95, 105, 0.82);
+  stroke: rgba(255, 255, 255, 0.88);
+  stroke-width: 1;
+  pointer-events: none;
+}
+
+.node-note-tooltip {
+  opacity: 0;
+  transform-box: fill-box;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+}
+
+.node-note-tooltip.visible {
+  opacity: 1;
+}
+
+.node-note-tooltip rect {
+  fill: rgba(255, 255, 255, 0.96);
+  stroke: rgba(13, 95, 105, 0.2);
+  stroke-width: 1;
+  filter: drop-shadow(0 6px 16px rgba(23, 32, 51, 0.12));
+}
+
+.node-note-tooltip path {
+  fill: rgba(255, 255, 255, 0.96);
+  stroke: rgba(13, 95, 105, 0.16);
+  stroke-width: 1;
+}
+
+.node-note-tooltip text {
+  fill: #172033;
+  font-size: 11px;
+  font-weight: 560;
+  line-height: 1.35;
+}
+
 .tree-node.selected .node-selection-ring {
   animation: selected-node-breathe 4.8s ease-in-out infinite;
 }
@@ -695,7 +733,6 @@ h3 {
   display: block;
   height: 1.35em;
   overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -965,6 +1002,7 @@ h3 {
 
 .note-section .node-note-editor {
   margin-top: 8px;
+  font-size: 13px;
 }
 
 .node-note-editor:focus,

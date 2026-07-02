@@ -193,10 +193,13 @@ function App() {
   const [fillColorHistory, setFillColorHistory] = useState<string[]>([]);
   const [combinedColorHistory, setCombinedColorHistory] = useState<string[]>([]);
   const [hoveredColorPreview, setHoveredColorPreview] = useState<{ kind: 'border' | 'fill' | 'combined'; color: string } | null>(null);
+  const [hoveredNoteNodeId, setHoveredNoteNodeId] = useState<string | null>(null);
+  const [openNoteNodeIds, setOpenNoteNodeIds] = useState<Set<string>>(() => new Set());
   const [outlineDraft, setOutlineDraft] = useState('');
   const canvasPanelRef = useRef<HTMLElement | null>(null);
   const treeSvgRef = useRef<SVGSVGElement | null>(null);
   const nodeTitleInputRef = useRef<HTMLTextAreaElement | null>(null);
+  const noteEditorRef = useRef<HTMLTextAreaElement | null>(null);
   const documentTitleInputRef = useRef<HTMLInputElement | null>(null);
   const nodeReparentDragRef = useRef<NodeReparentDrag | null>(null);
   const [canvasSize, setCanvasSize] = useState({ width: 900, height: 700 });
@@ -229,6 +232,31 @@ function App() {
       setZoom(1);
     });
   }, []);
+
+  useEffect(() => {
+    setOpenNoteNodeIds((current) => {
+      if (!document) return current;
+
+      const selectedIds = new Set(selectedNodeIds);
+      const notedNodeIds = new Set(document.nodes.filter((node) => node.note.trim().length > 0).map((node) => node.id));
+      const next = new Set<string>();
+      current.forEach((nodeId) => {
+        if (selectedIds.has(nodeId) || notedNodeIds.has(nodeId)) {
+          next.add(nodeId);
+        }
+      });
+      return next.size === current.size && Array.from(next).every((nodeId) => current.has(nodeId)) ? current : next;
+    });
+  }, [document, selectedNodeIds]);
+
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      const editor = noteEditorRef.current;
+      if (!editor) return;
+      editor.scrollTop = 0;
+      editor.setSelectionRange(0, 0);
+    });
+  }, [selectedNodeId]);
 
   useEffect(() => {
     if (!editingNodeId) return;
@@ -618,6 +646,25 @@ function App() {
     if (!document || !selectedNodeId || !selectedNode || !isKnowledgeNode(selectedNode)) return;
 
     updateNode(selectedNodeId, patch);
+  }
+
+  function setNoteSectionOpen(nodeId: string, open: boolean) {
+    setOpenNoteNodeIds((current) => {
+      const next = new Set(current);
+      if (open) {
+        next.add(nodeId);
+      } else {
+        next.delete(nodeId);
+      }
+      return next;
+    });
+  }
+
+  function updateSelectedNodeNote(note: string) {
+    if (!selectedNodeId) return;
+
+    setNoteSectionOpen(selectedNodeId, true);
+    updateSelectedNode({ note });
   }
 
   function updateSelectedNodeStyles(patch: Pick<Partial<TreeNode>, 'color' | 'fillColor'>) {
@@ -1260,6 +1307,8 @@ function App() {
             const isSelected = selectedNodeIds.includes(node.id);
             const isDragSource = nodeReparentDrag?.nodeIds.includes(node.id);
             const isDropTarget = nodeReparentDrag?.dropTarget?.parentId === node.id;
+            const notePreview = node.note.trim();
+            const hasNote = notePreview.length > 0;
 
             return (
             <g
@@ -1298,6 +1347,8 @@ function App() {
 
                 selectSingleNode(node.id);
               }}
+              onMouseEnter={() => setHoveredNoteNodeId(hasNote ? node.id : null)}
+              onMouseLeave={() => setHoveredNoteNodeId((current) => current === node.id ? null : current)}
               onDoubleClick={() => {
                 selectSingleNode(node.id);
                 setEditingNodeId(node.id);
@@ -1329,6 +1380,12 @@ function App() {
                   rx="6"
                   fill={node.fillColor ?? defaultNodeFillColor}
                   stroke={node.color}
+                />
+              )}
+              {hasNote && (
+                <path
+                  className="node-note-indicator"
+                  d={`M ${nodeLabelWidth / 2 - 15} ${-labelHeight / 2 + 4} L ${nodeLabelWidth / 2 - 4} ${-labelHeight / 2 + 4} L ${nodeLabelWidth / 2 - 4} ${-labelHeight / 2 + 15} Z`}
                 />
               )}
               {editingNodeId === node.id ? (
@@ -1378,6 +1435,35 @@ function App() {
             );
           })}
 
+          {(() => {
+            const hoveredNoteNode = hoveredNoteNodeId ? visibleKnowledgeNodes.find((node) => node.id === hoveredNoteNodeId) : null;
+            if (!hoveredNoteNode || !hoveredNoteNode.note.trim()) return null;
+
+            const notePreviewLines = getNodeNotePreviewLines(hoveredNoteNode.note);
+            if (notePreviewLines.length === 0) return null;
+
+            const labelHeight = getNodeVisualHeight(hoveredNoteNode);
+            const noteTooltipWidth = 156;
+            const noteTooltipHeight = notePreviewLines.length * 17 + 18;
+            return (
+              <g className="node-note-tooltip visible" transform={`translate(${hoveredNoteNode.x + nodeLabelWidth / 2 + 10}, ${hoveredNoteNode.y - labelHeight / 2 - 8})`}>
+                <rect
+                  x="0"
+                  y={-noteTooltipHeight}
+                  width={noteTooltipWidth}
+                  height={noteTooltipHeight}
+                  rx="8"
+                />
+                <path d="M 8 -1 L 16 -1 L 8 7 Z" />
+                <text x="12" y={-noteTooltipHeight + 20}>
+                  {notePreviewLines.map((line, index) => (
+                    <tspan key={index} x="12" dy={index === 0 ? 0 : 17}>{line}</tspan>
+                  ))}
+                </text>
+              </g>
+            );
+          })()}
+
           {nodeReparentDrag?.isDragging && (() => {
             const draggedNode = nodeById.get(nodeReparentDrag.nodeId);
             if (!draggedNode) return null;
@@ -1426,12 +1512,18 @@ function App() {
                   value={selectedNode.title}
                   onChange={(event) => updateSelectedNode({ title: event.target.value })}
                 />
-                <details className="note-section" open={selectedNode.note.trim().length > 0}>
+                <details
+                  className="note-section"
+                  open={selectedNode.note.trim().length > 0 || openNoteNodeIds.has(selectedNode.id)}
+                  onToggle={(event) => setNoteSectionOpen(selectedNode.id, event.currentTarget.open)}
+                >
                   <summary>备注</summary>
                   <textarea
+                    ref={noteEditorRef}
                     className="node-note-editor"
                     value={selectedNode.note}
-                    onChange={(event) => updateSelectedNode({ note: event.target.value })}
+                    onFocus={() => setNoteSectionOpen(selectedNode.id, true)}
+                    onChange={(event) => updateSelectedNodeNote(event.target.value)}
                   />
                 </details>
                 <section className="panel-section">
@@ -1912,7 +2004,7 @@ function getTitleCharWidth(char: string): number {
 
 function getNodeTitlePreviewLines(title: string): string[] {
   const maxLines = 2;
-  const maxLineWidth = 6.8;
+  const maxLineWidth = 5.6;
   const source = title.replace(/\r\n?/g, '\n').trimStart();
   const lines: string[] = [];
   let current = '';
@@ -1950,6 +2042,35 @@ function getNodeTitlePreviewLines(title: string): string[] {
   if (lines.length === 0) return [''];
 
   if (index < source.length) {
+    const lastIndex = lines.length - 1;
+    lines[lastIndex] = `${lines[lastIndex].replace(/.$/u, '')}…`;
+  }
+
+  return lines;
+}
+
+function getNodeNotePreviewLines(note: string): string[] {
+  const normalized = note.replace(/\r\n?/g, '\n').trim();
+  if (!normalized) return [];
+
+  const maxLines = 4;
+  const maxChars = 20;
+  const lines: string[] = [];
+  normalized.split('\n').some((sourceLine) => {
+    let remaining = sourceLine.trim();
+    if (!remaining) {
+      lines.push('');
+      return lines.length >= maxLines;
+    }
+
+    while (remaining && lines.length < maxLines) {
+      lines.push(remaining.slice(0, maxChars));
+      remaining = remaining.slice(maxChars);
+    }
+    return lines.length >= maxLines;
+  });
+
+  if (normalized.length > lines.join('').length) {
     const lastIndex = lines.length - 1;
     lines[lastIndex] = `${lines[lastIndex].replace(/.$/u, '')}…`;
   }
