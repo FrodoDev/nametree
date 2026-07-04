@@ -11,6 +11,12 @@ const singleLineNodeLabelHeight = 34;
 const multiLineNodeLabelHeight = 54;
 const nodeLabelPaddingX = 6;
 const nodeLabelPaddingY = 4;
+const noteTooltipPaddingX = 12;
+const noteTooltipPaddingY = 9;
+const noteTooltipLineHeight = 17;
+const noteTooltipMinWidth = 72;
+const noteTooltipMaxWidth = 260;
+const noteTooltipMaxHeight = 132;
 
 type NodeKind = 'seed_root' | 'main_trunk' | 'main_root' | 'branch' | 'leaf' | 'root_branch';
 type LinkDirection = 'one_way' | 'two_way';
@@ -40,6 +46,14 @@ type ReferenceLink = {
   target_id: string;
   direction: LinkDirection;
   label: string;
+  note?: string;
+  color?: string;
+  control_x?: number;
+  control_y?: number;
+  control1_x?: number;
+  control1_y?: number;
+  control2_x?: number;
+  control2_y?: number;
 };
 
 type NametreeDocument = {
@@ -91,6 +105,17 @@ type MarqueeSelection = {
   current: { x: number; y: number };
 };
 
+type ReferenceLinkDraft = {
+  sourceId: string;
+  current: { x: number; y: number };
+  targetId: string | null;
+};
+
+type ReferenceLinkControlDrag = {
+  linkId: string;
+  controlIndex: 1 | 2;
+};
+
 type TreeShape = {
   centerX: number;
   groundY: number;
@@ -120,6 +145,7 @@ const rootChildSuggestionGapY = singleLineNodeLabelHeight + rootSiblingGapY;
 const defaultNodeBorderColor = '#7a9a6d';
 const defaultRootBorderColor = '#333333';
 const defaultNodeFillColor = '#f8fbf4';
+const defaultReferenceLinkColor = '#57606f';
 const colorHistoryLimit = 9;
 
 const defaultColorByKind: Record<NodeKind, string> = {
@@ -178,6 +204,7 @@ function App() {
   const [documentPath, setDocumentPath] = useState<string | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [selectedNodeIds, setSelectedNodeIds] = useState<string[]>([]);
+  const [selectedReferenceLinkId, setSelectedReferenceLinkId] = useState<string | null>(null);
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
   const [isEditingDocumentTitle, setIsEditingDocumentTitle] = useState(false);
   const [documentTitleDraft, setDocumentTitleDraft] = useState('');
@@ -188,6 +215,9 @@ function App() {
   const [panelResizeStart, setPanelResizeStart] = useState<{ pointerX: number; width: number } | null>(null);
   const [titlebarDragStart, setTitlebarDragStart] = useState<{ pointerX: number; pointerY: number } | null>(null);
   const [nodeReparentDrag, setNodeReparentDrag] = useState<NodeReparentDrag | null>(null);
+  const [referenceLinkDraft, setReferenceLinkDraft] = useState<ReferenceLinkDraft | null>(null);
+  const [referenceLinkControlDrag, setReferenceLinkControlDrag] = useState<ReferenceLinkControlDrag | null>(null);
+  const [hoveredReferenceLinkId, setHoveredReferenceLinkId] = useState<string | null>(null);
   const [marqueeSelection, setMarqueeSelection] = useState<MarqueeSelection | null>(null);
   const [borderColorHistory, setBorderColorHistory] = useState<string[]>([]);
   const [fillColorHistory, setFillColorHistory] = useState<string[]>([]);
@@ -300,6 +330,54 @@ function App() {
   }, [panelResizeStart]);
 
   useEffect(() => {
+    if (!referenceLinkControlDrag) return;
+
+    const handlePointerMove = (event: PointerEvent) => {
+      const pointer = getTreePointFromClientPoint(event.clientX, event.clientY, treeSvgRef.current, canvasSize, canvasOffset, zoom);
+      setDocument((current) => {
+        if (!current) return current;
+
+        const nodes = new Map(current.nodes.map((node) => [node.id, node]));
+        return {
+          ...current,
+          reference_links: current.reference_links.map((link) => {
+            if (link.id !== referenceLinkControlDrag.linkId) return link;
+
+            const source = nodes.get(link.source_id);
+            const target = nodes.get(link.target_id);
+            if (!source || !target) return link;
+
+            const anchors = getReferenceLinkAnchorPoints(source, target);
+            const controls = getReferenceLinkControlPoints(link, source, target);
+            const nextControls = getReferenceLinkControlPointsFromCurveHandle(pointer, referenceLinkControlDrag.controlIndex, anchors, controls);
+
+            return {
+              ...link,
+              control1_x: nextControls.control1.x,
+              control1_y: nextControls.control1.y,
+              control2_x: nextControls.control2.x,
+              control2_y: nextControls.control2.y,
+            };
+          }),
+        };
+      });
+    };
+
+    const handlePointerUp = () => {
+      setReferenceLinkControlDrag(null);
+    };
+
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', handlePointerUp);
+    window.addEventListener('pointercancel', handlePointerUp);
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', handlePointerUp);
+      window.removeEventListener('pointercancel', handlePointerUp);
+    };
+  }, [referenceLinkControlDrag, canvasSize, canvasOffset, zoom]);
+
+  useEffect(() => {
     if (!document || !nodeReparentDrag) return;
 
     const handlePointerMove = (event: PointerEvent) => {
@@ -369,6 +447,22 @@ function App() {
     [document],
   );
 
+  const selectedReferenceLink = useMemo(
+    () => document?.reference_links.find((link) => link.id === selectedReferenceLinkId) ?? null,
+    [document, selectedReferenceLinkId],
+  );
+
+  const selectedReferenceLinkNodes = useMemo(() => {
+    if (!document || !selectedReferenceLink) return null;
+    const nodes = new Map(document.nodes.map((node) => [node.id, node]));
+    const source = nodes.get(selectedReferenceLink.source_id);
+    const target = nodes.get(selectedReferenceLink.target_id);
+    return source && target ? { source, target } : null;
+  }, [document, selectedReferenceLink]);
+
+  const referenceLinkDraftSource = referenceLinkDraft ? document?.nodes.find((node) => node.id === referenceLinkDraft.sourceId) ?? null : null;
+  const referenceLinkDraftTarget = referenceLinkDraft?.targetId ? document?.nodes.find((node) => node.id === referenceLinkDraft.targetId) ?? null : null;
+
   const suggestions = useMemo(
     () => (document && selectedNode ? getSuggestions(document, selectedNode, shape) : []),
     [document, selectedNode, shape],
@@ -398,9 +492,19 @@ function App() {
         return;
       }
 
+      if (!isTextInput && event.key === 'Escape' && referenceLinkDraft) {
+        event.preventDefault();
+        setReferenceLinkDraft(null);
+        return;
+      }
+
       if (!isTextInput && (event.key === 'Delete' || event.key === 'Backspace')) {
         event.preventDefault();
-        deleteSelectedNode();
+        if (selectedReferenceLinkId) {
+          deleteSelectedReferenceLink();
+        } else {
+          deleteSelectedNode();
+        }
         return;
       }
 
@@ -465,7 +569,13 @@ function App() {
     const unlistenSaveAs = listen('menu-save-as-document', () => void saveCurrentDocument(true));
     const unlistenExportPng = listen('menu-export-png', () => void exportCanvasAsPng());
     const unlistenUndo = listen('menu-undo-document', () => undoLastChange());
-    const unlistenDelete = listen('menu-delete-node', () => deleteSelectedNode());
+    const unlistenDelete = listen('menu-delete-node', () => {
+      if (selectedReferenceLinkId) {
+        deleteSelectedReferenceLink();
+      } else {
+        deleteSelectedNode();
+      }
+    });
 
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('copy', handleCopy);
@@ -482,7 +592,7 @@ function App() {
       void unlistenUndo.then((unlisten) => unlisten());
       void unlistenDelete.then((unlisten) => unlisten());
     };
-  }, [document, documentPath, selectedNodeId, suggestions, visibleKnowledgeNodes]);
+  }, [document, documentPath, selectedNodeId, selectedReferenceLinkId, referenceLinkDraft, suggestions, visibleKnowledgeNodes]);
 
   async function createNewDocument() {
     const tree = await invoke<NametreeDocument>('load_sample_tree');
@@ -618,6 +728,78 @@ function App() {
     commitDocument(nextDocument, nextSelectedNodeId);
   }
 
+  function startReferenceLinkFromSelectedNode() {
+    if (!selectedNode || !isKnowledgeNode(selectedNode)) return;
+
+    setSelectedReferenceLinkId(null);
+    setReferenceLinkDraft({
+      sourceId: selectedNode.id,
+      current: { x: selectedNode.x, y: selectedNode.y },
+      targetId: null,
+    });
+  }
+
+  function createReferenceLinkFromDraft(targetId: string) {
+    if (!document || !referenceLinkDraft || referenceLinkDraft.sourceId === targetId) return;
+
+    const existingLink = findReferenceLinkBetween(document, referenceLinkDraft.sourceId, targetId);
+    if (existingLink) {
+      selectReferenceLink(existingLink.id);
+      setReferenceLinkDraft(null);
+      return;
+    }
+
+    const nextLink = {
+      id: crypto.randomUUID(),
+      source_id: referenceLinkDraft.sourceId,
+      target_id: targetId,
+      direction: 'two_way' as const,
+      label: '',
+      note: '',
+      color: defaultReferenceLinkColor,
+    };
+
+    commitDocument({
+      ...document,
+      reference_links: [...document.reference_links, nextLink],
+    }, null);
+    setReferenceLinkDraft(null);
+    setSelectedReferenceLinkId(nextLink.id);
+  }
+
+  function deleteSelectedReferenceLink() {
+    if (!document || !selectedReferenceLinkId) return;
+
+    commitDocument({
+      ...document,
+      reference_links: document.reference_links.filter((link) => link.id !== selectedReferenceLinkId),
+    }, null);
+    setSelectedReferenceLinkId(null);
+  }
+
+  function updateSelectedReferenceLink(patch: Partial<ReferenceLink>) {
+    if (!document || !selectedReferenceLinkId) return;
+
+    const nextDocument = normalizeTreeLayout({
+      ...document,
+      reference_links: document.reference_links.map((link) => (
+        link.id === selectedReferenceLinkId ? { ...link, ...patch } : link
+      )),
+    });
+
+    setUndoStack((stack) => [...stack.slice(-49), document]);
+    setDocument(nextDocument);
+  }
+
+  function updateSelectedReferenceLinkNote(note: string) {
+    updateSelectedReferenceLink({ note });
+  }
+
+  function applySelectedReferenceLinkColor(color: string) {
+    rememberRecentColor('fill', color);
+    updateSelectedReferenceLink({ color });
+  }
+
   function getSelectedNodeCopyText(): string {
     if (!selectedNode || !isKnowledgeNode(selectedNode)) return '';
 
@@ -737,12 +919,42 @@ function App() {
     );
   }
 
+  function renderRecentReferenceLinkColorGrid() {
+    return (
+      <div className="recent-color-grid" aria-label="最近使用的连接线颜色">
+        {Array.from({ length: colorHistoryLimit }).map((_, index) => {
+          const color = fillColorHistory[index];
+          return color ? (
+            <button
+              key={`reference-link-${color}`}
+              className="recent-color-button"
+              type="button"
+              style={{ backgroundColor: color }}
+              aria-label={`最近使用的连接线颜色 ${color}`}
+              onMouseEnter={() => setHoveredColorPreview({ kind: 'fill', color })}
+              onMouseLeave={() => setHoveredColorPreview(null)}
+              onFocus={() => setHoveredColorPreview({ kind: 'fill', color })}
+              onBlur={() => setHoveredColorPreview(null)}
+              onClick={() => applySelectedReferenceLinkColor(color)}
+            />
+          ) : (
+            <span key={`reference-link-empty-${index}`} className="recent-color-placeholder" />
+          );
+        })}
+      </div>
+    );
+  }
+
   function selectSingleNode(nodeId: string | null) {
+    setReferenceLinkDraft(null);
+    setSelectedReferenceLinkId(null);
     setSelectedNodeId(nodeId);
     setSelectedNodeIds(nodeId ? [nodeId] : []);
   }
 
   function toggleSelectedNode(nodeId: string) {
+    setReferenceLinkDraft(null);
+    setSelectedReferenceLinkId(null);
     setSelectedNodeIds((current) => {
       const exists = current.includes(nodeId);
       const next = exists ? current.filter((id) => id !== nodeId) : [...current, nodeId];
@@ -753,8 +965,17 @@ function App() {
 
   function setSelectedNodes(nodeIds: string[]) {
     const uniqueIds = Array.from(new Set(nodeIds));
+    setReferenceLinkDraft(null);
+    setSelectedReferenceLinkId(null);
     setSelectedNodeIds(uniqueIds);
     setSelectedNodeId(uniqueIds[uniqueIds.length - 1] ?? null);
+  }
+
+  function selectReferenceLink(linkId: string) {
+    setSelectedReferenceLinkId(linkId);
+    setSelectedNodeId(null);
+    setSelectedNodeIds([]);
+    setEditingNodeId(null);
   }
 
   function updateNode(nodeId: string, patch: Partial<TreeNode>) {
@@ -1114,13 +1335,23 @@ function App() {
             if (event.button !== 0) return;
 
             const point = getTreePointFromClientPoint(event.clientX, event.clientY, treeSvgRef.current, canvasSize, canvasOffset, zoom);
+            if (referenceLinkDraft) {
+              setReferenceLinkDraft(null);
+              return;
+            }
+
             setMarqueeSelection({ start: point, current: point });
             event.currentTarget.setPointerCapture(event.pointerId);
           }}
           onPointerMove={(event) => {
+            const point = getTreePointFromClientPoint(event.clientX, event.clientY, treeSvgRef.current, canvasSize, canvasOffset, zoom);
+            if (referenceLinkDraft) {
+              setReferenceLinkDraft((current) => current ? { ...current, current: point } : current);
+              return;
+            }
+
             if (!marqueeSelection) return;
 
-            const point = getTreePointFromClientPoint(event.clientX, event.clientY, treeSvgRef.current, canvasSize, canvasOffset, zoom);
             setMarqueeSelection((current) => current ? { ...current, current: point } : current);
           }}
           onPointerUp={(event) => {
@@ -1216,14 +1447,34 @@ function App() {
             const target = nodeById.get(link.target_id);
             if (!source || !target) return null;
 
+            const linkPath = createReferenceLinkPath(link, source, target);
+            const isInteractive = selectedReferenceLinkId === link.id || hoveredReferenceLinkId === link.id;
+
             return (
-              <path
-                key={link.id}
-                className={`reference-link ${link.direction}`}
-                d={createCurve(source, target)}
-              />
+              <g key={link.id} className="reference-link-group">
+                <path
+                  className="reference-link-hit"
+                  d={linkPath}
+                  onPointerDown={(event) => event.stopPropagation()}
+                  onClick={() => selectReferenceLink(link.id)}
+                  onMouseEnter={() => setHoveredReferenceLinkId(link.id)}
+                  onMouseLeave={() => setHoveredReferenceLinkId((current) => current === link.id ? null : current)}
+                />
+                <path
+                  className={`reference-link ${link.direction} ${isInteractive ? 'hovered' : ''} ${selectedReferenceLinkId === link.id ? 'selected' : ''}`}
+                  d={linkPath}
+                  style={{ stroke: link.color ?? defaultReferenceLinkColor }}
+                />
+              </g>
             );
           })}
+
+          {referenceLinkDraft && referenceLinkDraftSource && (
+            <path
+              className={`reference-link-draft ${referenceLinkDraftTarget ? 'targeted' : ''}`}
+              d={createCurve(referenceLinkDraftSource, referenceLinkDraftTarget ?? referenceLinkDraft.current)}
+            />
+          )}
 
           {suggestions.map((suggestion) => {
             const parent = nodeById.get(suggestion.parentId);
@@ -1306,6 +1557,10 @@ function App() {
             const isMultiLine = titlePreviewLines.length > 1;
             const isSelected = selectedNodeIds.includes(node.id);
             const isMultiSelected = isSelected && selectedNodeIds.length > 1;
+            const isReferenceLinkSource = referenceLinkDraft?.sourceId === node.id;
+            const isReferenceLinkTarget = referenceLinkDraft?.targetId === node.id;
+            const isReferenceLinkCandidate = Boolean(referenceLinkDraft && referenceLinkDraft.sourceId !== node.id);
+            const isSelectedReferenceEndpoint = selectedReferenceLink?.source_id === node.id || selectedReferenceLink?.target_id === node.id;
             const isDragSource = nodeReparentDrag?.nodeIds.includes(node.id);
             const isDropTarget = nodeReparentDrag?.dropTarget?.parentId === node.id;
             const notePreview = node.note.trim();
@@ -1314,12 +1569,14 @@ function App() {
             return (
             <g
               key={node.id}
-              className={`tree-node ${isSelected ? 'selected' : ''} ${isMultiSelected ? 'multi-selected' : ''} ${isDragSource ? 'dragging' : ''} ${isDropTarget ? 'drop-target' : ''}`}
+              className={`tree-node ${isSelected ? 'selected' : ''} ${isMultiSelected ? 'multi-selected' : ''} ${isReferenceLinkSource ? 'reference-link-source' : ''} ${isReferenceLinkTarget ? 'reference-link-target' : ''} ${isReferenceLinkCandidate ? 'reference-link-candidate' : ''} ${isSelectedReferenceEndpoint ? 'reference-link-endpoint' : ''} ${isDragSource ? 'dragging' : ''} ${isDropTarget ? 'drop-target' : ''}`}
               transform={`translate(${node.x}, ${node.y})`}
               onPointerDown={(event) => {
                 event.stopPropagation();
                 if (event.button !== 0 || editingNodeId === node.id) return;
                 event.preventDefault();
+
+                if (referenceLinkDraft) return;
 
                 const pointer = getTreePointFromClientPoint(event.clientX, event.clientY, treeSvgRef.current, canvasSize, canvasOffset, zoom);
                 if (!(event.metaKey || event.ctrlKey) && !selectedNodeIds.includes(node.id)) {
@@ -1341,6 +1598,11 @@ function App() {
               }}
               onClick={(event) => {
                 if (isPanning || nodeReparentDrag?.isDragging) return;
+                if (referenceLinkDraft) {
+                  createReferenceLinkFromDraft(node.id);
+                  return;
+                }
+
                 if (event.metaKey || event.ctrlKey) {
                   toggleSelectedNode(node.id);
                   return;
@@ -1348,8 +1610,16 @@ function App() {
 
                 selectSingleNode(node.id);
               }}
-              onMouseEnter={() => setHoveredNoteNodeId(hasNote ? node.id : null)}
-              onMouseLeave={() => setHoveredNoteNodeId((current) => current === node.id ? null : current)}
+              onMouseEnter={() => {
+                if (referenceLinkDraft && referenceLinkDraft.sourceId !== node.id) {
+                  setReferenceLinkDraft((current) => current ? { ...current, targetId: node.id } : current);
+                }
+                setHoveredNoteNodeId(hasNote ? node.id : null);
+              }}
+              onMouseLeave={() => {
+                setReferenceLinkDraft((current) => current?.targetId === node.id ? { ...current, targetId: null } : current);
+                setHoveredNoteNodeId((current) => current === node.id ? null : current);
+              }}
               onDoubleClick={() => {
                 selectSingleNode(node.id);
                 setEditingNodeId(node.id);
@@ -1454,27 +1724,76 @@ function App() {
             const hoveredNoteNode = hoveredNoteNodeId ? visibleKnowledgeNodes.find((node) => node.id === hoveredNoteNodeId) : null;
             if (!hoveredNoteNode || !hoveredNoteNode.note.trim()) return null;
 
-            const notePreviewLines = getNodeNotePreviewLines(hoveredNoteNode.note);
-            if (notePreviewLines.length === 0) return null;
+            const notePreviewLayout = getNodeNotePreviewLayout(hoveredNoteNode.note);
+            if (!notePreviewLayout) return null;
 
-            const labelHeight = getNodeVisualHeight(hoveredNoteNode);
-            const noteTooltipWidth = 156;
-            const noteTooltipHeight = notePreviewLines.length * 17 + 18;
+            const { lines: notePreviewLines, width: noteTooltipWidth, height: noteTooltipHeight } = notePreviewLayout;
             return (
-              <g className="node-note-tooltip visible" transform={`translate(${hoveredNoteNode.x + nodeLabelWidth / 2 + 10}, ${hoveredNoteNode.y - labelHeight / 2 - 8})`}>
-                <rect
-                  x="0"
-                  y={-noteTooltipHeight}
-                  width={noteTooltipWidth}
-                  height={noteTooltipHeight}
-                  rx="8"
-                />
-                <path d="M 8 -1 L 16 -1 L 8 7 Z" />
-                <text x="12" y={-noteTooltipHeight + 20}>
+              <g className="node-note-tooltip visible" transform={`translate(${hoveredNoteNode.x + nodeLabelWidth / 2 + 12}, ${hoveredNoteNode.y - noteTooltipHeight / 2})`}>
+                <path className="note-tooltip-bubble" d={createSpeechBubblePath(noteTooltipWidth, noteTooltipHeight)} />
+                <text x={noteTooltipPaddingX} y={noteTooltipPaddingY + 11}>
                   {notePreviewLines.map((line, index) => (
-                    <tspan key={index} x="12" dy={index === 0 ? 0 : 17}>{line}</tspan>
+                    <tspan key={index} x={noteTooltipPaddingX} dy={index === 0 ? 0 : noteTooltipLineHeight}>{line}</tspan>
                   ))}
                 </text>
+              </g>
+            );
+          })()}
+
+          {(() => {
+            const hoveredReferenceLink = hoveredReferenceLinkId ? document.reference_links.find((link) => link.id === hoveredReferenceLinkId) : null;
+            if (!hoveredReferenceLink || !hoveredReferenceLink.note?.trim()) return null;
+
+            const source = nodeById.get(hoveredReferenceLink.source_id);
+            const target = nodeById.get(hoveredReferenceLink.target_id);
+            if (!source || !target) return null;
+
+            const notePreviewLayout = getNodeNotePreviewLayout(hoveredReferenceLink.note);
+            if (!notePreviewLayout) return null;
+
+            const anchors = getReferenceLinkAnchorPoints(source, target);
+            const controls = getReferenceLinkControlPoints(hoveredReferenceLink, source, target);
+            const tooltipPoint = getCubicPoint(anchors.source, controls.control1, controls.control2, anchors.target, 0.5);
+            const { lines: notePreviewLines, width: noteTooltipWidth, height: noteTooltipHeight } = notePreviewLayout;
+            return (
+              <g className="node-note-tooltip reference-link-note-tooltip visible" transform={`translate(${tooltipPoint.x + 16}, ${tooltipPoint.y - noteTooltipHeight / 2})`}>
+                <path className="note-tooltip-bubble" d={createSpeechBubblePath(noteTooltipWidth, noteTooltipHeight)} />
+                <text x={noteTooltipPaddingX} y={noteTooltipPaddingY + 11}>
+                  {notePreviewLines.map((line, index) => (
+                    <tspan key={index} x={noteTooltipPaddingX} dy={index === 0 ? 0 : noteTooltipLineHeight}>{line}</tspan>
+                  ))}
+                </text>
+              </g>
+            );
+          })()}
+
+          {selectedReferenceLink && selectedReferenceLinkNodes && (() => {
+            const anchors = getReferenceLinkAnchorPoints(selectedReferenceLinkNodes.source, selectedReferenceLinkNodes.target);
+            const controls = getReferenceLinkControlPoints(selectedReferenceLink, selectedReferenceLinkNodes.source, selectedReferenceLinkNodes.target);
+            const handles = getReferenceLinkCurveHandles(anchors, controls);
+            const referenceLinkColor = selectedReferenceLink.color ?? defaultReferenceLinkColor;
+            return (
+              <g className="reference-link-edit-layer">
+                <circle className="reference-link-anchor" cx={anchors.source.x} cy={anchors.source.y} r="4" style={{ fill: referenceLinkColor }} />
+                <circle className="reference-link-anchor" cx={anchors.target.x} cy={anchors.target.y} r="4" style={{ fill: referenceLinkColor }} />
+                {([1, 2] as const).map((controlIndex) => {
+                  const handle = controlIndex === 1 ? handles.handle1 : handles.handle2;
+                  return (
+                    <circle
+                      key={controlIndex}
+                      className="reference-link-control"
+                      cx={handle.x}
+                      cy={handle.y}
+                      r="8"
+                      style={{ stroke: referenceLinkColor }}
+                      onPointerDown={(event) => {
+                        event.stopPropagation();
+                        event.preventDefault();
+                        setReferenceLinkControlDrag({ linkId: selectedReferenceLink.id, controlIndex });
+                      }}
+                    />
+                  );
+                })}
               </g>
             );
           })()}
@@ -1541,6 +1860,15 @@ function App() {
                     onChange={(event) => updateSelectedNodeNote(event.target.value)}
                   />
                 </details>
+                <section className="panel-section reference-link-section">
+                  <h3>连接</h3>
+                  <button
+                    type="button"
+                    onClick={() => referenceLinkDraft?.sourceId === selectedNode.id ? setReferenceLinkDraft(null) : startReferenceLinkFromSelectedNode()}
+                  >
+                    {referenceLinkDraft?.sourceId === selectedNode.id ? '取消连接' : '连接到节点'}
+                  </button>
+                </section>
                 <section className="panel-section">
                   <h3>填充颜色</h3>
                   <div className="panel-color-grid">
@@ -1619,6 +1947,47 @@ function App() {
             ) : (
               <p className="note structure-note">选择主干或知识节点后编辑大纲。</p>
             )}
+          </div>
+        ) : selectedReferenceLink && selectedReferenceLinkNodes ? (
+          <div className="panel-editor reference-link-editor">
+            <h3>节点连接</h3>
+            <div className="reference-link-endpoints-visual">
+              <div className="reference-link-endpoint-card">{selectedReferenceLinkNodes.source.title}</div>
+              <div className="reference-link-endpoint-line" aria-hidden="true">
+                <span />
+                <span />
+              </div>
+              <div className="reference-link-endpoint-card">{selectedReferenceLinkNodes.target.title}</div>
+            </div>
+            <section className="panel-section reference-link-color-section">
+              <h3>连接线颜色</h3>
+              <div className="panel-color-grid">
+                <div className="color-control-group">
+                  <span className="color-control-label">线条</span>
+                  <label
+                    className="color-swatch-control"
+                    style={{ backgroundColor: hoveredColorPreview?.kind === 'fill' ? hoveredColorPreview.color : selectedReferenceLink.color ?? defaultReferenceLinkColor }}
+                  >
+                    <input
+                      type="color"
+                      value={selectedReferenceLink.color ?? defaultReferenceLinkColor}
+                      onChange={(event) => applySelectedReferenceLinkColor(event.target.value)}
+                    />
+                  </label>
+                  {renderRecentReferenceLinkColorGrid()}
+                </div>
+              </div>
+            </section>
+            <section className="panel-section reference-link-note-section">
+              <h3>连接备注</h3>
+              <textarea
+                className="reference-link-note-editor"
+                value={selectedReferenceLink.note ?? ''}
+                placeholder="节点之间的关系说明"
+                onChange={(event) => updateSelectedReferenceLinkNote(event.target.value)}
+              />
+            </section>
+            <button type="button" onClick={deleteSelectedReferenceLink}>删除连接</button>
           </div>
         ) : (
           <p>选择一个节点查看或编辑。</p>
@@ -2064,33 +2433,74 @@ function getNodeTitlePreviewLines(title: string): string[] {
   return lines;
 }
 
-function getNodeNotePreviewLines(note: string): string[] {
+function getNodeNotePreviewLayout(note: string): { lines: string[]; width: number; height: number } | null {
   const normalized = note.replace(/\r\n?/g, '\n').trim();
-  if (!normalized) return [];
+  if (!normalized) return null;
 
-  const maxLines = 4;
-  const maxChars = 20;
+  const maxContentWidth = noteTooltipMaxWidth - noteTooltipPaddingX * 2;
+  const maxLines = Math.floor((noteTooltipMaxHeight - noteTooltipPaddingY * 2) / noteTooltipLineHeight);
   const lines: string[] = [];
+  let measuredWidth = 0;
+  let consumedLength = 0;
+
   normalized.split('\n').some((sourceLine) => {
-    let remaining = sourceLine.trim();
-    if (!remaining) {
+    let current = '';
+    let currentWidth = 0;
+    const line = sourceLine.trim();
+
+    if (!line) {
       lines.push('');
+      consumedLength += 1;
       return lines.length >= maxLines;
     }
 
-    while (remaining && lines.length < maxLines) {
-      lines.push(remaining.slice(0, maxChars));
-      remaining = remaining.slice(maxChars);
+    for (const char of line) {
+      const charWidth = getPreviewCharWidth(char);
+      if (current && currentWidth + charWidth > maxContentWidth) {
+        lines.push(current);
+        measuredWidth = Math.max(measuredWidth, currentWidth);
+        current = '';
+        currentWidth = 0;
+        if (lines.length >= maxLines) return true;
+      }
+
+      current += char;
+      currentWidth += charWidth;
+      consumedLength += 1;
     }
+
+    if (lines.length < maxLines) {
+      lines.push(current);
+      measuredWidth = Math.max(measuredWidth, currentWidth);
+      consumedLength += 1;
+    }
+
     return lines.length >= maxLines;
   });
 
-  if (normalized.length > lines.join('').length) {
+  if (consumedLength < normalized.length) {
     const lastIndex = lines.length - 1;
     lines[lastIndex] = `${lines[lastIndex].replace(/.$/u, '')}…`;
+    measuredWidth = Math.max(measuredWidth, getPreviewLineWidth(lines[lastIndex]));
   }
 
-  return lines;
+  return {
+    lines,
+    width: Math.min(noteTooltipMaxWidth, Math.max(noteTooltipMinWidth, Math.ceil(measuredWidth + noteTooltipPaddingX * 2))),
+    height: Math.min(noteTooltipMaxHeight, lines.length * noteTooltipLineHeight + noteTooltipPaddingY * 2),
+  };
+}
+
+function getPreviewLineWidth(line: string): number {
+  return Array.from(line).reduce((width, char) => width + getPreviewCharWidth(char), 0);
+}
+
+function getPreviewCharWidth(char: string): number {
+  if (/[^\x00-\xff]/.test(char)) return 11;
+  if (/[A-Z0-9]/.test(char)) return 6.8;
+  if (/[a-z]/.test(char)) return 5.4;
+  if (/\s/.test(char)) return 3.5;
+  return 4.8;
 }
 
 function getNodeVisualHeight(node: Pick<TreeNode, 'title'>): number {
@@ -2359,6 +2769,13 @@ function getDocumentBaseName(document: NametreeDocument, documentPath?: string |
 
 function getInitialSelectedNodeId(document: NametreeDocument): string | null {
   return document.nodes.find((node) => node.kind === 'main_trunk')?.id ?? document.nodes[0]?.id ?? null;
+}
+
+function findReferenceLinkBetween(document: NametreeDocument, sourceId: string, targetId: string): ReferenceLink | null {
+  return document.reference_links.find((link) => (
+    (link.source_id === sourceId && link.target_id === targetId)
+    || (link.direction === 'two_way' && link.source_id === targetId && link.target_id === sourceId)
+  )) ?? null;
 }
 
 function getDocumentTitleTagText(document: NametreeDocument, documentPath?: string | null): { text: string; isPlaceholder: boolean } {
@@ -2697,7 +3114,14 @@ function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
   layoutRootSide('left', -1);
   layoutRootSide('right', 1);
 
-  return { ...documentWithTrunk, nodes: laidOutNodes };
+  const validNodeIds = new Set(laidOutNodes.map((node) => node.id));
+  const referenceLinks = (documentWithTrunk.reference_links ?? []).filter((link) => (
+    validNodeIds.has(link.source_id)
+    && validNodeIds.has(link.target_id)
+    && link.source_id !== link.target_id
+  ));
+
+  return { ...documentWithTrunk, nodes: laidOutNodes, reference_links: referenceLinks };
 }
 
 function layoutOutputTree(
@@ -2933,6 +3357,183 @@ function createRootEdgePath(parent: Pick<TreeNode, 'kind' | 'x' | 'y'>, child: P
 function createCurve(parent: Pick<TreeNode, 'x' | 'y'>, child: Pick<TreeNode, 'x' | 'y'>): string {
   const middleX = (parent.x + child.x) / 2;
   return `M ${parent.x} ${parent.y} C ${middleX} ${parent.y}, ${middleX} ${child.y}, ${child.x} ${child.y}`;
+}
+
+function createSpeechBubblePath(width: number, height: number): string {
+  const radius = Math.min(12, width / 4, height / 2);
+  const tailY = height / 2;
+  const tailHeight = Math.min(18, Math.max(10, height * 0.38));
+  const tailTopY = tailY - tailHeight / 2;
+  const tailBottomY = tailY + tailHeight / 2;
+  const tailTipX = -10;
+
+  return [
+    `M ${radius} 0`,
+    `H ${width - radius}`,
+    `Q ${width} 0 ${width} ${radius}`,
+    `V ${height - radius}`,
+    `Q ${width} ${height} ${width - radius} ${height}`,
+    `H ${radius}`,
+    `Q 0 ${height} 0 ${height - radius}`,
+    `V ${tailBottomY}`,
+    `C -1 ${tailBottomY - 4} -5 ${tailY + 2} ${tailTipX} ${tailY}`,
+    `C -5 ${tailY - 2} -1 ${tailTopY + 4} 0 ${tailTopY}`,
+    `V ${radius}`,
+    `Q 0 0 ${radius} 0`,
+    'Z',
+  ].join(' ');
+}
+
+function createReferenceLinkPath(link: ReferenceLink, source: TreeNode, target: TreeNode): string {
+  const anchors = getReferenceLinkAnchorPoints(source, target);
+  const controls = getReferenceLinkControlPoints(link, source, target);
+  return `M ${anchors.source.x} ${anchors.source.y} C ${controls.control1.x} ${controls.control1.y}, ${controls.control2.x} ${controls.control2.y}, ${anchors.target.x} ${anchors.target.y}`;
+}
+
+function getReferenceLinkAnchorPoints(source: TreeNode, target: TreeNode): { source: { x: number; y: number }; target: { x: number; y: number } } {
+  return {
+    source: getNodeEdgeAnchorPoint(source, target),
+    target: getNodeEdgeAnchorPoint(target, source),
+  };
+}
+
+function getNodeEdgeAnchorPoint(node: TreeNode, toward: Pick<TreeNode, 'x' | 'y'>): { x: number; y: number } {
+  const halfWidth = node.kind === 'leaf' ? 54 : nodeLabelWidth / 2;
+  const halfHeight = node.kind === 'leaf' ? 24 : getNodeVisualHeight(node) / 2;
+  const dx = toward.x - node.x;
+  const dy = toward.y - node.y;
+
+  if (Math.abs(dx) / halfWidth > Math.abs(dy) / halfHeight) {
+    return { x: node.x + Math.sign(dx || 1) * halfWidth, y: node.y };
+  }
+
+  return { x: node.x, y: node.y + Math.sign(dy || 1) * halfHeight };
+}
+
+function getReferenceLinkControlPoints(link: ReferenceLink, source: TreeNode, target: TreeNode): { control1: { x: number; y: number }; control2: { x: number; y: number } } {
+  if (
+    typeof link.control1_x === 'number'
+    && typeof link.control1_y === 'number'
+    && typeof link.control2_x === 'number'
+    && typeof link.control2_y === 'number'
+  ) {
+    return {
+      control1: { x: link.control1_x, y: link.control1_y },
+      control2: { x: link.control2_x, y: link.control2_y },
+    };
+  }
+
+  const anchors = getReferenceLinkAnchorPoints(source, target);
+  const legacyControl = getLegacyReferenceLinkControlPoint(link, anchors.source, anchors.target);
+  if (legacyControl) {
+    return {
+      control1: {
+        x: anchors.source.x + (legacyControl.x - anchors.source.x) * 2 / 3,
+        y: anchors.source.y + (legacyControl.y - anchors.source.y) * 2 / 3,
+      },
+      control2: {
+        x: anchors.target.x + (legacyControl.x - anchors.target.x) * 2 / 3,
+        y: anchors.target.y + (legacyControl.y - anchors.target.y) * 2 / 3,
+      },
+    };
+  }
+
+  const dx = anchors.target.x - anchors.source.x;
+  const dy = anchors.target.y - anchors.source.y;
+  const length = Math.hypot(dx, dy) || 1;
+  const bend = Math.min(110, Math.max(42, length * 0.18));
+  const side = anchors.source.x <= anchors.target.x ? 1 : -1;
+  const offsetX = -(dy / length) * bend * side;
+  const offsetY = (dx / length) * bend * side;
+
+  return {
+    control1: {
+      x: anchors.source.x + dx * 0.32 + offsetX,
+      y: anchors.source.y + dy * 0.32 + offsetY,
+    },
+    control2: {
+      x: anchors.source.x + dx * 0.68 + offsetX,
+      y: anchors.source.y + dy * 0.68 + offsetY,
+    },
+  };
+}
+
+function getReferenceLinkCurveHandles(
+  anchors: { source: { x: number; y: number }; target: { x: number; y: number } },
+  controls: { control1: { x: number; y: number }; control2: { x: number; y: number } },
+): { handle1: { x: number; y: number }; handle2: { x: number; y: number } } {
+  return {
+    handle1: getCubicPoint(anchors.source, controls.control1, controls.control2, anchors.target, 1 / 3),
+    handle2: getCubicPoint(anchors.source, controls.control1, controls.control2, anchors.target, 2 / 3),
+  };
+}
+
+function getReferenceLinkControlPointsFromCurveHandle(
+  handle: Pick<TreeNode, 'x' | 'y'>,
+  handleIndex: 1 | 2,
+  anchors: { source: { x: number; y: number }; target: { x: number; y: number } },
+  controls: { control1: { x: number; y: number }; control2: { x: number; y: number } },
+): { control1: { x: number; y: number }; control2: { x: number; y: number } } {
+  const t = handleIndex === 1 ? 1 / 3 : 2 / 3;
+  const a = (1 - t) ** 3;
+  const b = 3 * (1 - t) ** 2 * t;
+  const c = 3 * (1 - t) * t ** 2;
+  const d = t ** 3;
+
+  if (handleIndex === 1) {
+    return {
+      control1: {
+        x: (handle.x - anchors.source.x * a - controls.control2.x * c - anchors.target.x * d) / b,
+        y: (handle.y - anchors.source.y * a - controls.control2.y * c - anchors.target.y * d) / b,
+      },
+      control2: controls.control2,
+    };
+  }
+
+  return {
+    control1: controls.control1,
+    control2: {
+      x: (handle.x - anchors.source.x * a - controls.control1.x * b - anchors.target.x * d) / c,
+      y: (handle.y - anchors.source.y * a - controls.control1.y * b - anchors.target.y * d) / c,
+    },
+  };
+}
+
+function getCubicPoint(
+  start: Pick<TreeNode, 'x' | 'y'>,
+  control1: Pick<TreeNode, 'x' | 'y'>,
+  control2: Pick<TreeNode, 'x' | 'y'>,
+  end: Pick<TreeNode, 'x' | 'y'>,
+  t: number,
+): { x: number; y: number } {
+  const a = (1 - t) ** 3;
+  const b = 3 * (1 - t) ** 2 * t;
+  const c = 3 * (1 - t) * t ** 2;
+  const d = t ** 3;
+
+  return {
+    x: start.x * a + control1.x * b + control2.x * c + end.x * d,
+    y: start.y * a + control1.y * b + control2.y * c + end.y * d,
+  };
+}
+
+function getLegacyReferenceLinkControlPoint(link: ReferenceLink, source: Pick<TreeNode, 'x' | 'y'>, target: Pick<TreeNode, 'x' | 'y'>): { x: number; y: number } | null {
+  if (typeof link.control_x === 'number' && typeof link.control_y === 'number') {
+    return { x: link.control_x, y: link.control_y };
+  }
+
+  const midX = (source.x + target.x) / 2;
+  const midY = (source.y + target.y) / 2;
+  const dx = target.x - source.x;
+  const dy = target.y - source.y;
+  const length = Math.hypot(dx, dy) || 1;
+  const bend = Math.min(96, Math.max(34, length * 0.16));
+  const side = source.x <= target.x ? 1 : -1;
+
+  return {
+    x: midX - (dy / length) * bend * side,
+    y: midY + (dx / length) * bend * side,
+  };
 }
 
 export default App;

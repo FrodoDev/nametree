@@ -176,6 +176,129 @@ Use these decisions as baseline constraints unless the user explicitly changes d
 - Root layout changes should be checked against the saved fixtures in `debug-fixtures/` with `npm run root:check`; inspect `debug-output/*.svg` and `debug-output/report.json` before relying on visual intuition only.
 - Root layout should include enough horizontal and vertical spacing to avoid node overlap, and should use slight asymmetric offsets so left/right root systems do not look mechanically mirrored.
 
+## v0.1.0 implementation baseline before tagging
+
+Use this section as the practical baseline for the current app state. Preserve these behaviors unless the user explicitly asks to change direction.
+
+### Core document/file behavior
+
+- Nametree is a Tauri + React desktop app with local-first `.nt` JSON documents.
+- `Cmd+N` creates a fresh unsaved document.
+- `Cmd+O` opens a `.nt` document through the native file picker.
+- `Cmd+S` saves the current document; first save asks for a path.
+- Browser/localStorage must not become the primary persistence model for real documents.
+- Keep `.nt` data stable and migration-friendly with explicit format/version metadata where applicable.
+
+### Canvas and navigation
+
+- The main workspace is the tree canvas plus a right detail panel.
+- The page should not create accidental full-window vertical scrolling.
+- Trackpad vertical scroll should pan the canvas, not zoom by default.
+- Zoom should require modifier intent such as `Cmd` or `Ctrl` with wheel/scroll.
+- Zoom needs to support large trees; keep the minimum zoom low enough to see expanded trees.
+- Canvas logo/brand marks must remain subtle and must not compete with node editing.
+
+### Tree structure and growth
+
+- There is exactly one main trunk.
+- Trunk-level output branches and input roots are real knowledge nodes connected by tree edges.
+- Trunk-created branches attach to distinct trunk heights and should not all depart from one point.
+- First-level trunk branch edges are straight angled lines from trunk to label.
+- Deeper branch/leaf edges can use compact XMind-style elbow connectors.
+- Root nodes grow from a small root-crown area near the trunk base, with natural cubic curves and distinct attach points.
+- Root layout should use angle-slot placement and collision avoidance that extends along the existing angle rather than pushing straight down.
+- Branch and root growth suggestions should appear on both sides when applicable, and the chosen side should persist.
+- Candidate/suggestion nodes must not bubble pointer events into canvas panning.
+
+### Node interaction
+
+- Single-click selects a node.
+- Double-click edits the node title directly on the canvas.
+- `Tab` extends/grows the selected tree branch by default.
+- Node title editing should stay inline and not require the detail panel.
+- Selected nodes show a subtle breathing selection effect.
+- When multiple nodes are selected, the selection breathing can be stronger, giving a connected “living tree” feeling.
+- Selecting a node should also make its parent connection path visually easier to identify.
+- Deleting selected nodes and undoing recent document edits should remain supported.
+- Copy/paste must preserve native behavior inside text inputs and textareas; canvas-level copy/paste applies only when focus is outside text editing controls.
+
+### Dragging and reparenting
+
+- Dragging a branch/root primarily changes its parent; the node’s own descendants follow it.
+- The main trunk can be used as a parent target.
+- Branch vertical ordering may be determined by the drag position.
+- Root dragging follows the same reparenting model, but root ordering may rely on virtual position because roots do not have the same top/bottom semantics as output branches.
+- Multi-selected nodes can be dragged together and reassigned together when supported.
+
+### Multi-select and batch editing
+
+- `Cmd` + click can select multiple nodes.
+- Drag selection can select multiple nodes.
+- Multi-select should not restrict node kinds or parent/child relationships.
+- Batch operations may apply to selected nodes, especially border color and fill color.
+- Keep multi-select behavior simple: selection is about applying operations to a set, not enforcing tree constraints at selection time.
+
+### Node styling and colors
+
+- Nodes support separate border color and fill color.
+- Existing `color` represents border/stroke color.
+- `fillColor` represents node background/fill and defaults to white for older documents.
+- Color pickers should be large enough to click comfortably, around `44px × 32px`.
+- Border/fill color controls should show real color without glass overlays, white masks, or decorative tinting.
+- Border and fill color histories should keep recent swatches for efficient reuse.
+- Recent color swatches should be flat, accurate previews with subtle hover feedback.
+- Root nodes and root-side defaults may use darker/black styling when that supports the tree visual.
+
+### Notes and note bubbles
+
+- Node notes are edited in the detail panel.
+- If a selected node has no note, the note section should default to collapsed.
+- If a selected node has a note, the note section should default to expanded.
+- If a node’s note is deleted, returning to that node should restore the default collapsed state.
+- Nodes with notes show a small note indicator on the canvas.
+- Hovering a noted node shows a lightweight note bubble.
+- Reference links can also have notes, and hovering a noted link shows a note bubble.
+- Note bubbles should size dynamically to the text rather than using one fixed width.
+- Note bubble width and height both grow with content up to maximum limits.
+- Before reaching maximum width, prefer growing width over increasing height.
+- After reaching maximum width, wrap text and grow height.
+- After reaching maximum height, truncate the remaining content with an ellipsis.
+- Note bubble text measurement is approximate in SVG; tune CJK and Latin character widths separately so English does not leave excessive right padding and Chinese does not become too tight.
+- Keep note bubbles visually lightweight: near-white fill, thin calm border, modest shadow, compact typography.
+
+### Reference links
+
+- Reference links express non-tree relationships between nodes without turning the whole app into a freeform graph.
+- Reference links should be visually distinct from tree edges, typically dashed/curved.
+- A reference link can have two editable control points to adjust curve shape.
+- A selected reference link exposes editable handles/anchors on the canvas.
+- Reference links can have their own note.
+- Reference links can have editable color, following the same practical expectations as node border color.
+- The detail panel should show connection details and link note editing when a reference link is selected.
+
+### Export and outline behavior
+
+- PNG export is supported and should preserve the visible tree sufficiently for sharing.
+- Markdown export, image/PDF export, stable JSON/.nt save, indented-text import, and outline-text generation are desired product directions; do not remove hooks or assumptions that support them.
+- Tree-to-outline should preserve the meaningful trunk/branch/root distinction where practical.
+
+### Visual baseline
+
+- The UI should remain closer to XMind-like lightweight labels and connectors than heavy decorative cards.
+- Tree lines should be calm and thin.
+- The tree should still feel organic: trunk, output crown, and input root system.
+- Selection effects can feel alive, but should not overwhelm readability.
+- Avoid large transparent hitboxes that block candidate nodes, note indicators, or link interactions.
+- Do not add a heavy explanatory sidebar; keep the canvas primary and the right panel actionable.
+
+### Deferred ideas
+
+- Multiple trees/forest documents are a future direction, not part of the current single-tree baseline.
+- Built-in templates are a strong product direction: person research tree, reading notes tree, paper/article writing tree, product plan tree, relationship/story tree, subject knowledge tree, and project retrospective tree.
+- Color scheme presets are a desired direction: classic palettes, iPod-album-list style palette browsing, and automatic first-level coloring by palette.
+- Font customization and zoom-level simplification that only shows first-level nodes remain future enhancements.
+- Background photos were explored and are currently deferred because they hurt clarity.
+
 ## Product principles
 
 1. Local-first before cloud-first.

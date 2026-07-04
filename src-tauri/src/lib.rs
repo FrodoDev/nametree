@@ -24,6 +24,7 @@ struct NametreeDocument {
     slogan: String,
     nodes: Vec<TreeNode>,
     tree_edges: Vec<TreeEdge>,
+    #[serde(default)]
     reference_links: Vec<ReferenceLink>,
 }
 
@@ -74,6 +75,22 @@ struct ReferenceLink {
     target_id: String,
     direction: LinkDirection,
     label: String,
+    #[serde(default)]
+    note: Option<String>,
+    #[serde(default)]
+    color: Option<String>,
+    #[serde(default)]
+    control_x: Option<f64>,
+    #[serde(default)]
+    control_y: Option<f64>,
+    #[serde(default)]
+    control1_x: Option<f64>,
+    #[serde(default)]
+    control1_y: Option<f64>,
+    #[serde(default)]
+    control2_x: Option<f64>,
+    #[serde(default)]
+    control2_y: Option<f64>,
 }
 
 #[derive(Serialize, Deserialize)]

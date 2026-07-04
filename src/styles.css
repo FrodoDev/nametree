@@ -435,11 +435,79 @@ h3 {
   stroke-dasharray: 5 5;
 }
 
+.reference-link-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 16;
+  stroke-linecap: round;
+  cursor: pointer;
+  pointer-events: stroke;
+}
+
 .reference-link {
-  stroke: #6b7280;
-  stroke-width: 2;
+  fill: none;
+  stroke: rgba(87, 96, 111, 0.58);
+  stroke-width: 1.8;
   stroke-dasharray: 8 7;
   stroke-linecap: round;
+  pointer-events: none;
+}
+
+.reference-link.hovered,
+.reference-link.selected {
+  stroke: rgba(13, 95, 105, 0.82);
+  stroke-width: 2.6;
+}
+
+.reference-link.selected {
+  filter: drop-shadow(0 0 4px rgba(13, 95, 105, 0.18));
+}
+
+.reference-link-edit-layer {
+  pointer-events: none;
+}
+
+.reference-link-edit-layer .reference-link-control {
+  pointer-events: auto;
+}
+
+.reference-link-anchor {
+  fill: #0d5f69;
+  stroke: #f8fbf4;
+  stroke-width: 2;
+  filter: drop-shadow(0 1px 4px rgba(13, 95, 105, 0.28));
+}
+
+.reference-link-draft {
+  fill: none;
+  stroke: rgba(13, 95, 105, 0.72);
+  stroke-width: 2.2;
+  stroke-dasharray: 7 6;
+  stroke-linecap: round;
+  pointer-events: none;
+  filter: drop-shadow(0 0 5px rgba(13, 95, 105, 0.12));
+}
+
+.reference-link-draft.targeted {
+  stroke: rgba(13, 95, 105, 0.94);
+  stroke-width: 2.8;
+}
+
+.reference-link-control {
+  fill: #f8fbf4;
+  stroke: #0d5f69;
+  stroke-width: 2.4;
+  cursor: grab;
+  filter: drop-shadow(0 0 0.5px #fff) drop-shadow(0 2px 7px rgba(13, 95, 105, 0.28));
+}
+
+.reference-link-control:hover {
+  fill: #e8f5f2;
+  stroke-width: 2.4;
+}
+
+.reference-link-control:active {
+  cursor: grabbing;
 }
 
 .link-label {
@@ -450,6 +518,23 @@ h3 {
 
 .tree-node {
   cursor: grab;
+}
+
+.tree-node.reference-link-source {
+  cursor: crosshair;
+}
+
+.tree-node.reference-link-candidate {
+  cursor: copy;
+}
+
+.tree-node.reference-link-target rect,
+.tree-node.reference-link-target .leaf-node-shape,
+.tree-node.reference-link-endpoint rect,
+.tree-node.reference-link-endpoint .leaf-node-shape {
+  stroke: #0d5f69;
+  stroke-width: 2.8;
+  filter: drop-shadow(0 0 8px rgba(13, 95, 105, 0.22));
 }
 
 .tree-node.dragging {
@@ -583,17 +668,12 @@ h3 {
   opacity: 1;
 }
 
-.node-note-tooltip rect {
-  fill: rgba(255, 255, 255, 0.96);
+.node-note-tooltip .note-tooltip-bubble {
+  fill: rgba(255, 255, 255, 0.97);
   stroke: rgba(13, 95, 105, 0.2);
-  stroke-width: 1;
-  filter: drop-shadow(0 6px 16px rgba(23, 32, 51, 0.12));
-}
-
-.node-note-tooltip path {
-  fill: rgba(255, 255, 255, 0.96);
-  stroke: rgba(13, 95, 105, 0.16);
-  stroke-width: 1;
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 7px 18px rgba(23, 32, 51, 0.13));
 }
 
 .node-note-tooltip text {
@@ -831,6 +911,93 @@ h3 {
   border-bottom: 1px solid rgba(58, 74, 51, 0.1);
 }
 
+.reference-link-section button,
+.reference-link-editor > button {
+  justify-self: start;
+  padding: 7px 10px;
+  border: 1px solid rgba(13, 95, 105, 0.26);
+  border-radius: 6px;
+  color: #0c5961;
+  background: rgba(13, 95, 105, 0.08);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.reference-link-section button:hover,
+.reference-link-editor > button:hover {
+  border-color: rgba(13, 95, 105, 0.4);
+  background: rgba(13, 95, 105, 0.14);
+}
+
+.reference-link-editor {
+  gap: 10px;
+}
+
+.reference-link-editor h3,
+.reference-link-editor p {
+  margin: 0;
+}
+
+.reference-link-editor p {
+  color: #172033;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.reference-link-endpoints-visual {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  gap: 0;
+}
+
+.reference-link-endpoint-card {
+  width: 100%;
+  min-height: 34px;
+  display: grid;
+  place-items: center;
+  padding: 7px 8px;
+  border: 2px solid #0d5f69;
+  border-radius: 8px;
+  color: #172033;
+  background: #f8fbf4;
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.reference-link-endpoint-line {
+  position: relative;
+  width: 2px;
+  height: 46px;
+  background: #0d5f69;
+}
+
+.reference-link-endpoint-line span {
+  position: absolute;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border: 2px solid #0d5f69;
+  border-radius: 50%;
+  background: #f8fbf4;
+  transform: translate(-50%, -50%);
+}
+
+.reference-link-endpoint-line span:first-child {
+  top: 34%;
+}
+
+.reference-link-endpoint-line span:last-child {
+  top: 66%;
+}
+
+.reference-link-note-section {
+  display: grid;
+  gap: 8px;
+}
+
 .panel-color-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -1002,7 +1169,8 @@ h3 {
 }
 
 .node-note-editor,
-.node-outline-editor {
+.node-outline-editor,
+.reference-link-note-editor {
   width: 100%;
   min-height: 96px;
   border: 1px solid rgba(58, 74, 51, 0.1);
@@ -1042,8 +1210,14 @@ h3 {
   font-size: 13px;
 }
 
+.reference-link-note-editor {
+  min-height: 120px;
+  font-size: 13px;
+}
+
 .node-note-editor:focus,
-.node-outline-editor:focus {
+.node-outline-editor:focus,
+.reference-link-note-editor:focus {
   border-color: #0f9faa;
   box-shadow: 0 0 0 3px rgba(15, 159, 170, 0.18);
 }
