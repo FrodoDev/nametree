@@ -676,54 +676,70 @@
     "warnings": []
   },
   {
-    "file": "游戏分类 base.nt",
-    "mainTrunk": {
-      "x": 450,
-      "y": 335
-    },
-    "rootCount": {
-      "left": 1,
-      "right": 1,
-      "total": 2
-    },
-    "angles": [
-      {
-        "title": "参考来源",
-        "side": "left",
-        "angle": 12.5,
-        "x": 197.5,
-        "y": 446
-      },
-      {
-        "title": "怎样了解游戏",
-        "side": "right",
-        "angle": 12.5,
-        "x": 702.5,
-        "y": 446
-      }
-    ],
-    "highBandRoots": 2,
-    "overlaps": {
-      "count": 0,
-      "pairs": []
-    },
-    "crossingRisk": 0,
-    "detachedTrunkBranches": [],
-    "bounds": {
-      "minX": -441,
-      "maxX": 1325,
-      "minY": -2454,
-      "maxY": 642
-    },
-    "warnings": []
-  },
-  {
     "file": "游戏分类.nt",
     "mainTrunk": {
       "x": 450,
       "y": 335
     },
     "rootCount": {
+      "left": 2,
+      "right": 2,
+      "total": 4
+    },
+    "angles": [
+      {
+        "title": "分类依据",
+        "side": "left",
+        "angle": 23.3,
+        "x": 213.6,
+        "y": 491.7
+      },
+      {
+        "title": "参考来源",
+        "side": "right",
+        "angle": 23.3,
+        "x": 686.4,
+        "y": 491.7
+      },
+      {
+        "title": "用户场景",
+        "side": "right",
+        "angle": 7.9,
+        "x": 1214.6,
+        "y": 496.3
+      },
+      {
+        "title": "边界问题",
+        "side": "left",
+        "angle": 7.9,
+        "x": -314.6,
+        "y": 496.3
+      }
+    ],
+    "highBandRoots": 4,
+    "overlaps": {
+      "count": 0,
+      "pairs": []
+    },
+    "crossingRisk": 0,
+    "detachedTrunkBranches": [],
+    "bounds": {
+      "minX": -618.6,
+      "maxX": 1518.6,
+      "minY": -1374,
+      "maxY": 642
+    },
+    "warnings": [
+      "高位主根偏多：4/4"
+    ]
+  },
+  {
+    "file": "游戏分类base.nt",
+    "mainTrunk": {
+      "x": 450,
+      "y": 335
+    },
+    "rootCount": {
       "left": 1,
       "right": 1,
       "total": 2
@@ -752,9 +768,9 @@
     "crossingRisk": 0,
     "detachedTrunkBranches": [],
     "bounds": {
-      "minX": -441,
-      "maxX": 1325,
-      "minY": -1263,
+      "minX": -425,
+      "maxX": 1315,
+      "minY": -1374,
       "maxY": 642
     },
     "warnings": []

@@ -249,6 +249,7 @@ function App() {
   const noteEditorRef = useRef<HTMLTextAreaElement | null>(null);
   const documentTitleInputRef = useRef<HTMLInputElement | null>(null);
   const nodeReparentDragRef = useRef<NodeReparentDrag | null>(null);
+  const pngExportInProgressRef = useRef(false);
   const [canvasSize, setCanvasSize] = useState({ width: 900, height: 700 });
 
   useEffect(() => {
@@ -554,10 +555,6 @@ function App() {
         void openDocumentFile();
       }
 
-      if (event.shiftKey && event.key.toLowerCase() === 'e') {
-        event.preventDefault();
-        void exportCanvasAsPng();
-      }
     };
 
     const handleCopy = (event: ClipboardEvent) => {
@@ -665,8 +662,9 @@ function App() {
   }
 
   async function exportCanvasAsPng() {
-    if (!document || !treeSvgRef.current) return;
+    if (!document || !treeSvgRef.current || pngExportInProgressRef.current) return;
 
+    pngExportInProgressRef.current = true;
     try {
       const fileName = `${getDocumentBaseName(document, documentPath)}.png`;
       const targetPath = await save({
@@ -681,6 +679,8 @@ function App() {
     } catch (error) {
       console.error('Failed to export Nametree PNG', error);
       window.alert(`导出 PNG 失败：${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      pngExportInProgressRef.current = false;
     }
   }
 
@@ -2399,7 +2399,7 @@ function getSiblingSortY(node: TreeNode | undefined, parent: TreeNode | undefine
 }
 
 function shouldSortDownToUp(parent: TreeNode | undefined, movingNode: TreeNode | undefined): boolean {
-  return parent?.kind === 'main_trunk' && movingNode?.kind !== 'root_branch';
+  return (parent?.kind === 'main_trunk' || parent?.kind === 'branch') && movingNode?.kind !== 'root_branch';
 }
 
 function findLastSiblingEdgeIndex(edges: TreeEdge[], parentId: string, side: GrowthSide | undefined, nodeById: Map<string, TreeNode>, movingNode: TreeNode | undefined): number {

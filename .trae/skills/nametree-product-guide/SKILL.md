@@ -345,7 +345,7 @@ Rules:
 - `::` attaches note text to the nearest preceding node or link at the appropriate indentation.
 - Multiple consecutive `::` lines become a multi-line note.
 - `[left]` and `[right]` explicitly set side for a node. If omitted on a top-level branch/root, default side assignment may alternate left/right using a fixed deterministic rule. Child nodes inherit their parent side unless explicitly changed by future behavior.
-- Sibling outline order is semantic order. For output branches, render that order from lower to higher so later siblings grow upward, but never reorder siblings silently.
+- Sibling outline order is semantic order. For `branches:`, every output-side level renders outline order from lower to higher so later siblings grow upward; this applies not only to trunk-level branches but also to all branch descendants. For `roots:`, keep outline order from upper to lower because roots grow downward.
 - The common typo `branchs:` may be tolerated during import for user convenience, but exports should always use canonical `branches:`.
 - Empty lines are for readability and must not create nodes.
 - Unknown lines inside `branches:` or `roots:` should be treated as node titles rather than discarded.
