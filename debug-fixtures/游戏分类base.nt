@@ -1,0 +1,1688 @@
+{
+  "format": "nametree.document",
+  "version": 1,
+  "document": {
+    "id": "default-tree",
+    "title": "游戏分类",
+    "titleTag": "游戏类型明细",
+    "slogan": "Name it to own it",
+    "nodes": [
+      {
+        "id": "seed-root",
+        "title": "根节点",
+        "note": "初始生长点。",
+        "kind": "seed_root",
+        "color": "#7b6b55",
+        "fillColor": "#ffffff",
+        "x": 450.0,
+        "y": 390.0,
+        "side": null
+      },
+      {
+        "id": "main-trunk",
+        "title": "主干",
+        "note": "这棵树的主要表达方向。",
+        "kind": "main_trunk",
+        "color": "#5f7f45",
+        "fillColor": "#ffffff",
+        "x": 450.0,
+        "y": 335.0,
+        "side": null
+      },
+      {
+        "id": "b2910378-2250-4732-80ce-29272011b1d0",
+        "title": "RPG系",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 237.0,
+        "y": 96.0,
+        "side": "left"
+      },
+      {
+        "id": "ce8dd166-2791-4be4-8810-fbde3c2ecd77",
+        "title": "核心是“扮演角色”",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 59.0,
+        "y": -123.0,
+        "side": "left"
+      },
+      {
+        "id": "a3c83a1b-dfd1-45b8-8abb-71636b3b10ad",
+        "title": "RPG (Role-Playing Game)",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 59.0,
+        "y": -19.0,
+        "side": "left"
+      },
+      {
+        "id": "6d5d0ba5-3366-4b75-9b66-19892448ae94",
+        "title": "角色扮演游戏",
+        "note": "玩家扮演一个或多个角色，在虚构世界中推进剧情",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -119.0,
+        "y": -61.0,
+        "side": "left"
+      },
+      {
+        "id": "4471201a-c618-404f-87bc-7cb1a9957766",
+        "title": "代表作",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -119.0,
+        "y": 12.0,
+        "side": "left"
+      },
+      {
+        "id": "5c331c38-cede-4864-916f-b5fa9712d9f3",
+        "title": "最终幻想",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -297.0,
+        "y": -9.0,
+        "side": "left"
+      },
+      {
+        "id": "62ad920c-c143-4daf-a9a4-acc83a6d0600",
+        "title": "仙剑奇侠传",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -297.0,
+        "y": 33.0,
+        "side": "left"
+      },
+      {
+        "id": "ac0eb7da-57b7-4b6e-8367-952d82514dd0",
+        "title": "ARPG (Action RPG)",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 59.0,
+        "y": 127.0,
+        "side": "left"
+      },
+      {
+        "id": "5f4f3b50-c096-4781-ad70-7b68e48a4c7e",
+        "title": "动作角色扮演",
+        "note": "在RPG的成长体系上，加入了即时动作元素，非常考验玩家的操作（如闪避、连招）",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -119.0,
+        "y": 85.0,
+        "side": "left"
+      },
+      {
+        "id": "c43c64eb-19b6-464e-92f2-86884bf1cd81",
+        "title": "代表作",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -119.0,
+        "y": 158.0,
+        "side": "left"
+      },
+      {
+        "id": "3e8772d2-6f69-4186-9a85-ad85e86ee578",
+        "title": "黑神话：悟空",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -297.0,
+        "y": 137.0,
+        "side": "left"
+      },
+      {
+        "id": "d00ee919-6bdf-4f8f-8859-72ab9f2f0c2b",
+        "title": "原神",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -297.0,
+        "y": 179.0,
+        "side": "left"
+      },
+      {
+        "id": "7e5ea29f-1529-402b-8696-5e0e1ad3d031",
+        "title": "MMORPG(Massively Multiplayer Online RPG)",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 59.0,
+        "y": 273.0,
+        "side": "left"
+      },
+      {
+        "id": "838e7a92-24b4-4d1f-8aa8-e5bf14eca5f7",
+        "title": "大型多人在线角色扮演",
+        "note": "允许成百上千的玩家在同一个虚拟世界中同时在线，极度强调社交、组队和长线养成",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -119.0,
+        "y": 231.0,
+        "side": "left"
+      },
+      {
+        "id": "22b216fc-0954-4ebc-8397-eddbc49564bf",
+        "title": "代表作",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -119.0,
+        "y": 304.0,
+        "side": "left"
+      },
+      {
+        "id": "3503fe4a-1128-4b3d-9065-07efd45de327",
+        "title": "魔兽世界",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -297.0,
+        "y": 283.0,
+        "side": "left"
+      },
+      {
+        "id": "a1191a46-c21d-4e5a-9940-41fb85e2aef2",
+        "title": "梦幻西游",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -297.0,
+        "y": 325.0,
+        "side": "left"
+      },
+      {
+        "id": "f4394b42-ab4c-40bb-9398-6bd7fbb4c0ff",
+        "title": "MOBA (Multiplayer Online Battle Arena)",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 665.0,
+        "y": 132.0,
+        "side": "right"
+      },
+      {
+        "id": "61b78949-63d4-4ca4-a139-3e9dc385e819",
+        "title": "多人在线战术竞技游戏",
+        "note": "玩家通常被分为两队（如5v5），在特定的地图中各自控制一名拥有独特技能的英雄，通过团队配合、购买装备、推塔来摧毁敌方基地。",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 843.0,
+        "y": 90.0,
+        "side": "right"
+      },
+      {
+        "id": "63e666d8-d8a0-4d20-80ac-987edd965e8a",
+        "title": "代表作",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 843.0,
+        "y": 163.0,
+        "side": "right"
+      },
+      {
+        "id": "b99548b6-792d-4679-a870-1e783eaf9902",
+        "title": "英雄联盟",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1021.0,
+        "y": 142.0,
+        "side": "right"
+      },
+      {
+        "id": "bd60b505-91e9-4c6f-9d23-dd4025401caf",
+        "title": "王者荣耀",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1021.0,
+        "y": 184.0,
+        "side": "right"
+      },
+      {
+        "id": "07187ff9-331c-4769-88d4-0af05a1dd841",
+        "title": "Strategy",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 163.0,
+        "y": -447.0,
+        "side": "left"
+      },
+      {
+        "id": "8053229a-0e2f-4a48-9298-0d59316e1923",
+        "title": "策略类",
+        "note": "强调智力、资源管理、战术规划，而非单纯的操作反应",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -15.0,
+        "y": -719.0,
+        "side": "left"
+      },
+      {
+        "id": "d0c94628-99f8-48fe-a191-5bd4b23ea195",
+        "title": "SLG（Simulation Game）",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -15.0,
+        "y": -625.0,
+        "side": "left"
+      },
+      {
+        "id": "410baed8-6d1a-410d-9f75-f2795833f338",
+        "title": "策略/模拟游戏",
+        "note": "包含宏观的战略规划和资源管理",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -193.0,
+        "y": -667.0,
+        "side": "left"
+      },
+      {
+        "id": "12d94193-7f52-4724-95ae-e2dea1461b44",
+        "title": "代表作",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -193.0,
+        "y": -594.0,
+        "side": "left"
+      },
+      {
+        "id": "c9a2f466-72a1-4baa-9f57-4d14483b1699",
+        "title": "万国觉醒",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -371.0,
+        "y": -615.0,
+        "side": "left"
+      },
+      {
+        "id": "7626b997-c441-4b21-9159-f2e87fe25b9f",
+        "title": "万国志",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -371.0,
+        "y": -573.0,
+        "side": "left"
+      },
+      {
+        "id": "c2b7d6fc-7f68-46c6-9db3-234d9bb28aa2",
+        "title": "RTS (Real-Time Strategy)",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -15.0,
+        "y": -479.0,
+        "side": "left"
+      },
+      {
+        "id": "de6e8e2f-7cf7-4e4b-bfcc-6e029f310726",
+        "title": "即时战略游戏",
+        "note": "所有玩家在同一时间进行资源采集、基地建设、造兵和战斗，极度考验多线操作和宏观决策",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -193.0,
+        "y": -521.0,
+        "side": "left"
+      },
+      {
+        "id": "77e7bfc8-3e4a-4a6b-a734-72e36421d0da",
+        "title": "代表作",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -193.0,
+        "y": -448.0,
+        "side": "left"
+      },
+      {
+        "id": "f540d701-bcbd-4bb0-b1c0-5f5f72c92edd",
+        "title": "星际争霸",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -371.0,
+        "y": -469.0,
+        "side": "left"
+      },
+      {
+        "id": "411fe7d5-a39b-4eed-8c54-24bfb34ff6b3",
+        "title": "魔兽争霸 3",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -371.0,
+        "y": -427.0,
+        "side": "left"
+      },
+      {
+        "id": "869a9077-66cb-4428-911a-4c08dceb127e",
+        "title": "SIM (Simulation)",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -15.0,
+        "y": -343.0,
+        "side": "left"
+      },
+      {
+        "id": "1614cbcf-254f-4e2f-9edd-e933158289cc",
+        "title": "模拟经营",
+        "note": "节奏自主，通过建造、管理或种田来获得成就感",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -193.0,
+        "y": -385.0,
+        "side": "left"
+      },
+      {
+        "id": "ab195150-e0b0-49e1-a8aa-b4e2059bea6c",
+        "title": "代表作",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -193.0,
+        "y": -322.0,
+        "side": "left"
+      },
+      {
+        "id": "5e8fb6c5-15a9-4738-93da-df349b545b89",
+        "title": "模拟人生4",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -371.0,
+        "y": -343.0,
+        "side": "left"
+      },
+      {
+        "id": "ce67d28d-9a57-460a-b8d2-91167024116a",
+        "title": "我的世界",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -371.0,
+        "y": -301.0,
+        "side": "left"
+      },
+      {
+        "id": "2add9b59-2c81-42c1-ad1d-f816149105bb",
+        "title": "自走棋（Auto Chess）",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -15.0,
+        "y": -217.0,
+        "side": "left"
+      },
+      {
+        "id": "9ce45fe4-648c-4924-af93-715f9f023036",
+        "title": "“脑力竞技”",
+        "note": "玩家不需要手速，只需要在商店里买棋子、凑羁绊、排阵型，然后看着它们自动打架。核心乐趣在于“排兵布阵”和“赌运气抽卡”",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -193.0,
+        "y": -259.0,
+        "side": "left"
+      },
+      {
+        "id": "cc83b52e-f05c-4064-8d3f-e54227007871",
+        "title": "代表作",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -193.0,
+        "y": -196.0,
+        "side": "left"
+      },
+      {
+        "id": "a9273848-e670-4639-9d58-8f75449ac424",
+        "title": "金铲铲之战",
+        "note": "",
+        "kind": "branch",
+        "color": "#ff4013",
+        "fillColor": "#f8fbf4",
+        "x": -371.0,
+        "y": -217.0,
+        "side": "left"
+      },
+      {
+        "id": "cef07470-10a2-40ad-bd53-246f8aad4e11",
+        "title": "云顶之弈",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -371.0,
+        "y": -175.0,
+        "side": "left"
+      },
+      {
+        "id": "14419cc8-554d-4613-8c25-ae49e80bdc81",
+        "title": "Shooter系",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 727.0,
+        "y": -244.0,
+        "side": "right"
+      },
+      {
+        "id": "4643ddcb-731d-4c3b-b2e1-fc8900881c0d",
+        "title": "射击类",
+        "note": "以枪械或远程武器战斗为核心，强调瞄准、反应速度和战术配合",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 905.0,
+        "y": -526.0,
+        "side": "right"
+      },
+      {
+        "id": "2ed47906-2e62-4df3-8a70-4c1daa11c949",
+        "title": "FPS (First-Person Shooter)",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 905.0,
+        "y": -432.0,
+        "side": "right"
+      },
+      {
+        "id": "77874fb6-946a-4736-a9dc-528e0d097d22",
+        "title": "第一人称射击",
+        "note": "玩家以主角的视野进行战斗，代入感极强",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1083.0,
+        "y": -474.0,
+        "side": "right"
+      },
+      {
+        "id": "7f842d68-a3b6-45a3-b7b1-14b82b598a43",
+        "title": "代表作",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1083.0,
+        "y": -401.0,
+        "side": "right"
+      },
+      {
+        "id": "baefa45c-e59e-4b48-9392-ccc3e2fbad70",
+        "title": "CS",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1261.0,
+        "y": -422.0,
+        "side": "right"
+      },
+      {
+        "id": "793e45ae-fb7b-4760-a89a-8ca78ef43427",
+        "title": "使命召唤",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1261.0,
+        "y": -380.0,
+        "side": "right"
+      },
+      {
+        "id": "a54b9fca-f8b7-455c-9490-b1fd594f9b9e",
+        "title": "TPS (Third-Person Shooter)",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 905.0,
+        "y": -286.0,
+        "side": "right"
+      },
+      {
+        "id": "991b001b-97ec-4635-8e11-4df52ae56a84",
+        "title": "第三人称射击",
+        "note": "玩家能看到自己角色的全身，更强调掩体利用和角色动作",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1083.0,
+        "y": -328.0,
+        "side": "right"
+      },
+      {
+        "id": "1191d169-f320-4112-b32c-8ff27866305d",
+        "title": "代表作",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1083.0,
+        "y": -255.0,
+        "side": "right"
+      },
+      {
+        "id": "fc736d46-c4ab-4797-9656-dc11f3f49e1b",
+        "title": "绝地求生",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1261.0,
+        "y": -276.0,
+        "side": "right"
+      },
+      {
+        "id": "efc8d127-0eec-42ec-a9c3-aff5ece0a19f",
+        "title": "堡垒之夜",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1261.0,
+        "y": -234.0,
+        "side": "right"
+      },
+      {
+        "id": "e093504d-dd75-4f22-9d4f-4e77b5700e32",
+        "title": "BR (Battle Royale)",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 905.0,
+        "y": -150.0,
+        "side": "right"
+      },
+      {
+        "id": "a6144bf1-23d1-486c-87a7-ac6f736e4f14",
+        "title": "大逃杀",
+        "note": "在大规模生存对战中，玩家需要在不断缩小的安全区内搜集物资，击败其他对手，直到仅剩一人或一队",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1083.0,
+        "y": -192.0,
+        "side": "right"
+      },
+      {
+        "id": "353633ed-85d5-431d-86b5-81b6d29302d8",
+        "title": "代表作",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1083.0,
+        "y": -129.0,
+        "side": "right"
+      },
+      {
+        "id": "c0b858f2-60a7-4d8c-89a8-b617d05f4fc5",
+        "title": "和平精英",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1261.0,
+        "y": -150.0,
+        "side": "right"
+      },
+      {
+        "id": "1dbab778-ec36-4d30-aa34-70b4f0a4be0d",
+        "title": "Apex英雄",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1261.0,
+        "y": -108.0,
+        "side": "right"
+      },
+      {
+        "id": "f4a62ac7-08b7-4df9-bdb2-d5102e31defd",
+        "title": "英雄射击（Hero Shooter）",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 905.0,
+        "y": -14.0,
+        "side": "right"
+      },
+      {
+        "id": "c4e4d53a-b8e6-44bb-baac-ad64125db037",
+        "title": "FPS 和 MOBA 的结合",
+        "note": "它把传统的FPS（第一人称射击）和MOBA（比如《王者荣耀》）缝合在了一起。你不仅要枪法准，还得选不同的英雄，利用他们独特的技能（比如放盾、瞬移、加血）来打战术配合。",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1083.0,
+        "y": -56.0,
+        "side": "right"
+      },
+      {
+        "id": "c27a1d0c-492b-4e81-89af-449b23b5f617",
+        "title": "代表作",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1083.0,
+        "y": 17.0,
+        "side": "right"
+      },
+      {
+        "id": "9ee4fbff-3215-4305-aac6-0fcaa19d6db3",
+        "title": "守望先锋",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1261.0,
+        "y": -4.0,
+        "side": "right"
+      },
+      {
+        "id": "97bb7c81-cb9d-415b-96fa-cab82066feab",
+        "title": "无畏契约",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1261.0,
+        "y": 38.0,
+        "side": "right"
+      },
+      {
+        "id": "a8066e33-ee7e-42c1-b8dd-8988802e2a39",
+        "title": "Action系",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 163.0,
+        "y": -887.0,
+        "side": "left"
+      },
+      {
+        "id": "61a2cc39-9793-4205-b932-fa6f32895bc6",
+        "title": "动作游戏",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -15.0,
+        "y": -1013.0,
+        "side": "left"
+      },
+      {
+        "id": "56d3bb1a-3b4f-4403-b0ab-b38c587ce494",
+        "title": "ACT (Action Game)",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -15.0,
+        "y": -929.0,
+        "side": "left"
+      },
+      {
+        "id": "a9642ce0-9bf9-4cb6-a524-dda1a86456c0",
+        "title": "动作游戏",
+        "note": "核心是快节奏的战斗、连招系统，极度考验玩家的反应速度和手眼协调能力",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -193.0,
+        "y": -971.0,
+        "side": "left"
+      },
+      {
+        "id": "1160f3d1-213f-4905-b5f2-33a84e671b4d",
+        "title": "代表作",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -193.0,
+        "y": -908.0,
+        "side": "left"
+      },
+      {
+        "id": "03f730f2-b684-48c5-97bc-b20f52fef1cd",
+        "title": "战神",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -371.0,
+        "y": -929.0,
+        "side": "left"
+      },
+      {
+        "id": "69ccef2c-395a-46fa-88c5-5cfc8f0fe53c",
+        "title": "怪物猎人",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -371.0,
+        "y": -887.0,
+        "side": "left"
+      },
+      {
+        "id": "9aa93df6-4778-4fa3-9148-3e13c4dcd717",
+        "title": "FTG (Fighting Game)",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -15.0,
+        "y": -803.0,
+        "side": "left"
+      },
+      {
+        "id": "d0128a28-5c78-48f4-94a1-2fcaf3ff1ebe",
+        "title": "格斗游戏",
+        "note": "通常在狭小场景内进行1v1对战，强调复杂的招式组合与心理博弈",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -193.0,
+        "y": -845.0,
+        "side": "left"
+      },
+      {
+        "id": "d5b79132-d9f4-4226-b123-9e11bd107a1f",
+        "title": "代表作",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -193.0,
+        "y": -782.0,
+        "side": "left"
+      },
+      {
+        "id": "a095600b-824c-4587-bc78-67750ee482ad",
+        "title": "拳皇",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -371.0,
+        "y": -803.0,
+        "side": "left"
+      },
+      {
+        "id": "6681385f-f396-462a-8342-937ee397ebf2",
+        "title": "街头霸王",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -371.0,
+        "y": -761.0,
+        "side": "left"
+      },
+      {
+        "id": "6b44329c-917a-4d65-9546-594f891b795a",
+        "title": "Roguelike",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 753.0,
+        "y": -589.0,
+        "side": "right"
+      },
+      {
+        "id": "fb5105b0-06b0-4c7e-b0a3-6353e6cefbbb",
+        "title": "肉鸽类游戏",
+        "note": "特点是“随机生成的地图”和“永久死亡机制”（死后需从头开始或保留部分成长）\n新的肉鸽类游戏，会搭配精妙的三选一机制，在每一轮游戏中给出不同的搭配体验",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 931.0,
+        "y": -610.0,
+        "side": "right"
+      },
+      {
+        "id": "d02c9837-52ac-478c-ac0f-b5f48ef626cc",
+        "title": "代表作",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 931.0,
+        "y": -568.0,
+        "side": "right"
+      },
+      {
+        "id": "4fa96825-1d49-493d-94c3-e7735d3b001c",
+        "title": "哈迪斯",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1109.0,
+        "y": -568.0,
+        "side": "right"
+      },
+      {
+        "id": "0699cb7e-9b42-480a-83c4-f9d0d86d8ec1",
+        "title": "AVG (Adventure Game)",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 665.0,
+        "y": -924.0,
+        "side": "right"
+      },
+      {
+        "id": "3abe6ccd-77d7-4333-9993-60276418bc26",
+        "title": "冒险游戏",
+        "note": "以探索未知、解谜、分析线索和剧情驱动为核心",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 843.0,
+        "y": -945.0,
+        "side": "right"
+      },
+      {
+        "id": "de7819eb-101e-467c-9888-e6aef209e731",
+        "title": "代表作",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 843.0,
+        "y": -903.0,
+        "side": "right"
+      },
+      {
+        "id": "21e1e583-eb77-41d7-b131-f0b5abf45ef3",
+        "title": "塞尔达传说",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1021.0,
+        "y": -903.0,
+        "side": "right"
+      },
+      {
+        "id": "5cc764bf-32af-4369-9d13-2ef1b978f641",
+        "title": "CAG（Card Game）",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 727.0,
+        "y": -694.0,
+        "side": "right"
+      },
+      {
+        "id": "f2fae168-ac29-49c2-8cab-eb6fdaaed6f9",
+        "title": "卡牌游戏",
+        "note": "通过收集卡牌、构筑卡组来进行策略对战",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 905.0,
+        "y": -736.0,
+        "side": "right"
+      },
+      {
+        "id": "1d4401f6-5f3f-4c50-8eb9-919bfde86cc2",
+        "title": "代表作",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 905.0,
+        "y": -673.0,
+        "side": "right"
+      },
+      {
+        "id": "e9331c3d-3788-4c11-a53f-d6b4b67d7d20",
+        "title": "炉石传说",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1083.0,
+        "y": -694.0,
+        "side": "right"
+      },
+      {
+        "id": "6dde33b6-14dc-4f13-9285-035795cc9972",
+        "title": "三国杀",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 1083.0,
+        "y": -652.0,
+        "side": "right"
+      },
+      {
+        "id": "ba817085-1319-4d29-87f4-de032dc211a9",
+        "title": "其他类型",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 237.0,
+        "y": -1211.0,
+        "side": "left"
+      },
+      {
+        "id": "bc1748c5-1116-44cc-bbf5-ce0ff6af654d",
+        "title": "IO 游戏",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 59.0,
+        "y": -1305.0,
+        "side": "left"
+      },
+      {
+        "id": "a28e2e8e-dd3f-4534-965d-0dac323458b6",
+        "title": "休闲竞技类。上手快，反馈及时",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -119.0,
+        "y": -1357.0,
+        "side": "left"
+      },
+      {
+        "id": "848173af-572e-401b-b75a-3cbcc4ec4fb2",
+        "title": "代表作",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -119.0,
+        "y": -1274.0,
+        "side": "left"
+      },
+      {
+        "id": "94d20d33-c00f-4273-b450-95c9a2e2ae70",
+        "title": "贪吃蛇大作战",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -297.0,
+        "y": -1295.0,
+        "side": "left"
+      },
+      {
+        "id": "fe34169a-c784-4d8f-a085-e622b0636d8e",
+        "title": "球球大作战",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -297.0,
+        "y": -1243.0,
+        "side": "left"
+      },
+      {
+        "id": "b64abbf0-5344-48d9-a389-73fbc47c5ba6",
+        "title": "Party Game",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": 59.0,
+        "y": -1128.0,
+        "side": "left"
+      },
+      {
+        "id": "2fcf6f8a-2c81-4042-a89e-48f3be49170b",
+        "title": "派对游戏，弱化游戏操作和策略，强化了社交、互动",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -119.0,
+        "y": -1191.0,
+        "side": "left"
+      },
+      {
+        "id": "ca206d28-9157-4d6f-a125-f4981822e98d",
+        "title": "代表作",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -119.0,
+        "y": -1097.0,
+        "side": "left"
+      },
+      {
+        "id": "85a802fc-7069-4e0d-aa79-40c212f5a996",
+        "title": "蛋仔派对",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -297.0,
+        "y": -1139.0,
+        "side": "left"
+      },
+      {
+        "id": "f4300637-a864-4a25-a8fe-087809bf7afc",
+        "title": "猛兽派对",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -297.0,
+        "y": -1097.0,
+        "side": "left"
+      },
+      {
+        "id": "c80ab544-44af-42c0-bfff-c0049bc6da2b",
+        "title": "元梦之星",
+        "note": "",
+        "kind": "branch",
+        "color": "#7a9a6d",
+        "fillColor": "#f8fbf4",
+        "x": -297.0,
+        "y": -1055.0,
+        "side": "left"
+      },
+      {
+        "id": "efc4ec55-84fa-4e38-9e2d-14fd1a723e8a",
+        "title": "参考来源",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#333333",
+        "fillColor": "#f8fbf4",
+        "x": 202.92381100924115,
+        "y": 463.0929261806842,
+        "side": "left"
+      },
+      {
+        "id": "836d7059-672a-4a15-8787-947f6d6b88cf",
+        "title": "怎样了解游戏",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#333333",
+        "fillColor": null,
+        "x": 704.9220851487844,
+        "y": 446.0,
+        "side": "right"
+      },
+      {
+        "id": "e43d295c-203d-456a-9a5c-bdf4b2c10e58",
+        "title": "看视频懂玩法",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#333333",
+        "fillColor": "#f8fbf4",
+        "x": 882.9220851487844,
+        "y": 473.0,
+        "side": "right"
+      },
+      {
+        "id": "ae7e4445-b0c5-49ee-ab6c-c137b2d1e8bc",
+        "title": "逛社区懂玩家",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#333333",
+        "fillColor": "#f8fbf4",
+        "x": 882.9220851487844,
+        "y": 535.0,
+        "side": "right"
+      },
+      {
+        "id": "6e317d15-1c4a-45b4-a6f6-b2d0517101e8",
+        "title": "拆解竞品懂市场",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#333333",
+        "fillColor": "#f8fbf4",
+        "x": 882.9220851487844,
+        "y": 597.0,
+        "side": "right"
+      },
+      {
+        "id": "dc4d80ff-6b1f-4625-bf28-cb9eafce65ed",
+        "title": "试玩半小时懂手感",
+        "note": "",
+        "kind": "root_branch",
+        "color": "#333333",
+        "fillColor": "#f8fbf4",
+        "x": 882.9220851487844,
+        "y": 659.0,
+        "side": "right"
+      }
+    ],
+    "tree_edges": [
+      {
+        "parent_id": "main-trunk",
+        "child_id": "b2910378-2250-4732-80ce-29272011b1d0"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "f4394b42-ab4c-40bb-9398-6bd7fbb4c0ff"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "14419cc8-554d-4613-8c25-ae49e80bdc81"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "07187ff9-331c-4769-88d4-0af05a1dd841"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "6b44329c-917a-4d65-9546-594f891b795a"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "5cc764bf-32af-4369-9d13-2ef1b978f641"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "a8066e33-ee7e-42c1-b8dd-8988802e2a39"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "0699cb7e-9b42-480a-83c4-f9d0d86d8ec1"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "ba817085-1319-4d29-87f4-de032dc211a9"
+      },
+      {
+        "parent_id": "b2910378-2250-4732-80ce-29272011b1d0",
+        "child_id": "ce8dd166-2791-4be4-8810-fbde3c2ecd77"
+      },
+      {
+        "parent_id": "b2910378-2250-4732-80ce-29272011b1d0",
+        "child_id": "a3c83a1b-dfd1-45b8-8abb-71636b3b10ad"
+      },
+      {
+        "parent_id": "a3c83a1b-dfd1-45b8-8abb-71636b3b10ad",
+        "child_id": "6d5d0ba5-3366-4b75-9b66-19892448ae94"
+      },
+      {
+        "parent_id": "a3c83a1b-dfd1-45b8-8abb-71636b3b10ad",
+        "child_id": "4471201a-c618-404f-87bc-7cb1a9957766"
+      },
+      {
+        "parent_id": "4471201a-c618-404f-87bc-7cb1a9957766",
+        "child_id": "5c331c38-cede-4864-916f-b5fa9712d9f3"
+      },
+      {
+        "parent_id": "4471201a-c618-404f-87bc-7cb1a9957766",
+        "child_id": "62ad920c-c143-4daf-a9a4-acc83a6d0600"
+      },
+      {
+        "parent_id": "b2910378-2250-4732-80ce-29272011b1d0",
+        "child_id": "ac0eb7da-57b7-4b6e-8367-952d82514dd0"
+      },
+      {
+        "parent_id": "ac0eb7da-57b7-4b6e-8367-952d82514dd0",
+        "child_id": "5f4f3b50-c096-4781-ad70-7b68e48a4c7e"
+      },
+      {
+        "parent_id": "ac0eb7da-57b7-4b6e-8367-952d82514dd0",
+        "child_id": "c43c64eb-19b6-464e-92f2-86884bf1cd81"
+      },
+      {
+        "parent_id": "c43c64eb-19b6-464e-92f2-86884bf1cd81",
+        "child_id": "3e8772d2-6f69-4186-9a85-ad85e86ee578"
+      },
+      {
+        "parent_id": "c43c64eb-19b6-464e-92f2-86884bf1cd81",
+        "child_id": "d00ee919-6bdf-4f8f-8859-72ab9f2f0c2b"
+      },
+      {
+        "parent_id": "b2910378-2250-4732-80ce-29272011b1d0",
+        "child_id": "7e5ea29f-1529-402b-8696-5e0e1ad3d031"
+      },
+      {
+        "parent_id": "7e5ea29f-1529-402b-8696-5e0e1ad3d031",
+        "child_id": "838e7a92-24b4-4d1f-8aa8-e5bf14eca5f7"
+      },
+      {
+        "parent_id": "7e5ea29f-1529-402b-8696-5e0e1ad3d031",
+        "child_id": "22b216fc-0954-4ebc-8397-eddbc49564bf"
+      },
+      {
+        "parent_id": "22b216fc-0954-4ebc-8397-eddbc49564bf",
+        "child_id": "3503fe4a-1128-4b3d-9065-07efd45de327"
+      },
+      {
+        "parent_id": "22b216fc-0954-4ebc-8397-eddbc49564bf",
+        "child_id": "a1191a46-c21d-4e5a-9940-41fb85e2aef2"
+      },
+      {
+        "parent_id": "f4394b42-ab4c-40bb-9398-6bd7fbb4c0ff",
+        "child_id": "61b78949-63d4-4ca4-a139-3e9dc385e819"
+      },
+      {
+        "parent_id": "f4394b42-ab4c-40bb-9398-6bd7fbb4c0ff",
+        "child_id": "63e666d8-d8a0-4d20-80ac-987edd965e8a"
+      },
+      {
+        "parent_id": "63e666d8-d8a0-4d20-80ac-987edd965e8a",
+        "child_id": "b99548b6-792d-4679-a870-1e783eaf9902"
+      },
+      {
+        "parent_id": "63e666d8-d8a0-4d20-80ac-987edd965e8a",
+        "child_id": "bd60b505-91e9-4c6f-9d23-dd4025401caf"
+      },
+      {
+        "parent_id": "07187ff9-331c-4769-88d4-0af05a1dd841",
+        "child_id": "8053229a-0e2f-4a48-9298-0d59316e1923"
+      },
+      {
+        "parent_id": "07187ff9-331c-4769-88d4-0af05a1dd841",
+        "child_id": "d0c94628-99f8-48fe-a191-5bd4b23ea195"
+      },
+      {
+        "parent_id": "d0c94628-99f8-48fe-a191-5bd4b23ea195",
+        "child_id": "410baed8-6d1a-410d-9f75-f2795833f338"
+      },
+      {
+        "parent_id": "d0c94628-99f8-48fe-a191-5bd4b23ea195",
+        "child_id": "12d94193-7f52-4724-95ae-e2dea1461b44"
+      },
+      {
+        "parent_id": "12d94193-7f52-4724-95ae-e2dea1461b44",
+        "child_id": "c9a2f466-72a1-4baa-9f57-4d14483b1699"
+      },
+      {
+        "parent_id": "12d94193-7f52-4724-95ae-e2dea1461b44",
+        "child_id": "7626b997-c441-4b21-9159-f2e87fe25b9f"
+      },
+      {
+        "parent_id": "07187ff9-331c-4769-88d4-0af05a1dd841",
+        "child_id": "c2b7d6fc-7f68-46c6-9db3-234d9bb28aa2"
+      },
+      {
+        "parent_id": "c2b7d6fc-7f68-46c6-9db3-234d9bb28aa2",
+        "child_id": "de6e8e2f-7cf7-4e4b-bfcc-6e029f310726"
+      },
+      {
+        "parent_id": "c2b7d6fc-7f68-46c6-9db3-234d9bb28aa2",
+        "child_id": "77e7bfc8-3e4a-4a6b-a734-72e36421d0da"
+      },
+      {
+        "parent_id": "77e7bfc8-3e4a-4a6b-a734-72e36421d0da",
+        "child_id": "f540d701-bcbd-4bb0-b1c0-5f5f72c92edd"
+      },
+      {
+        "parent_id": "77e7bfc8-3e4a-4a6b-a734-72e36421d0da",
+        "child_id": "411fe7d5-a39b-4eed-8c54-24bfb34ff6b3"
+      },
+      {
+        "parent_id": "07187ff9-331c-4769-88d4-0af05a1dd841",
+        "child_id": "869a9077-66cb-4428-911a-4c08dceb127e"
+      },
+      {
+        "parent_id": "869a9077-66cb-4428-911a-4c08dceb127e",
+        "child_id": "1614cbcf-254f-4e2f-9edd-e933158289cc"
+      },
+      {
+        "parent_id": "869a9077-66cb-4428-911a-4c08dceb127e",
+        "child_id": "ab195150-e0b0-49e1-a8aa-b4e2059bea6c"
+      },
+      {
+        "parent_id": "ab195150-e0b0-49e1-a8aa-b4e2059bea6c",
+        "child_id": "5e8fb6c5-15a9-4738-93da-df349b545b89"
+      },
+      {
+        "parent_id": "ab195150-e0b0-49e1-a8aa-b4e2059bea6c",
+        "child_id": "ce67d28d-9a57-460a-b8d2-91167024116a"
+      },
+      {
+        "parent_id": "07187ff9-331c-4769-88d4-0af05a1dd841",
+        "child_id": "2add9b59-2c81-42c1-ad1d-f816149105bb"
+      },
+      {
+        "parent_id": "2add9b59-2c81-42c1-ad1d-f816149105bb",
+        "child_id": "9ce45fe4-648c-4924-af93-715f9f023036"
+      },
+      {
+        "parent_id": "2add9b59-2c81-42c1-ad1d-f816149105bb",
+        "child_id": "cc83b52e-f05c-4064-8d3f-e54227007871"
+      },
+      {
+        "parent_id": "cc83b52e-f05c-4064-8d3f-e54227007871",
+        "child_id": "a9273848-e670-4639-9d58-8f75449ac424"
+      },
+      {
+        "parent_id": "cc83b52e-f05c-4064-8d3f-e54227007871",
+        "child_id": "cef07470-10a2-40ad-bd53-246f8aad4e11"
+      },
+      {
+        "parent_id": "14419cc8-554d-4613-8c25-ae49e80bdc81",
+        "child_id": "4643ddcb-731d-4c3b-b2e1-fc8900881c0d"
+      },
+      {
+        "parent_id": "14419cc8-554d-4613-8c25-ae49e80bdc81",
+        "child_id": "2ed47906-2e62-4df3-8a70-4c1daa11c949"
+      },
+      {
+        "parent_id": "2ed47906-2e62-4df3-8a70-4c1daa11c949",
+        "child_id": "77874fb6-946a-4736-a9dc-528e0d097d22"
+      },
+      {
+        "parent_id": "2ed47906-2e62-4df3-8a70-4c1daa11c949",
+        "child_id": "7f842d68-a3b6-45a3-b7b1-14b82b598a43"
+      },
+      {
+        "parent_id": "7f842d68-a3b6-45a3-b7b1-14b82b598a43",
+        "child_id": "baefa45c-e59e-4b48-9392-ccc3e2fbad70"
+      },
+      {
+        "parent_id": "7f842d68-a3b6-45a3-b7b1-14b82b598a43",
+        "child_id": "793e45ae-fb7b-4760-a89a-8ca78ef43427"
+      },
+      {
+        "parent_id": "14419cc8-554d-4613-8c25-ae49e80bdc81",
+        "child_id": "a54b9fca-f8b7-455c-9490-b1fd594f9b9e"
+      },
+      {
+        "parent_id": "a54b9fca-f8b7-455c-9490-b1fd594f9b9e",
+        "child_id": "991b001b-97ec-4635-8e11-4df52ae56a84"
+      },
+      {
+        "parent_id": "a54b9fca-f8b7-455c-9490-b1fd594f9b9e",
+        "child_id": "1191d169-f320-4112-b32c-8ff27866305d"
+      },
+      {
+        "parent_id": "1191d169-f320-4112-b32c-8ff27866305d",
+        "child_id": "fc736d46-c4ab-4797-9656-dc11f3f49e1b"
+      },
+      {
+        "parent_id": "1191d169-f320-4112-b32c-8ff27866305d",
+        "child_id": "efc8d127-0eec-42ec-a9c3-aff5ece0a19f"
+      },
+      {
+        "parent_id": "14419cc8-554d-4613-8c25-ae49e80bdc81",
+        "child_id": "e093504d-dd75-4f22-9d4f-4e77b5700e32"
+      },
+      {
+        "parent_id": "e093504d-dd75-4f22-9d4f-4e77b5700e32",
+        "child_id": "a6144bf1-23d1-486c-87a7-ac6f736e4f14"
+      },
+      {
+        "parent_id": "e093504d-dd75-4f22-9d4f-4e77b5700e32",
+        "child_id": "353633ed-85d5-431d-86b5-81b6d29302d8"
+      },
+      {
+        "parent_id": "353633ed-85d5-431d-86b5-81b6d29302d8",
+        "child_id": "c0b858f2-60a7-4d8c-89a8-b617d05f4fc5"
+      },
+      {
+        "parent_id": "353633ed-85d5-431d-86b5-81b6d29302d8",
+        "child_id": "1dbab778-ec36-4d30-aa34-70b4f0a4be0d"
+      },
+      {
+        "parent_id": "14419cc8-554d-4613-8c25-ae49e80bdc81",
+        "child_id": "f4a62ac7-08b7-4df9-bdb2-d5102e31defd"
+      },
+      {
+        "parent_id": "f4a62ac7-08b7-4df9-bdb2-d5102e31defd",
+        "child_id": "c4e4d53a-b8e6-44bb-baac-ad64125db037"
+      },
+      {
+        "parent_id": "f4a62ac7-08b7-4df9-bdb2-d5102e31defd",
+        "child_id": "c27a1d0c-492b-4e81-89af-449b23b5f617"
+      },
+      {
+        "parent_id": "c27a1d0c-492b-4e81-89af-449b23b5f617",
+        "child_id": "9ee4fbff-3215-4305-aac6-0fcaa19d6db3"
+      },
+      {
+        "parent_id": "c27a1d0c-492b-4e81-89af-449b23b5f617",
+        "child_id": "97bb7c81-cb9d-415b-96fa-cab82066feab"
+      },
+      {
+        "parent_id": "a8066e33-ee7e-42c1-b8dd-8988802e2a39",
+        "child_id": "61a2cc39-9793-4205-b932-fa6f32895bc6"
+      },
+      {
+        "parent_id": "a8066e33-ee7e-42c1-b8dd-8988802e2a39",
+        "child_id": "56d3bb1a-3b4f-4403-b0ab-b38c587ce494"
+      },
+      {
+        "parent_id": "56d3bb1a-3b4f-4403-b0ab-b38c587ce494",
+        "child_id": "a9642ce0-9bf9-4cb6-a524-dda1a86456c0"
+      },
+      {
+        "parent_id": "56d3bb1a-3b4f-4403-b0ab-b38c587ce494",
+        "child_id": "1160f3d1-213f-4905-b5f2-33a84e671b4d"
+      },
+      {
+        "parent_id": "1160f3d1-213f-4905-b5f2-33a84e671b4d",
+        "child_id": "03f730f2-b684-48c5-97bc-b20f52fef1cd"
+      },
+      {
+        "parent_id": "1160f3d1-213f-4905-b5f2-33a84e671b4d",
+        "child_id": "69ccef2c-395a-46fa-88c5-5cfc8f0fe53c"
+      },
+      {
+        "parent_id": "a8066e33-ee7e-42c1-b8dd-8988802e2a39",
+        "child_id": "9aa93df6-4778-4fa3-9148-3e13c4dcd717"
+      },
+      {
+        "parent_id": "9aa93df6-4778-4fa3-9148-3e13c4dcd717",
+        "child_id": "d0128a28-5c78-48f4-94a1-2fcaf3ff1ebe"
+      },
+      {
+        "parent_id": "9aa93df6-4778-4fa3-9148-3e13c4dcd717",
+        "child_id": "d5b79132-d9f4-4226-b123-9e11bd107a1f"
+      },
+      {
+        "parent_id": "d5b79132-d9f4-4226-b123-9e11bd107a1f",
+        "child_id": "a095600b-824c-4587-bc78-67750ee482ad"
+      },
+      {
+        "parent_id": "d5b79132-d9f4-4226-b123-9e11bd107a1f",
+        "child_id": "6681385f-f396-462a-8342-937ee397ebf2"
+      },
+      {
+        "parent_id": "6b44329c-917a-4d65-9546-594f891b795a",
+        "child_id": "fb5105b0-06b0-4c7e-b0a3-6353e6cefbbb"
+      },
+      {
+        "parent_id": "6b44329c-917a-4d65-9546-594f891b795a",
+        "child_id": "d02c9837-52ac-478c-ac0f-b5f48ef626cc"
+      },
+      {
+        "parent_id": "d02c9837-52ac-478c-ac0f-b5f48ef626cc",
+        "child_id": "4fa96825-1d49-493d-94c3-e7735d3b001c"
+      },
+      {
+        "parent_id": "0699cb7e-9b42-480a-83c4-f9d0d86d8ec1",
+        "child_id": "3abe6ccd-77d7-4333-9993-60276418bc26"
+      },
+      {
+        "parent_id": "0699cb7e-9b42-480a-83c4-f9d0d86d8ec1",
+        "child_id": "de7819eb-101e-467c-9888-e6aef209e731"
+      },
+      {
+        "parent_id": "de7819eb-101e-467c-9888-e6aef209e731",
+        "child_id": "21e1e583-eb77-41d7-b131-f0b5abf45ef3"
+      },
+      {
+        "parent_id": "5cc764bf-32af-4369-9d13-2ef1b978f641",
+        "child_id": "f2fae168-ac29-49c2-8cab-eb6fdaaed6f9"
+      },
+      {
+        "parent_id": "5cc764bf-32af-4369-9d13-2ef1b978f641",
+        "child_id": "1d4401f6-5f3f-4c50-8eb9-919bfde86cc2"
+      },
+      {
+        "parent_id": "1d4401f6-5f3f-4c50-8eb9-919bfde86cc2",
+        "child_id": "e9331c3d-3788-4c11-a53f-d6b4b67d7d20"
+      },
+      {
+        "parent_id": "1d4401f6-5f3f-4c50-8eb9-919bfde86cc2",
+        "child_id": "6dde33b6-14dc-4f13-9285-035795cc9972"
+      },
+      {
+        "parent_id": "ba817085-1319-4d29-87f4-de032dc211a9",
+        "child_id": "bc1748c5-1116-44cc-bbf5-ce0ff6af654d"
+      },
+      {
+        "parent_id": "bc1748c5-1116-44cc-bbf5-ce0ff6af654d",
+        "child_id": "a28e2e8e-dd3f-4534-965d-0dac323458b6"
+      },
+      {
+        "parent_id": "bc1748c5-1116-44cc-bbf5-ce0ff6af654d",
+        "child_id": "848173af-572e-401b-b75a-3cbcc4ec4fb2"
+      },
+      {
+        "parent_id": "848173af-572e-401b-b75a-3cbcc4ec4fb2",
+        "child_id": "94d20d33-c00f-4273-b450-95c9a2e2ae70"
+      },
+      {
+        "parent_id": "848173af-572e-401b-b75a-3cbcc4ec4fb2",
+        "child_id": "fe34169a-c784-4d8f-a085-e622b0636d8e"
+      },
+      {
+        "parent_id": "ba817085-1319-4d29-87f4-de032dc211a9",
+        "child_id": "b64abbf0-5344-48d9-a389-73fbc47c5ba6"
+      },
+      {
+        "parent_id": "b64abbf0-5344-48d9-a389-73fbc47c5ba6",
+        "child_id": "2fcf6f8a-2c81-4042-a89e-48f3be49170b"
+      },
+      {
+        "parent_id": "b64abbf0-5344-48d9-a389-73fbc47c5ba6",
+        "child_id": "ca206d28-9157-4d6f-a125-f4981822e98d"
+      },
+      {
+        "parent_id": "ca206d28-9157-4d6f-a125-f4981822e98d",
+        "child_id": "85a802fc-7069-4e0d-aa79-40c212f5a996"
+      },
+      {
+        "parent_id": "ca206d28-9157-4d6f-a125-f4981822e98d",
+        "child_id": "f4300637-a864-4a25-a8fe-087809bf7afc"
+      },
+      {
+        "parent_id": "ca206d28-9157-4d6f-a125-f4981822e98d",
+        "child_id": "c80ab544-44af-42c0-bfff-c0049bc6da2b"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "efc4ec55-84fa-4e38-9e2d-14fd1a723e8a"
+      },
+      {
+        "parent_id": "main-trunk",
+        "child_id": "836d7059-672a-4a15-8787-947f6d6b88cf"
+      },
+      {
+        "parent_id": "836d7059-672a-4a15-8787-947f6d6b88cf",
+        "child_id": "e43d295c-203d-456a-9a5c-bdf4b2c10e58"
+      },
+      {
+        "parent_id": "836d7059-672a-4a15-8787-947f6d6b88cf",
+        "child_id": "ae7e4445-b0c5-49ee-ab6c-c137b2d1e8bc"
+      },
+      {
+        "parent_id": "836d7059-672a-4a15-8787-947f6d6b88cf",
+        "child_id": "6e317d15-1c4a-45b4-a6f6-b2d0517101e8"
+      },
+      {
+        "parent_id": "836d7059-672a-4a15-8787-947f6d6b88cf",
+        "child_id": "dc4d80ff-6b1f-4625-bf28-cb9eafce65ed"
+      }
+    ],
+    "reference_links": [
+      {
+        "id": "c73872e4-f28b-4da8-97c6-8b4e85955608",
+        "source_id": "c4e4d53a-b8e6-44bb-baac-ad64125db037",
+        "target_id": "f4394b42-ab4c-40bb-9398-6bd7fbb4c0ff",
+        "direction": "two_way",
+        "label": "",
+        "note": "",
+        "color": "#874efe",
+        "control_x": null,
+        "control_y": null,
+        "control1_x": 956.9651562499996,
+        "control1_y": -89.54927421536797,
+        "control2_x": 530.1507210497834,
+        "control2_y": -122.67370535714286
+      }
+    ]
+  }
+}

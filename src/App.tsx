@@ -129,6 +129,23 @@ type OutlineItem = {
   title: string;
   level: number;
   parent: OutlineItem | null;
+  note?: string;
+  side?: GrowthSide;
+};
+
+type OutlineLinkItem = {
+  sourceTitle: string;
+  targetTitle: string;
+  note?: string;
+};
+
+type ParsedOutline = {
+  title?: string;
+  topic?: string;
+  items: OutlineItem[];
+  branches: OutlineItem[];
+  roots: OutlineItem[];
+  links: OutlineLinkItem[];
 };
 
 type SelectionBox = {
@@ -1068,7 +1085,7 @@ function App() {
       const newNode: TreeNode = {
         id: crypto.randomUUID(),
         title: item.title,
-        note: '',
+        note: item.note ?? '',
         kind: defaultKind,
         color: defaultColorByKind[defaultKind],
         fillColor: defaultNodeFillColor,
@@ -1137,11 +1154,13 @@ function App() {
       topLevel = topLevel.parent;
     }
 
+    if (topLevel.side) return topLevel.side;
+
     const index = Math.max(0, topLevelItems.findIndex((candidate) => candidate === topLevel));
-    return index % 2 === 0 ? 'right' : 'left';
+    return index % 2 === 0 ? 'left' : 'right';
   }
 
-  function applyTrunkOutlineDraft(outlineItems: OutlineItem[]) {
+  function applyTrunkOutlineDraft(parsedOutline: ParsedOutline) {
     if (!document || !selectedNode || selectedNode.kind !== 'main_trunk') return;
 
     const descendantIds = collectDescendantNodeIds(document, selectedNode.id);
@@ -1149,13 +1168,15 @@ function App() {
 
     let baseDocument: NametreeDocument = {
       ...document,
+      title: parsedOutline.title?.trim() || document.title,
+      titleTag: parsedOutline.topic?.trim() || document.titleTag,
       nodes: document.nodes.filter((node) => !descendantIds.has(node.id)),
       tree_edges: document.tree_edges.filter((edge) => !descendantIds.has(edge.parent_id) && !descendantIds.has(edge.child_id)),
       reference_links: document.reference_links.filter((link) => !descendantIds.has(link.source_id) && !descendantIds.has(link.target_id)),
     };
 
-    const branchItems = getOutlineItemsUnderGroup(outlineItems, '树枝');
-    const rootItems = getOutlineItemsUnderGroup(outlineItems, '树根');
+    const branchItems = parsedOutline.branches;
+    const rootItems = parsedOutline.roots;
     const topLevelBranchItems = branchItems.filter((item) => item.parent === null);
     const topLevelRootItems = rootItems.filter((item) => item.parent === null);
 
@@ -1177,16 +1198,19 @@ function App() {
     );
     if (rootDocument) baseDocument = rootDocument;
 
+    baseDocument = applyOutlineReferenceLinks(baseDocument, parsedOutline.links);
+
     commitDocument(baseDocument, selectedNode.id);
   }
 
   function applyOutlineDraft() {
     if (!document || !selectedNode || !canEditOutline(selectedNode)) return;
 
-    const outlineItems = parseOutlineText(outlineDraft, { allowPlainLines: true });
+    const parsedOutline = parseOutlineDocument(outlineDraft, { allowPlainLines: true });
+    const outlineItems = parsedOutline.items;
 
     if (selectedNode.kind === 'main_trunk') {
-      applyTrunkOutlineDraft(outlineItems);
+      applyTrunkOutlineDraft(parsedOutline);
       return;
     }
 
@@ -1571,13 +1595,14 @@ function App() {
               key={node.id}
               className={`tree-node ${isSelected ? 'selected' : ''} ${isMultiSelected ? 'multi-selected' : ''} ${isReferenceLinkSource ? 'reference-link-source' : ''} ${isReferenceLinkTarget ? 'reference-link-target' : ''} ${isReferenceLinkCandidate ? 'reference-link-candidate' : ''} ${isSelectedReferenceEndpoint ? 'reference-link-endpoint' : ''} ${isDragSource ? 'dragging' : ''} ${isDropTarget ? 'drop-target' : ''}`}
               transform={`translate(${node.x}, ${node.y})`}
-              onPointerDown={(event) => {
+              onPointerDownCapture={(event) => {
                 event.stopPropagation();
                 if (event.button !== 0 || editingNodeId === node.id) return;
                 event.preventDefault();
 
                 if (referenceLinkDraft) return;
 
+                event.currentTarget.setPointerCapture(event.pointerId);
                 const pointer = getTreePointFromClientPoint(event.clientX, event.clientY, treeSvgRef.current, canvasSize, canvasOffset, zoom);
                 if (!(event.metaKey || event.ctrlKey) && !selectedNodeIds.includes(node.id)) {
                   setSelectedNodes([node.id]);
@@ -1702,19 +1727,29 @@ function App() {
                   />
                 </foreignObject>
               ) : (
-                <foreignObject
-                  className={`node-title-view ${isMultiLine ? 'multi-line' : 'single-line'}`}
-                  x={-nodeLabelWidth / 2 + nodeLabelPaddingX}
-                  y={-labelHeight / 2 + nodeLabelPaddingY}
-                  width={nodeLabelWidth - nodeLabelPaddingX * 2}
-                  height={labelHeight - nodeLabelPaddingY * 2}
-                >
-                  <div>
-                    {titlePreviewLines.map((line, index) => (
-                      <span key={index}>{line}</span>
-                    ))}
-                  </div>
-                </foreignObject>
+                <>
+                  <foreignObject
+                    className={`node-title-view ${isMultiLine ? 'multi-line' : 'single-line'}`}
+                    x={-nodeLabelWidth / 2 + nodeLabelPaddingX}
+                    y={-labelHeight / 2 + nodeLabelPaddingY}
+                    width={nodeLabelWidth - nodeLabelPaddingX * 2}
+                    height={labelHeight - nodeLabelPaddingY * 2}
+                  >
+                    <div>
+                      {titlePreviewLines.map((line, index) => (
+                        <span key={index}>{line}</span>
+                      ))}
+                    </div>
+                  </foreignObject>
+                  <rect
+                    className="node-pointer-hitbox"
+                    x={-nodeLabelWidth / 2}
+                    y={-labelHeight / 2}
+                    width={nodeLabelWidth}
+                    height={labelHeight}
+                    rx="6"
+                  />
+                </>
               )}
             </g>
             );
@@ -2103,6 +2138,13 @@ function findReparentDropTarget(document: NametreeDocument, draggedNodeIds: stri
   }
 
   const mainTrunk = document.nodes.find((node) => node.kind === 'main_trunk');
+  if (isKnowledgeNode(draggedNode) && mainTrunk && currentParentId === mainTrunk.id && isPointInBranchReorderZone(point, shape)) {
+    return {
+      parentId: mainTrunk.id,
+      side: getDropSide(point, shape),
+    };
+  }
+
   if (isKnowledgeNode(draggedNode) && mainTrunk && isPointInRootReorderZone(point, shape)) {
     const side = getDropSide(point, shape);
     return {
@@ -2122,7 +2164,11 @@ function getDropSide(point: { x: number; y: number }, shape: TreeShape): GrowthS
 }
 
 function isPointInRootReorderZone(point: { x: number; y: number }, shape: TreeShape): boolean {
-  return point.y >= shape.groundY - 78 && point.y <= shape.rootEndY + 180;
+  return point.y >= shape.groundY + 24 && point.y <= shape.rootEndY + 180;
+}
+
+function isPointInBranchReorderZone(point: { x: number; y: number }, shape: TreeShape): boolean {
+  return point.y < shape.groundY + 24;
 }
 
 function getDropTargetDistance(node: TreeNode, point: { x: number; y: number }, shape: TreeShape): number {
@@ -2158,6 +2204,9 @@ function reorderTreeEdgesForDrop(
   if (parent?.kind === 'main_trunk' && movingNode?.kind === 'root_branch') {
     return reorderTrunkRootEdgesBySlot(remainingEdges, movingEdge, nodeById, nextParentId, nextSide, dropPoint);
   }
+  if (parent?.kind === 'main_trunk' && movingNode && movingNode.kind !== 'root_branch') {
+    return reorderTrunkBranchEdgesByGlobalY(remainingEdges, movingEdge, nodeById, nextParentId, dropPoint);
+  }
 
   const siblingEdges = remainingEdges.filter((edge) => isSameDropLane(nodeById.get(edge.child_id), movingNode, nextParentId, nextSide, edge.parent_id));
   const orderedSiblingEdges = [...siblingEdges].sort((a, b) => {
@@ -2180,6 +2229,46 @@ function reorderTreeEdgesForDrop(
     movingEdge,
     ...remainingEdges.slice(anchorIndex),
   ];
+}
+
+function reorderTrunkBranchEdgesByGlobalY(
+  edges: TreeEdge[],
+  movingEdge: TreeEdge,
+  nodeById: Map<string, TreeNode>,
+  parentId: string,
+  dropPoint: { x: number; y: number },
+): TreeEdge[] {
+  const isTrunkOutputEdge = (edge: TreeEdge) => {
+    const node = nodeById.get(edge.child_id);
+    return edge.parent_id === parentId && (node?.kind === 'branch' || node?.kind === 'leaf');
+  };
+
+  const outputEdges = edges.filter(isTrunkOutputEdge);
+  const orderedPool = [...outputEdges].sort((a, b) => {
+    const aNode = nodeById.get(a.child_id);
+    const bNode = nodeById.get(b.child_id);
+    return getSiblingSortY(aNode, nodeById.get(parentId), aNode) - getSiblingSortY(bNode, nodeById.get(parentId), bNode);
+  });
+  const dropSortY = getDropSortY(dropPoint.y, nodeById.get(parentId), nodeById.get(movingEdge.child_id));
+  const insertIndex = orderedPool.findIndex((edge) => dropSortY < getSiblingSortY(nodeById.get(edge.child_id), nodeById.get(parentId), nodeById.get(movingEdge.child_id)));
+  const nextPool = [...orderedPool];
+  nextPool.splice(insertIndex === -1 ? nextPool.length : insertIndex, 0, movingEdge);
+
+  const result: TreeEdge[] = [];
+  let poolInserted = false;
+  edges.forEach((edge) => {
+    if (!isTrunkOutputEdge(edge)) {
+      result.push(edge);
+      return;
+    }
+
+    if (!poolInserted) {
+      result.push(...nextPool);
+      poolInserted = true;
+    }
+  });
+
+  return poolInserted ? result : [...edges, ...nextPool];
 }
 
 function reorderTrunkRootEdgesBySlot(
@@ -2342,7 +2431,7 @@ function getReparentedNodeKind(child: TreeNode, nextParent: TreeNode, shape: Tre
   if (nextParent.kind === 'root_branch' || nextParent.kind === 'main_root') return 'root_branch';
 
   if (nextParent.kind === 'main_trunk') {
-    return (dropPoint?.y ?? child.y) >= shape.groundY - 78 ? 'root_branch' : child.kind === 'leaf' ? 'leaf' : 'branch';
+    return (dropPoint?.y ?? child.y) >= shape.groundY + 24 ? 'root_branch' : child.kind === 'leaf' ? 'leaf' : 'branch';
   }
 
   return child.kind;
@@ -2520,64 +2609,224 @@ function serializeNodeOutline(document: NametreeDocument, nodeId: string): strin
   });
 
   const lines: string[] = [];
-  const appendChildren = (parentId: string, level: number, filter?: (node: TreeNode) => boolean) => {
+  const appendNode = (node: TreeNode, level: number, includeSide: boolean) => {
+    const sidePrefix = includeSide && node.side ? `[${node.side}] ` : '';
+    lines.push(`${'  '.repeat(level)}${sidePrefix}${node.title}`);
+    if (node.note.trim()) {
+      node.note.split('\n').forEach((noteLine) => {
+        if (noteLine.trim()) lines.push(`${'  '.repeat(level + 1)}:: ${noteLine.trim()}`);
+      });
+    }
+    appendChildren(node.id, level + 1, undefined, false);
+  };
+  const appendChildren = (parentId: string, level: number, filter?: (node: TreeNode) => boolean, includeSide = true) => {
     const children = childrenByParent.get(parentId) ?? [];
 
     children.filter((child) => filter?.(child) ?? true).forEach((child) => {
-      lines.push(`${'  '.repeat(level)}${child.title}`);
-      appendChildren(child.id, level + 1);
+      appendNode(child, level, includeSide);
     });
   };
 
   if (selectedNode?.kind === 'main_trunk') {
-    lines.push('树枝');
+    lines.push(`@title ${document.title}`);
+    lines.push(`@topic ${document.titleTag?.trim() || getDocumentTitleTagText(document).text}`);
+    lines.push('');
+    lines.push('branches:');
     appendChildren(nodeId, 1, (child) => child.kind === 'branch' || child.kind === 'leaf');
     lines.push('');
-    lines.push('树根');
+    lines.push('roots:');
     appendChildren(nodeId, 1, (child) => child.kind === 'root_branch');
+
+    const outlineLinks = document.reference_links
+      .map((link) => ({
+        link,
+        source: nodeById.get(link.source_id),
+        target: nodeById.get(link.target_id),
+      }))
+      .filter((item): item is { link: ReferenceLink; source: TreeNode; target: TreeNode } => Boolean(item.source && item.target));
+    if (outlineLinks.length > 0) {
+      lines.push('');
+      lines.push('links:');
+      outlineLinks.forEach(({ link, source, target }) => {
+        lines.push(`  ${source.title} -link-> ${target.title}`);
+        if (link.note?.trim()) {
+          link.note.split('\n').forEach((noteLine) => {
+            if (noteLine.trim()) lines.push(`    :: ${noteLine.trim()}`);
+          });
+        }
+      });
+    }
+
     return lines.join('\n');
   }
 
-  appendChildren(nodeId, 0);
+  appendChildren(nodeId, 0, undefined, false);
   return lines.join('\n');
 }
 
+function applyOutlineReferenceLinks(document: NametreeDocument, outlineLinks: OutlineLinkItem[]): NametreeDocument {
+  if (outlineLinks.length === 0) return document;
+
+  const nodeByTitle = new Map<string, TreeNode>();
+  document.nodes.forEach((node) => {
+    const title = node.title.trim();
+    if (title && !nodeByTitle.has(title)) nodeByTitle.set(title, node);
+  });
+
+  const existingKeys = new Set(document.reference_links.map((link) => `${link.source_id}->${link.target_id}`));
+  const nextLinks: ReferenceLink[] = [];
+
+  outlineLinks.forEach((outlineLink) => {
+    const source = nodeByTitle.get(outlineLink.sourceTitle.trim());
+    const target = nodeByTitle.get(outlineLink.targetTitle.trim());
+    if (!source || !target || source.id === target.id) return;
+
+    const key = `${source.id}->${target.id}`;
+    if (existingKeys.has(key)) return;
+    existingKeys.add(key);
+
+    nextLinks.push({
+      id: crypto.randomUUID(),
+      source_id: source.id,
+      target_id: target.id,
+      direction: 'one_way',
+      label: '',
+      note: outlineLink.note ?? '',
+      color: defaultReferenceLinkColor,
+    });
+  });
+
+  if (nextLinks.length === 0) return document;
+  return {
+    ...document,
+    reference_links: [...document.reference_links, ...nextLinks],
+  };
+}
+
 function parseOutlineText(text: string, options: { allowPlainLines?: boolean } = {}): OutlineItem[] {
+  return parseOutlineDocument(text, options).items;
+}
+
+function parseOutlineDocument(text: string, options: { allowPlainLines?: boolean } = {}): ParsedOutline {
+  const result: ParsedOutline = { items: [], branches: [], roots: [], links: [] };
   const lines = text
     .replace(/\r\n?/g, '\n')
     .split('\n')
-    .map((line) => line.replace(/\s+$/g, ''))
-    .filter((line) => line.trim().length > 0);
+    .map((line) => line.replace(/\s+$/g, ''));
 
-  if (!options.allowPlainLines && lines.length < 2) return [];
-
-  const parsedLines = lines.map((line) => {
-    const indentText = line.match(/^[\t ]*/)?.[0] ?? '';
-    const indent = [...indentText].reduce((sum, char) => sum + (char === '\t' ? 2 : 1), 0);
-    const title = line.trim().replace(/^(?:[-*+]\s+|\d+[.)]\s+)/, '').trim();
-    const hasMarker = title !== line.trim();
-
-    return { indent, title, hasMarker };
-  }).filter((line) => line.title.length > 0);
-
-  const hasOutlineSignal = options.allowPlainLines || parsedLines.some((line) => line.indent > 0) || parsedLines.some((line) => line.hasMarker);
-  if (!hasOutlineSignal) return [];
-
-  const sortedIndents = Array.from(new Set(parsedLines.map((line) => line.indent))).sort((a, b) => a - b);
   const stack: OutlineItem[] = [];
-  const items: OutlineItem[] = [];
+  const branchStack: OutlineItem[] = [];
+  const rootStack: OutlineItem[] = [];
+  const plainIndents: number[] = [];
+  const branchIndents: number[] = [];
+  const rootIndents: number[] = [];
+  let section: 'plain' | 'branches' | 'roots' | 'links' = 'plain';
+  let lastItem: OutlineItem | null = null;
+  let lastLink: OutlineLinkItem | null = null;
+  let hasOutlineSignal = options.allowPlainLines ?? false;
 
-  parsedLines.forEach((line) => {
-    const level = sortedIndents.indexOf(line.indent);
-    const parent = level > 0 ? stack[level - 1] ?? null : null;
-    const item: OutlineItem = { title: line.title, level, parent };
+  lines.forEach((rawLine) => {
+    if (rawLine.trim().length === 0) return;
 
-    stack[level] = item;
-    stack.length = level + 1;
-    items.push(item);
+    const indentText = rawLine.match(/^[\t ]*/)?.[0] ?? '';
+    const indent = [...indentText].reduce((sum, char) => sum + (char === '\t' ? 2 : 1), 0);
+    const trimmed = rawLine.trim();
+
+    if (trimmed.startsWith('@title ')) {
+      result.title = trimmed.slice('@title '.length).trim();
+      hasOutlineSignal = true;
+      return;
+    }
+
+    if (trimmed.startsWith('@topic ')) {
+      result.topic = trimmed.slice('@topic '.length).trim();
+      hasOutlineSignal = true;
+      return;
+    }
+
+    if (/^branches:\s*$/i.test(trimmed) || /^branchs:\s*$/i.test(trimmed)) {
+      section = 'branches';
+      branchStack.length = 0;
+      branchIndents.length = 0;
+      lastItem = null;
+      hasOutlineSignal = true;
+      return;
+    }
+
+    if (/^roots:\s*$/i.test(trimmed)) {
+      section = 'roots';
+      rootStack.length = 0;
+      rootIndents.length = 0;
+      lastItem = null;
+      hasOutlineSignal = true;
+      return;
+    }
+
+    if (/^links:\s*$/i.test(trimmed)) {
+      section = 'links';
+      lastItem = null;
+      hasOutlineSignal = true;
+      return;
+    }
+
+    if (trimmed.startsWith('::')) {
+      const noteText = trimmed.slice(2).trim();
+      if (section === 'links' && lastLink && noteText) {
+        lastLink.note = lastLink.note ? `${lastLink.note}\n${noteText}` : noteText;
+      } else if (lastItem && noteText) {
+        lastItem.note = lastItem.note ? `${lastItem.note}\n${noteText}` : noteText;
+      }
+      hasOutlineSignal = true;
+      return;
+    }
+
+    if (section === 'links') {
+      const linkMatch = trimmed.match(/^(.+?)\s+-link->\s+(.+)$/);
+      if (linkMatch) {
+        const link: OutlineLinkItem = {
+          sourceTitle: linkMatch[1].trim(),
+          targetTitle: linkMatch[2].trim(),
+        };
+        result.links.push(link);
+        lastLink = link;
+      }
+      return;
+    }
+
+    const cleanedTitle = trimmed.replace(/^(?:[-*+]\s+|\d+[.)]\s+)/, '').trim();
+    const sideMatch = cleanedTitle.match(/^\[(left|right)\]\s+(.+)$/i);
+    const side = sideMatch?.[1].toLowerCase() as GrowthSide | undefined;
+    const title = (sideMatch?.[2] ?? cleanedTitle).trim();
+    if (!title) return;
+
+    const targetItems = section === 'branches' ? result.branches : section === 'roots' ? result.roots : result.items;
+    const targetStack = section === 'branches' ? branchStack : section === 'roots' ? rootStack : stack;
+    const targetIndents = section === 'branches' ? branchIndents : section === 'roots' ? rootIndents : plainIndents;
+    while (targetIndents.length > 0 && indent < targetIndents[targetIndents.length - 1]) {
+      targetIndents.pop();
+      targetStack.pop();
+    }
+    if (targetIndents[targetIndents.length - 1] !== indent) {
+      targetIndents.push(indent);
+    }
+    const level = targetIndents.length - 1;
+    const parent = level > 0 ? targetStack[level - 1] ?? null : null;
+    const item: OutlineItem = { title, level, parent, side };
+
+    targetStack[level] = item;
+    targetStack.length = level + 1;
+    targetIndents.length = level + 1;
+    targetItems.push(item);
+    if (targetItems !== result.items) result.items.push(item);
+    lastItem = item;
+    hasOutlineSignal = hasOutlineSignal || indent > 0 || title !== trimmed;
   });
 
-  return items;
+  if (!hasOutlineSignal || (!options.allowPlainLines && result.items.length < 2)) {
+    return { items: [], branches: [], roots: [], links: result.links, title: result.title, topic: result.topic };
+  }
+
+  return result;
 }
 
 function getDefaultChildSuggestion(selectedNode: TreeNode | null, suggestions: Suggestion[]): Suggestion | null {
@@ -3165,21 +3414,28 @@ function layoutOutputTree(
   };
 
   const trunkChildren = childrenByParent.get(mainTrunk.id) ?? [];
-
-  const layoutTrunkSide = (side: GrowthSide, sideFactor: -1 | 1) => {
-    const children = trunkChildren.filter((node) => (node.side ?? 'right') === side);
-    let cursor = shape.groundY - 82 + (side === 'right' ? -22 : 0);
-
-    children.forEach((node, index) => {
-      const span = getSpan(node);
-      const branchDistance = getTrunkBranchDistance(index, children.length);
-      layoutSubtree(node, sideFactor, shape.centerX + sideFactor * branchDistance, cursor - span / 2);
-      cursor -= span + siblingGap;
-    });
+  const sideCounts = {
+    left: trunkChildren.filter((node) => (node.side ?? 'right') === 'left').length,
+    right: trunkChildren.filter((node) => (node.side ?? 'right') === 'right').length,
   };
+  const sideIndexes = { left: 0, right: 0 };
+  const sideTopLimits = { left: Number.POSITIVE_INFINITY, right: Number.POSITIVE_INFINITY };
+  const globalStep = 176;
+  const firstBranchY = shape.groundY - 82;
 
-  layoutTrunkSide('left', -1);
-  layoutTrunkSide('right', 1);
+  trunkChildren.forEach((node, globalIndex) => {
+    const side = node.side ?? 'right';
+    const sideFactor = side === 'left' ? -1 : 1;
+    const sideIndex = sideIndexes[side];
+    const span = getSpan(node);
+    const desiredY = firstBranchY - globalIndex * globalStep;
+    const maxYAboveGround = shape.groundY - 48 - span / 2;
+    const y = Math.min(desiredY, sideTopLimits[side] - span / 2, maxYAboveGround);
+    const branchDistance = getTrunkBranchDistance(sideIndex, sideCounts[side]);
+    layoutSubtree(node, sideFactor, shape.centerX + sideFactor * branchDistance, y);
+    sideIndexes[side] += 1;
+    sideTopLimits[side] = y - span / 2 - siblingGap;
+  });
 }
 
 function getConnectionPoint(node: TreeNode, child: Pick<TreeNode, 'x' | 'y' | 'kind'>, shape: TreeShape): Pick<TreeNode, 'x' | 'y'> {

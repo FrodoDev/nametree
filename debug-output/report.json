@@ -504,7 +504,7 @@
     "warnings": []
   },
   {
-    "file": "sxfdl copy.nt",
+    "file": "sxfdl 绿配色.nt",
     "mainTrunk": {
       "x": 450,
       "y": 335
@@ -561,7 +561,7 @@
     "bounds": {
       "minX": -618.6,
       "maxX": 1358.8,
-      "minY": -622,
+      "minY": -728,
       "maxY": 916.5
     },
     "warnings": [
@@ -626,7 +626,7 @@
     "bounds": {
       "minX": -618.6,
       "maxX": 1358.8,
-      "minY": -622,
+      "minY": -728,
       "maxY": 916.5
     },
     "warnings": [
@@ -672,6 +672,90 @@
       "maxX": 1006.5,
       "minY": 269,
       "maxY": 534
+    },
+    "warnings": []
+  },
+  {
+    "file": "游戏分类 base.nt",
+    "mainTrunk": {
+      "x": 450,
+      "y": 335
+    },
+    "rootCount": {
+      "left": 1,
+      "right": 1,
+      "total": 2
+    },
+    "angles": [
+      {
+        "title": "参考来源",
+        "side": "left",
+        "angle": 12.5,
+        "x": 197.5,
+        "y": 446
+      },
+      {
+        "title": "怎样了解游戏",
+        "side": "right",
+        "angle": 12.5,
+        "x": 702.5,
+        "y": 446
+      }
+    ],
+    "highBandRoots": 2,
+    "overlaps": {
+      "count": 0,
+      "pairs": []
+    },
+    "crossingRisk": 0,
+    "detachedTrunkBranches": [],
+    "bounds": {
+      "minX": -441,
+      "maxX": 1325,
+      "minY": -2454,
+      "maxY": 642
+    },
+    "warnings": []
+  },
+  {
+    "file": "游戏分类.nt",
+    "mainTrunk": {
+      "x": 450,
+      "y": 335
+    },
+    "rootCount": {
+      "left": 1,
+      "right": 1,
+      "total": 2
+    },
+    "angles": [
+      {
+        "title": "参考来源",
+        "side": "left",
+        "angle": 12.5,
+        "x": 197.5,
+        "y": 446
+      },
+      {
+        "title": "怎样了解游戏",
+        "side": "right",
+        "angle": 12.5,
+        "x": 702.5,
+        "y": 446
+      }
+    ],
+    "highBandRoots": 2,
+    "overlaps": {
+      "count": 0,
+      "pairs": []
+    },
+    "crossingRisk": 0,
+    "detachedTrunkBranches": [],
+    "bounds": {
+      "minX": -441,
+      "maxX": 1325,
+      "minY": -1263,
+      "maxY": 642
     },
     "warnings": []
   }

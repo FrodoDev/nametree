@@ -631,6 +631,12 @@ h3 {
   transition: stroke 120ms ease, stroke-width 120ms ease;
 }
 
+.node-pointer-hitbox {
+  fill: transparent;
+  stroke: transparent;
+  pointer-events: all;
+}
+
 .tree-node:not(.selected):hover rect,
 .tree-node:not(.selected):hover .leaf-node-shape {
   stroke: #78946e;

@@ -287,6 +287,7 @@ Use this section as the practical baseline for the current app state. Preserve t
 - The UI should remain closer to XMind-like lightweight labels and connectors than heavy decorative cards.
 - Tree lines should be calm and thin.
 - The tree should still feel organic: trunk, output crown, and input root system.
+- Output branches belong above the ground line. A branch subtree must never visually dip into the gray root/ground area; if ordering or collision avoidance would push a branch below ground, move that output branch upward instead of allowing it to look like a root.
 - Selection effects can feel alive, but should not overwhelm readability.
 - Avoid large transparent hitboxes that block candidate nodes, note indicators, or link interactions.
 - Do not add a heavy explanatory sidebar; keep the canvas primary and the right panel actionable.
@@ -307,6 +308,57 @@ Use this section as the practical baseline for the current app state. Preserve t
 4. Naming is an act of understanding: users clarify thoughts by naming nodes.
 5. Input and output should both be visible, because learning is incomplete without production.
 6. Prefer simple, durable file/data formats over opaque storage.
+7. Thought structure comes before visual novelty: Nametree is primarily for expressing and reading user thinking, not for decorative tree effects.
+8. Parent-child relationships, sibling order, branch/root direction, notes, and reference links are thought structure and must be preserved.
+9. Colors, fills, fonts, shadows, animations, and decorative layout choices are style, not thought structure. Style may aid reading but must never change structure.
+10. Layout algorithms must respect user-authored outline order and side choices. They may avoid overlap by moving nodes, but must not silently reorder siblings or rebalance left/right sides.
+
+## Nametree Outline v1
+
+Outline v1 is the lightweight text language for expressing a Nametree document. It should remain readable plain text, easy for humans and AI to write, and focused on thought structure rather than styling.
+
+Core syntax:
+
+```text
+@title Document title
+@topic Tree topic
+
+branches:
+  [left] Branch title
+    :: Branch note
+  [right] Another branch
+
+roots:
+  [left] Source
+
+links:
+  Source title -link-> Target title
+    :: Link note
+```
+
+Rules:
+
+- Use English syntax only: `@title`, `@topic`, `branches:`, `roots:`, `links:`, `[left]`, `[right]`, `::`, `-link->`.
+- Do not support `@slogan` in Outline v1 because slogan is brand/product copy, not currently a document structure field.
+- `branches:` defines output-side tree nodes; `roots:` defines input-side root nodes. Do not require node-level branch/root markers inside those sections.
+- `links:` defines non-tree reference links. `-link->` is the planned Outline v1 reference-link operator.
+- `::` attaches note text to the nearest preceding node or link at the appropriate indentation.
+- Multiple consecutive `::` lines become a multi-line note.
+- `[left]` and `[right]` explicitly set side for a node. If omitted on a top-level branch/root, default side assignment may alternate left/right using a fixed deterministic rule. Child nodes inherit their parent side unless explicitly changed by future behavior.
+- Sibling outline order is semantic order. For output branches, render that order from lower to higher so later siblings grow upward, but never reorder siblings silently.
+- The common typo `branchs:` may be tolerated during import for user convenience, but exports should always use canonical `branches:`.
+- Empty lines are for readability and must not create nodes.
+- Unknown lines inside `branches:` or `roots:` should be treated as node titles rather than discarded.
+- Unknown lines inside `links:` should produce a warning or be ignored safely; they should not create accidental nodes.
+- Colors and other visual styling are intentionally excluded from Outline v1 because they are style, not thought structure.
+
+Implementation priorities:
+
+1. Parse and export `@title`, `@topic`, `branches:`, `roots:`, `[left]`, `[right]`, and `::` notes.
+2. Make layout respect outline order and explicit side values.
+3. Export tree documents back to Outline v1 so outline → tree → outline is stable.
+4. Add `links:` / `-link->` parsing and export after the node/notes/layout loop is stable.
+5. Improve node readability after structure stability: dynamic title width/height, more visible lines, and clear title-vs-note workflow.
 
 ## Recommended technical direction
 

@@ -1,0 +1,224 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-561 -2574 2006 3336" width="2006" height="3336">
+  <rect x="-561" y="-2574" width="2006" height="3336" fill="#fffcf6"/>
+  <text x="-537" y="-2538" font-size="18" font-weight="700" fill="#2f241b">游戏分类 base.nt</text>
+  <line x1="-561" y1="390" x2="1445" y2="390" stroke="#d8cab7" stroke-dasharray="6 6"/>
+  <path d="M 450 104 L 289 62" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 181 62 L 146 62 L 146 -157 L 111 -157" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 181 62 L 146 62 L 146 -53 L 111 -53" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 3 -53 L -32 -53 L -32 -95 L -67 -95" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 3 -53 L -32 -53 L -32 -22 L -67 -22" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -175 -22 L -210 -22 L -210 -43 L -245 -43" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -175 -22 L -210 -22 L -210 -1 L -245 -1" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 181 62 L 146 62 L 146 93 L 111 93" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 3 93 L -32 93 L -32 51 L -67 51" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 3 93 L -32 93 L -32 124 L -67 124" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -175 124 L -210 124 L -210 103 L -245 103" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -175 124 L -210 124 L -210 145 L -245 145" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 181 62 L 146 62 L 146 239 L 111 239" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 3 239 L -32 239 L -32 197 L -67 197" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 3 239 L -32 239 L -32 270 L -67 270" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -175 270 L -210 270 L -210 249 L -245 249" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -175 270 L -210 270 L -210 291 L -245 291" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 450 -219 L 609 -261" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 717 -261 L 752 -261 L 752 -303 L 787 -303" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 717 -261 L 752 -261 L 752 -230 L 787 -230" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 895 -230 L 930 -230 L 930 -251 L 965 -251" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 895 -230 L 930 -230 L 930 -209 L 965 -209" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 450 -585 L 227 -627" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 119 -627 L 84 -627 L 84 -899 L 49 -899" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 119 -627 L 84 -627 L 84 -805 L 49 -805" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -59 -805 L -94 -805 L -94 -847 L -129 -847" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -59 -805 L -94 -805 L -94 -774 L -129 -774" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -237 -774 L -272 -774 L -272 -795 L -307 -795" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -237 -774 L -272 -774 L -272 -753 L -307 -753" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 119 -627 L 84 -627 L 84 -659 L 49 -659" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -59 -659 L -94 -659 L -94 -701 L -129 -701" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -59 -659 L -94 -659 L -94 -628 L -129 -628" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -237 -628 L -272 -628 L -272 -649 L -307 -649" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -237 -628 L -272 -628 L -272 -607 L -307 -607" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 119 -627 L 84 -627 L 84 -523 L 49 -523" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -59 -523 L -94 -523 L -94 -565 L -129 -565" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -59 -523 L -94 -523 L -94 -502 L -129 -502" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -237 -502 L -272 -502 L -272 -523 L -307 -523" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -237 -502 L -272 -502 L -272 -481 L -307 -481" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 119 -627 L 84 -627 L 84 -397 L 49 -397" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -59 -397 L -94 -397 L -94 -439 L -129 -439" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -59 -397 L -94 -397 L -94 -376 L -129 -376" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -237 -376 L -272 -376 L -272 -397 L -307 -397" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -237 -376 L -272 -376 L -272 -355 L -307 -355" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 450 -1181 L 683 -1223" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 791 -1223 L 826 -1223 L 826 -1505 L 861 -1505" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 791 -1223 L 826 -1223 L 826 -1411 L 861 -1411" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 969 -1411 L 1004 -1411 L 1004 -1453 L 1039 -1453" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 969 -1411 L 1004 -1411 L 1004 -1380 L 1039 -1380" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 1147 -1380 L 1182 -1380 L 1182 -1401 L 1217 -1401" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 1147 -1380 L 1182 -1380 L 1182 -1359 L 1217 -1359" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 791 -1223 L 826 -1223 L 826 -1265 L 861 -1265" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 969 -1265 L 1004 -1265 L 1004 -1307 L 1039 -1307" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 969 -1265 L 1004 -1265 L 1004 -1234 L 1039 -1234" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 1147 -1234 L 1182 -1234 L 1182 -1255 L 1217 -1255" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 1147 -1234 L 1182 -1234 L 1182 -1213 L 1217 -1213" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 791 -1223 L 826 -1223 L 826 -1129 L 861 -1129" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 969 -1129 L 1004 -1129 L 1004 -1171 L 1039 -1171" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 969 -1129 L 1004 -1129 L 1004 -1108 L 1039 -1108" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 1147 -1108 L 1182 -1108 L 1182 -1129 L 1217 -1129" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 1147 -1108 L 1182 -1108 L 1182 -1087 L 1217 -1087" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 791 -1223 L 826 -1223 L 826 -993 L 861 -993" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 969 -993 L 1004 -993 L 1004 -1035 L 1039 -1035" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 969 -993 L 1004 -993 L 1004 -962 L 1039 -962" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 1147 -962 L 1182 -962 L 1182 -983 L 1217 -983" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 1147 -962 L 1182 -962 L 1182 -941 L 1217 -941" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 450 -1631 L 201 -1673" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 93 -1673 L 58 -1673 L 58 -1799 L 23 -1799" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 93 -1673 L 58 -1673 L 58 -1715 L 23 -1715" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -85 -1715 L -120 -1715 L -120 -1757 L -155 -1757" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -85 -1715 L -120 -1715 L -120 -1694 L -155 -1694" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -263 -1694 L -298 -1694 L -298 -1715 L -333 -1715" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -263 -1694 L -298 -1694 L -298 -1673 L -333 -1673" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 93 -1673 L 58 -1673 L 58 -1589 L 23 -1589" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -85 -1589 L -120 -1589 L -120 -1631 L -155 -1631" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -85 -1589 L -120 -1589 L -120 -1568 L -155 -1568" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -263 -1568 L -298 -1568 L -298 -1589 L -333 -1589" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -263 -1568 L -298 -1568 L -298 -1547 L -333 -1547" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 450 -1820 L 683 -1862" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 791 -1862 L 826 -1862 L 826 -1883 L 861 -1883" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 791 -1862 L 826 -1862 L 826 -1841 L 861 -1841" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 969 -1841 L 1004 -1841 L 1004 -1841 L 1039 -1841" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 450 -1904 L 227 -1946" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 119 -1946 L 84 -1946 L 84 -1967 L 49 -1967" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 119 -1946 L 84 -1946 L 84 -1925 L 49 -1925" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -59 -1925 L -94 -1925 L -94 -1925 L -129 -1925" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 450 -2009 L 609 -2051" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 717 -2051 L 752 -2051 L 752 -2093 L 787 -2093" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 717 -2051 L 752 -2051 L 752 -2030 L 787 -2030" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 895 -2030 L 930 -2030 L 930 -2051 L 965 -2051" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 895 -2030 L 930 -2030 L 930 -2009 L 965 -2009" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 450 -2249 L 289 -2291" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 181 -2291 L 146 -2291 L 146 -2385 L 111 -2385" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 3 -2385 L -32 -2385 L -32 -2437 L -67 -2437" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 3 -2385 L -32 -2385 L -32 -2354 L -67 -2354" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -175 -2354 L -210 -2354 L -210 -2375 L -245 -2375" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -175 -2354 L -210 -2354 L -210 -2323 L -245 -2323" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 181 -2291 L 146 -2291 L 146 -2208 L 111 -2208" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 3 -2208 L -32 -2208 L -32 -2271 L -67 -2271" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 3 -2208 L -32 -2208 L -32 -2177 L -67 -2177" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -175 -2177 L -210 -2177 L -210 -2219 L -245 -2219" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -175 -2177 L -210 -2177 L -210 -2177 L -245 -2177" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M -175 -2177 L -210 -2177 L -210 -2135 L -245 -2135" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 445 390 C 429.83704798532386 421.36, 335.06859789359817 426.96, 255.46309981654858 446" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 455 390 C 470.16295201467614 421.36, 564.9314021064018 426.96, 644.5369001834514 446" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 756.5369001834514 446 L 827.5369001834514 446 L 827.5369001834514 463 L 898.5369001834514 463" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 756.5369001834514 446 L 827.5369001834514 446 L 827.5369001834514 517 L 898.5369001834514 517" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 756.5369001834514 446 L 827.5369001834514 446 L 827.5369001834514 571 L 898.5369001834514 571" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+<path d="M 756.5369001834514 446 L 827.5369001834514 446 L 827.5369001834514 625 L 898.5369001834514 625" fill="none" stroke="#6d6d6d" stroke-width="1.4"/>
+  <path d="M 450 -2277 C 449 -2203, 452 292, 450 420" fill="none" stroke="#705e51" stroke-width="8" stroke-linecap="round" opacity="0.84"/><path d="M 450 410 C 432 417, 408 420, 374 424" fill="none" stroke="#705e51" stroke-width="5.2" stroke-linecap="round" opacity="0.62"/><path d="M 450 410 C 468 417, 492 420, 526 424" fill="none" stroke="#705e51" stroke-width="5.2" stroke-linecap="round" opacity="0.62"/><path d="M 450 399 C 444 408, 442 415, 450 424 C 458 415, 456 408, 450 399" fill="rgba(112, 94, 81, 0.28)" stroke="none"/>
+<g transform="translate(235 62)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">RPG系</text></g>
+<g transform="translate(57 -157)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">核心是“扮演角色”</text></g>
+<g transform="translate(57 -53)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">RPG (Role-Playing Game)</text></g>
+<g transform="translate(-121 -95)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">角色扮演游戏</text></g>
+<g transform="translate(-121 -22)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">代表作</text></g>
+<g transform="translate(-299 -43)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">最终幻想</text></g>
+<g transform="translate(-299 -1)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">仙剑奇侠传</text></g>
+<g transform="translate(57 93)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">ARPG (Action RPG)</text></g>
+<g transform="translate(-121 51)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">动作角色扮演</text></g>
+<g transform="translate(-121 124)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">代表作</text></g>
+<g transform="translate(-299 103)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">黑神话：悟空</text></g>
+<g transform="translate(-299 145)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">原神</text></g>
+<g transform="translate(57 239)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">MMORPG(Massively Multiplayer Online RPG)</text></g>
+<g transform="translate(-121 197)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">大型多人在线角色扮演</text></g>
+<g transform="translate(-121 270)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">代表作</text></g>
+<g transform="translate(-299 249)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">魔兽世界</text></g>
+<g transform="translate(-299 291)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">梦幻西游</text></g>
+<g transform="translate(663 -261)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">MOBA (Multiplayer Online Battle Arena)</text></g>
+<g transform="translate(841 -303)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">多人在线战术竞技游戏</text></g>
+<g transform="translate(841 -230)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">代表作</text></g>
+<g transform="translate(1019 -251)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">英雄联盟</text></g>
+<g transform="translate(1019 -209)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">王者荣耀</text></g>
+<g transform="translate(173 -627)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">Strategy</text></g>
+<g transform="translate(-5 -899)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">策略类</text></g>
+<g transform="translate(-5 -805)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">SLG（Simulation Game）</text></g>
+<g transform="translate(-183 -847)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">策略/模拟游戏</text></g>
+<g transform="translate(-183 -774)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">代表作</text></g>
+<g transform="translate(-361 -795)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">万国觉醒</text></g>
+<g transform="translate(-361 -753)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">万国志</text></g>
+<g transform="translate(-5 -659)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">RTS (Real-Time Strategy)</text></g>
+<g transform="translate(-183 -701)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">即时战略游戏</text></g>
+<g transform="translate(-183 -628)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">代表作</text></g>
+<g transform="translate(-361 -649)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">星际争霸</text></g>
+<g transform="translate(-361 -607)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">魔兽争霸 3</text></g>
+<g transform="translate(-5 -523)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">SIM (Simulation)</text></g>
+<g transform="translate(-183 -565)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">模拟经营</text></g>
+<g transform="translate(-183 -502)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">代表作</text></g>
+<g transform="translate(-361 -523)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">模拟人生4</text></g>
+<g transform="translate(-361 -481)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">我的世界</text></g>
+<g transform="translate(-5 -397)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">自走棋（Auto Chess）</text></g>
+<g transform="translate(-183 -439)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">“脑力竞技”</text></g>
+<g transform="translate(-183 -376)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">代表作</text></g>
+<g transform="translate(-361 -397)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">金铲铲之战</text></g>
+<g transform="translate(-361 -355)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">云顶之弈</text></g>
+<g transform="translate(737 -1223)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">Shooter系</text></g>
+<g transform="translate(915 -1505)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">射击类</text></g>
+<g transform="translate(915 -1411)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">FPS (First-Person Shooter)</text></g>
+<g transform="translate(1093 -1453)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">第一人称射击</text></g>
+<g transform="translate(1093 -1380)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">代表作</text></g>
+<g transform="translate(1271 -1401)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">CS</text></g>
+<g transform="translate(1271 -1359)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">使命召唤</text></g>
+<g transform="translate(915 -1265)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">TPS (Third-Person Shooter)</text></g>
+<g transform="translate(1093 -1307)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">第三人称射击</text></g>
+<g transform="translate(1093 -1234)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">代表作</text></g>
+<g transform="translate(1271 -1255)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">绝地求生</text></g>
+<g transform="translate(1271 -1213)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">堡垒之夜</text></g>
+<g transform="translate(915 -1129)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">BR (Battle Royale)</text></g>
+<g transform="translate(1093 -1171)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">大逃杀</text></g>
+<g transform="translate(1093 -1108)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">代表作</text></g>
+<g transform="translate(1271 -1129)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">和平精英</text></g>
+<g transform="translate(1271 -1087)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">Apex英雄</text></g>
+<g transform="translate(915 -993)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">英雄射击（Hero Shooter）</text></g>
+<g transform="translate(1093 -1035)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">FPS 和 MOBA 的结合</text></g>
+<g transform="translate(1093 -962)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">代表作</text></g>
+<g transform="translate(1271 -983)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">守望先锋</text></g>
+<g transform="translate(1271 -941)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">无畏契约</text></g>
+<g transform="translate(147 -1673)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">Action系</text></g>
+<g transform="translate(-31 -1799)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">动作游戏</text></g>
+<g transform="translate(-31 -1715)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">ACT (Action Game)</text></g>
+<g transform="translate(-209 -1757)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">动作游戏</text></g>
+<g transform="translate(-209 -1694)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">代表作</text></g>
+<g transform="translate(-387 -1715)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">战神</text></g>
+<g transform="translate(-387 -1673)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">怪物猎人</text></g>
+<g transform="translate(-31 -1589)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">FTG (Fighting Game)</text></g>
+<g transform="translate(-209 -1631)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">格斗游戏</text></g>
+<g transform="translate(-209 -1568)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">代表作</text></g>
+<g transform="translate(-387 -1589)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">拳皇</text></g>
+<g transform="translate(-387 -1547)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">街头霸王</text></g>
+<g transform="translate(737 -1862)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">Roguelike</text></g>
+<g transform="translate(915 -1883)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">肉鸽类游戏</text></g>
+<g transform="translate(915 -1841)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">代表作</text></g>
+<g transform="translate(1093 -1841)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">哈迪斯</text></g>
+<g transform="translate(173 -1946)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">AVG (Adventure Game)</text></g>
+<g transform="translate(-5 -1967)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">冒险游戏</text></g>
+<g transform="translate(-5 -1925)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">代表作</text></g>
+<g transform="translate(-183 -1925)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">塞尔达传说</text></g>
+<g transform="translate(663 -2051)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">CAG（Card Game）</text></g>
+<g transform="translate(841 -2093)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">卡牌游戏</text></g>
+<g transform="translate(841 -2030)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">代表作</text></g>
+<g transform="translate(1019 -2051)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">炉石传说</text></g>
+<g transform="translate(1019 -2009)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">三国杀</text></g>
+<g transform="translate(235 -2291)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">其他类型</text></g>
+<g transform="translate(57 -2385)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">IO 游戏</text></g>
+<g transform="translate(-121 -2437)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">休闲竞技类。上手快，反馈及时</text></g>
+<g transform="translate(-121 -2354)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">代表作</text></g>
+<g transform="translate(-299 -2375)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">贪吃蛇大作战</text></g>
+<g transform="translate(-299 -2323)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">球球大作战</text></g>
+<g transform="translate(57 -2208)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">Party Game</text></g>
+<g transform="translate(-121 -2271)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">派对游戏，弱化游戏操作和策略，强化了社交、互动</text></g>
+<g transform="translate(-121 -2177)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">代表作</text></g>
+<g transform="translate(-299 -2219)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">蛋仔派对</text></g>
+<g transform="translate(-299 -2177)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">猛兽派对</text></g>
+<g transform="translate(-299 -2135)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#7a9a6d" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">元梦之星</text></g>
+<g transform="translate(197.46309981654858 446)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#333333" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">参考来源</text></g>
+<g transform="translate(702.5369001834514 446)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#ffffff" stroke="#333333" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">怎样了解游戏</text></g>
+<g transform="translate(952.5369001834514 463)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#333333" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">看视频懂玩法</text></g>
+<g transform="translate(952.5369001834514 517)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#333333" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">逛社区懂玩家</text></g>
+<g transform="translate(952.5369001834514 571)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#333333" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">拆解竞品懂市场</text></g>
+<g transform="translate(952.5369001834514 625)"><rect x="-54" y="-17" width="108" height="34" rx="6" fill="#f8fbf4" stroke="#333333" stroke-width="1.5"/><text text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#232323">试玩半小时懂手感</text></g>
+</svg>
