@@ -3445,26 +3445,63 @@ function layoutOutputTree(
     left: trunkChildren.filter((node) => (node.side ?? 'right') === 'left').length,
     right: trunkChildren.filter((node) => (node.side ?? 'right') === 'right').length,
   };
+  const getColumnCount = (sideTotal: number): number => {
+    if (sideTotal >= 13) return 3;
+    if (sideTotal >= 7) return 2;
+    return 1;
+  };
+  const getColumnTotal = (sideTotal: number, columnIndex: number): number => {
+    const columnCount = getColumnCount(sideTotal);
+    if (columnIndex >= columnCount) return 0;
+    return Math.floor((sideTotal + columnCount - 1 - columnIndex) / columnCount);
+  };
+  const sideColumnCounts = {
+    left: getColumnCount(sideCounts.left),
+    right: getColumnCount(sideCounts.right),
+  };
+  const sideColumnTopLimits: Record<GrowthSide, number[]> = {
+    left: Array.from({ length: sideColumnCounts.left }, (_, columnIndex) => shape.groundY - 48 - columnIndex * 260),
+    right: Array.from({ length: sideColumnCounts.right }, (_, columnIndex) => shape.groundY - 48 - columnIndex * 260),
+  };
   const sideIndexes = { left: 0, right: 0 };
-  const sideTopLimits = { left: shape.groundY - 48, right: shape.groundY - 48 };
   const globalStep = 62;
   const sameSideBandGap = siblingGap;
   const firstBranchY = shape.groundY - 82;
+  const columnDistance = levelDistance * 2.55;
+  const columnRise = 260;
+  const branchClearanceFromPreviousSubtree = 52;
+  const usesMultiColumnLayout = sideColumnCounts.left > 1 || sideColumnCounts.right > 1;
   let previousBranchY = shape.groundY;
+  const previousSubtreeTopBySide: Partial<Record<GrowthSide, number>> = {};
 
   trunkChildren.forEach((node, globalIndex) => {
     const side = node.side ?? 'right';
     const sideFactor = side === 'left' ? -1 : 1;
     const sideIndex = sideIndexes[side];
+    const sideTotal = sideCounts[side];
+    const columnCount = sideColumnCounts[side];
+    const columnIndex = sideIndex % columnCount;
+    const columnRowIndex = Math.floor(sideIndex / columnCount);
+    const columnTotal = getColumnTotal(sideTotal, columnIndex);
     const span = getSpan(node);
-    const desiredY = Math.min(firstBranchY - globalIndex * globalStep, previousBranchY - globalStep);
+    const desiredY = usesMultiColumnLayout
+      ? firstBranchY - columnRowIndex * globalStep - columnIndex * columnRise
+      : Math.min(firstBranchY - globalIndex * globalStep, previousBranchY - globalStep);
     const maxYAboveGround = shape.groundY - 48 - span / 2;
-    const y = Math.min(desiredY, sideTopLimits[side] - span / 2, maxYAboveGround);
-    const branchDistance = getTrunkBranchDistance(sideIndex, sideCounts[side]);
+    const columnTopLimit = sideColumnTopLimits[side][columnIndex] ?? (shape.groundY - 48);
+    const previousSubtreeTop = previousSubtreeTopBySide[side];
+    let y = Math.min(desiredY, columnTopLimit - span / 2, maxYAboveGround);
+    if (usesMultiColumnLayout && previousSubtreeTop !== undefined) {
+      y = Math.min(y, previousSubtreeTop - branchClearanceFromPreviousSubtree);
+    }
+    const branchDistance = getTrunkBranchDistance(columnRowIndex, columnTotal) + columnIndex * columnDistance;
     layoutSubtree(node, sideFactor, shape.centerX + sideFactor * branchDistance, y);
 
-    previousBranchY = node.y;
-    sideTopLimits[side] = y - span / 2 - sameSideBandGap;
+    if (!usesMultiColumnLayout) {
+      previousBranchY = node.y;
+    }
+    previousSubtreeTopBySide[side] = y - span / 2;
+    sideColumnTopLimits[side][columnIndex] = y - span / 2 - sameSideBandGap;
     sideIndexes[side] += 1;
   });
 }
