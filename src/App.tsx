@@ -3201,8 +3201,12 @@ function getTrunkBranchDistance(index: number, total: number): number {
   const position = index / Math.max(1, total - 1);
   const crown = Math.sin(position * Math.PI);
   const scale = Math.min(1, Math.max(0, (total - 2) / 8));
-  const edgeDistance = 210 + scale * 12;
-  const centerDistance = 292 + scale * 28;
+  const baseEdgeDistance = 210 + scale * 12;
+  const baseCenterDistance = 292 + scale * 28;
+  const distanceMidpoint = (baseEdgeDistance + baseCenterDistance) / 2;
+  const crownAmplitude = 2;
+  const edgeDistance = distanceMidpoint - (distanceMidpoint - baseEdgeDistance) * crownAmplitude;
+  const centerDistance = distanceMidpoint + (baseCenterDistance - distanceMidpoint) * crownAmplitude;
 
   return Math.round(edgeDistance + (centerDistance - edgeDistance) * crown);
 }
