@@ -33,6 +33,7 @@ type TreeNode = {
   x: number;
   y: number;
   side?: GrowthSide;
+  outlineOrder?: number;
 };
 
 type TreeEdge = {
@@ -250,6 +251,11 @@ function App() {
   const documentTitleInputRef = useRef<HTMLInputElement | null>(null);
   const nodeReparentDragRef = useRef<NodeReparentDrag | null>(null);
   const pngExportInProgressRef = useRef(false);
+  const latestExportStateRef = useRef<{ document: NametreeDocument | null; documentPath: string | null; shape: TreeShape | null }>({
+    document: null,
+    documentPath: null,
+    shape: null,
+  });
   const [canvasSize, setCanvasSize] = useState({ width: 900, height: 700 });
 
   useEffect(() => {
@@ -460,6 +466,10 @@ function App() {
     [document],
   );
 
+  useEffect(() => {
+    latestExportStateRef.current = { document, documentPath, shape };
+  }, [document, documentPath, shape]);
+
   const visibleKnowledgeNodes = useMemo(
     () => (document ? document.nodes.filter((node) => isKnowledgeNode(node)) : []),
     [document],
@@ -662,18 +672,21 @@ function App() {
   }
 
   async function exportCanvasAsPng() {
-    if (!document || !treeSvgRef.current || pngExportInProgressRef.current) return;
+    const exportState = latestExportStateRef.current;
+    const exportDocument = exportState.document;
+    const exportShape = exportState.shape;
+    if (!exportDocument || !exportShape || !treeSvgRef.current || pngExportInProgressRef.current) return;
 
     pngExportInProgressRef.current = true;
     try {
-      const fileName = `${getDocumentBaseName(document, documentPath)}.png`;
+      const fileName = `${getDocumentBaseName(exportDocument, exportState.documentPath)}.png`;
       const targetPath = await save({
         defaultPath: fileName,
         filters: [{ name: 'PNG Image', extensions: ['png'] }],
       });
       if (!targetPath) return;
 
-      const bytes = await renderTreeSvgToPngBytes(treeSvgRef.current, document, shape);
+      const bytes = await renderTreeSvgToPngBytes(treeSvgRef.current, exportDocument, exportShape);
       const savedPath = await invoke<string>('save_png_file', { path: targetPath, fileName, bytes: Array.from(bytes) });
       window.alert(`已导出 PNG：${savedPath}`);
     } catch (error) {
@@ -1075,7 +1088,7 @@ function App() {
     const nodeByOutlineItem = new Map<OutlineItem, TreeNode>();
     const parentDefaultSide = parentNode.side ?? (parentNode.x < shape.centerX ? 'left' : 'right');
 
-    outlineItems.forEach((item) => {
+    outlineItems.forEach((item, outlineOrder) => {
       const outlineParentNode = item.parent ? nodeByOutlineItem.get(item.parent) ?? parentNode : parentNode;
       if (!outlineParentNode) return;
 
@@ -1092,6 +1105,7 @@ function App() {
         x: outlineParentNode.x + sideFactor * 178,
         y: outlineParentNode.y + siblingCount * (multiLineNodeLabelHeight + outputSiblingGapY),
         side: itemSide,
+        outlineOrder,
       };
 
       pastedNodes.push(newNode);
@@ -3288,6 +3302,19 @@ function normalizeTreeLayout(document: NametreeDocument): NametreeDocument {
     }
   });
 
+  if (mainTrunk) {
+    const trunkOutputChildren = outputChildrenByParent.get(mainTrunk.id);
+    if (trunkOutputChildren) {
+      const edgeOrder = new Map(trunkOutputChildren.map((node, index) => [node.id, index]));
+      outputChildrenByParent.set(
+        mainTrunk.id,
+        [...trunkOutputChildren].sort((a, b) => (
+          (a.outlineOrder ?? edgeOrder.get(a.id) ?? 0) - (b.outlineOrder ?? edgeOrder.get(b.id) ?? 0)
+        )),
+      );
+    }
+  }
+
   layoutOutputTree(mainTrunk, outputChildrenByParent, shape);
 
   const laidOutOutputNodes = laidOutNodes.filter((node) => node.kind === 'branch' || node.kind === 'leaf');
@@ -3419,22 +3446,26 @@ function layoutOutputTree(
     right: trunkChildren.filter((node) => (node.side ?? 'right') === 'right').length,
   };
   const sideIndexes = { left: 0, right: 0 };
-  const sideTopLimits = { left: Number.POSITIVE_INFINITY, right: Number.POSITIVE_INFINITY };
-  const globalStep = 176;
+  const sideTopLimits = { left: shape.groundY - 48, right: shape.groundY - 48 };
+  const globalStep = 62;
+  const sameSideBandGap = siblingGap;
   const firstBranchY = shape.groundY - 82;
+  let previousBranchY = shape.groundY;
 
   trunkChildren.forEach((node, globalIndex) => {
     const side = node.side ?? 'right';
     const sideFactor = side === 'left' ? -1 : 1;
     const sideIndex = sideIndexes[side];
     const span = getSpan(node);
-    const desiredY = firstBranchY - globalIndex * globalStep;
+    const desiredY = Math.min(firstBranchY - globalIndex * globalStep, previousBranchY - globalStep);
     const maxYAboveGround = shape.groundY - 48 - span / 2;
     const y = Math.min(desiredY, sideTopLimits[side] - span / 2, maxYAboveGround);
     const branchDistance = getTrunkBranchDistance(sideIndex, sideCounts[side]);
     layoutSubtree(node, sideFactor, shape.centerX + sideFactor * branchDistance, y);
+
+    previousBranchY = node.y;
+    sideTopLimits[side] = y - span / 2 - sameSideBandGap;
     sideIndexes[side] += 1;
-    sideTopLimits[side] = y - span / 2 - siblingGap;
   });
 }
 
